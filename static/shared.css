@@ -1,25 +1,25 @@
 /*  General Styles & Reset */
 :root {
-  --primary-color: #007bff;
-  /* Example primary color */
-  --body-bg: #f8f9fa;
-  --text-color: #343a40;
-  --font-family: sans-serif;
+	--primary-color: #007bff;
+	/* Example primary color */
+	--body-bg: #f8f9fa;
+	--text-color: #343a40;
+	--font-family: sans-serif;
 }
 
 body {
-  font-family: var(--font-family);
-  background-color: var(--body-bg);
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
+	font-family: var(--font-family);
+	background-color: var(--body-bg);
+	color: var(--text-color);
+	margin: 0;
+	padding: 0;
+	line-height: 1.6;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 /* Typography */
@@ -29,135 +29,139 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: bold;
-  line-height: 1.2;
-  margin-bottom: 0.5rem;
+	font-weight: bold;
+	line-height: 1.2;
+	margin-bottom: 0.5rem;
 }
 
 h1 {
-  font-size: 2.5rem;
+	font-size: 2.5rem;
 }
 
 h2 {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 
 h3 {
-  font-size: 1.75rem;
+	font-size: 1.75rem;
 }
 
 p {
-  margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }
 
 a {
-  color: var(--primary-color);
-  text-decoration: none;
+	color: var(--primary-color);
+	text-decoration: none;
+}
+
+h1 a {
+	color: rgba(0, 0, 0, 0.912);
 }
 
 a:hover {
-  text-decoration: underline;
+	text-decoration: none;
 }
 
 /* Layout */
 .container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
+	width: 90%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem;
 }
 
 /* Basic Navigation */
 nav {
-  background-color: #fff;
-  padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+	padding: 1rem 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: flex-start;
-  /*  Adjust as needed */
-  align-items: center;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	justify-content: flex-start;
+	/*  Adjust as needed */
+	align-items: center;
 }
 
 nav li {
-  margin-right: 1rem;
+	margin-right: 1rem;
 }
 
 nav a {
-  display: block;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+	display: block;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
 }
 
 nav a:hover {
-  background-color: var(--primary-color);
-  color: white;
-  text-decoration: none;
+	background-color: var(--primary-color);
+	color: white;
+	text-decoration: none;
 }
 
 /* Simple Footer */
 footer {
-  text-align: center;
-  padding: 2rem 0;
-  background-color: #fff;
-  border-top: 1px solid #eee;
+	text-align: center;
+	padding: 2rem 0;
+	background-color: #fff;
+	border-top: 1px solid #eee;
 }
 
 /* Form Elements */
 input[type="text"],
 input[type="email"],
 textarea {
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+	width: 100%;
+	padding: 0.75rem;
+	margin-bottom: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 }
 
 button,
 .button {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  /* For use as a class on `a` tags */
-  display: inline-block;
+	background-color: var(--primary-color);
+	color: white;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+	/* For use as a class on `a` tags */
+	display: inline-block;
 }
 
 button:hover,
 .button:hover {
-  background-color: darken(var(--primary-color), 10%);
+	background-color: darken(var(--primary-color), 10%);
 }
 
 /*  Mobile-Friendly Adjustments */
 @media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
+	h1 {
+		font-size: 2rem;
+	}
 
-  h2 {
-    font-size: 1.75rem;
-  }
+	h2 {
+		font-size: 1.75rem;
+	}
 
-  h3 {
-    font-size: 1.5rem;
-  }
+	h3 {
+		font-size: 1.5rem;
+	}
 
-  nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+	nav ul {
+		flex-direction: column;
+		align-items: flex-start;
+	}
 
-  nav li {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
+	nav li {
+		margin-right: 0;
+		margin-bottom: 0.5rem;
+	}
 }

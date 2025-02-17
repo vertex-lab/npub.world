@@ -1,4 +1,4 @@
-import { socialRelay, query, querySocial } from "$lib/relay.js";
+import { query, querySocial } from "$lib/relay.js";
 import { verifiedSymbol } from "nostr-tools";
 import * as nip19 from 'nostr-tools/nip19'
 import { error, json } from '@sveltejs/kit';

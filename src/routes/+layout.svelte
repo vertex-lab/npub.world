@@ -3,7 +3,7 @@
 </script>
 
 <main class="container">
-	<h1>npub.world 🌎</h1>
+	<h1><a href="/">npub.world 🌎</a></h1>
 	<br/>
 	{@render children()}
 </main>

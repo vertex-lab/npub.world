@@ -32,10 +32,12 @@
 
 <img alt="profile pic" src={data.picture} class="rounded-image" />
 
-<h1>{data.name}</h1>
-<p><strong style="overflow-wrap: break-word">{data.npub}</strong></p>
-<p><strong>{data.nip05}</strong></p>
-<p>{data.about}</p>
+<div style="overflow-wrap: break-word">
+  <h1>{data.name}</h1>
+  <p><strong>{data.npub}</strong></p>
+  <p><strong>{data.nip05}</strong></p>
+  <p>{data.about}</p>
+</div>
 
 <h2>Reputable follows</h2>
 

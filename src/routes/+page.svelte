@@ -1,8 +1,8 @@
-<h1>npub.world</h1>
+<h1>Welcome to npub.world!</h1>
 
-<p>browse to npub.world/[npub]</p>
+<p>To browse a profile go to https://npub.world/<i>&lt;npub&gt;</i></p>
 
-<h3>Examples</h3>
+<h2>Examples</h2>
 
 <ul>
   <li>

@@ -7,9 +7,6 @@
     border-radius: 50%;
     max-width: 120px;
   }
-  .small {
-    max-width: 30px;
-  }
 
   .profile-container {
       display: flex;
@@ -44,7 +41,7 @@
 
 {#each data.reputable as profile}
   <div class="profile-container">
-    <img src={profile.picture} alt="Profile Picture" class="profile-picture">
+    <img src={profile.picture} alt="Profile Picture" class="profile-picture" />
     <div class="profile-info">
         <a class="profile-name" href={'/' + profile.npub}>{profile.name}</a>
     </div>

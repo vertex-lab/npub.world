@@ -1,4 +1,4 @@
-<h1>Welcome to npub.world!</h1>
+<h2>Welcome!</h2>
 
 <p>To browse a profile go to https://npub.world/<i>&lt;npub&gt;</i></p>
 
@@ -6,7 +6,7 @@
 
 <ul>
   <li>
-    <a href="/npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m">Jack</a>
+    <a href="/npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m">jack</a>
   </li>
   <li>
     <a href="/npub1wf4pufsucer5va8g9p0rj5dnhvfeh6d8w0g6eayaep5dhps6rsgs43dgh9">franzap</a>

@@ -33,7 +33,7 @@
 <img alt="profile pic" src={data.picture} class="rounded-image" />
 
 <h1>{data.name}</h1>
-<p><strong>{data.npub}</strong></p>
+<p><strong style="overflow-wrap: break-word">{data.npub}</strong></p>
 <p><strong>{data.nip05}</strong></p>
 <p>{data.about}</p>
 
@@ -43,7 +43,7 @@
   <div class="profile-container">
     <img src={profile.picture} alt="Profile Picture" class="profile-picture" />
     <div class="profile-info">
-        <a class="profile-name" href={'/' + profile.npub}>{profile.name}</a>
+      <a class="profile-name" href={'/' + profile.npub}>{profile.name}</a>
     </div>
   </div>
 {/each}

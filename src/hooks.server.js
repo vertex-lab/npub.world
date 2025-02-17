@@ -1,10 +1,10 @@
 
-import { relay } from './lib/relay';
+// import { socialRelay } from './lib/relay';
 
 const initializeServices = async () => {
   try {
-    await relay.connect();
-    console.log('Database connected successfully');
+    // await socialRelay.connect();
+    // console.log('Database connected successfully');
   } catch (error) {
     console.error('Error initializing services:', error);
     process.exit(1);

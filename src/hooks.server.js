@@ -18,3 +18,10 @@ export const handle = async ({ event, resolve }) => {
   const response = await resolve(event);
   return response;
 };
+
+process.on('SIGTERM', async () => {
+  console.log('Received SIGTERM');
+  // Close any open connections or clean up resources here
+  await relay.close();
+  process.exit(0);
+});

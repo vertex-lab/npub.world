@@ -1,6 +1,6 @@
 /*  General Styles & Reset */
 :root {
-	--primary-color: #007bff;
+	--primary-color: #222;
 	/* Example primary color */
 	--body-bg: #f8f9fa;
 	--text-color: #343a40;
@@ -14,6 +14,7 @@ body {
 	margin: 0;
 	padding: 0;
 	line-height: 1.6;
+	height: 100vh;
 }
 
 *,
@@ -55,6 +56,10 @@ a {
 	text-decoration: none;
 }
 
+.about a {
+	text-decoration: underline;
+}
+
 h1 a {
 	color: rgba(0, 0, 0, 0.912);
 }
@@ -63,7 +68,6 @@ a:hover {
 	text-decoration: none;
 }
 
-/* Layout */
 .container {
 	width: 90%;
 	max-width: 1200px;
@@ -108,8 +112,11 @@ nav a:hover {
 footer {
 	text-align: center;
 	padding: 2rem 0;
-	background-color: #fff;
 	border-top: 1px solid #eee;
+}
+
+footer a {
+	text-decoration: underline;
 }
 
 /* Form Elements */
@@ -136,11 +143,6 @@ button,
 	display: inline-block;
 }
 
-button:hover,
-.button:hover {
-	background-color: darken(var(--primary-color), 10%);
-}
-
 /*  Mobile-Friendly Adjustments */
 @media (max-width: 768px) {
 	h1 {
@@ -164,4 +166,36 @@ button:hover,
 		margin-right: 0;
 		margin-bottom: 0.5rem;
 	}
+}
+
+.profile-container {
+	display: flex;
+	align-items: center;
+}
+
+.profile-picture {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	margin: 0.5em 0.5em 0.5em 0;
+}
+
+.big {
+	width: 80px;
+	height: 80px;
+	margin-right: 1.5em;
+}
+
+.profile-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.profile-name,
+h1 {
+	margin: 0;
+}
+
+#logo {
+	font-size: 1.6rem;
 }

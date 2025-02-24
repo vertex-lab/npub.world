@@ -1,7 +1,21 @@
 import { Relay, SimplePool } from 'nostr-tools';
 
-const pool = new SimplePool();
+export const relay = new Relay('wss://relay.vertexlab.io');
 
-export const query = (filter) => pool.querySync(['wss://relay.vertexlab.io'], filter);
-
-export const querySocial = (filter) => pool.querySync(['wss://relay.nostr.band'], filter);
+export const query = (filter) => {
+  return new Promise((resolve, reject) => {
+    const events = [];
+    const sub = relay.subscribe([filter], {
+      onevent(event) {
+        events.push(event);
+      },
+      oneose() {
+        resolve(events);
+        sub.close();
+      },
+      onclose() {
+        reject();
+      }
+    });
+  });
+}

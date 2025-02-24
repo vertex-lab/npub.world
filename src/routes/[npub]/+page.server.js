@@ -18,11 +18,12 @@ export async function load({ params }) {
   // Verify reputation
 
   const reputationResponse = await query({
-    kinds: [6312, 7000], search: JSON.stringify({ targets: [publicKey] })
+    kinds: [6312, 7000], search: JSON.stringify({ targets: [publicKey], limit: 6 })
   });
 
   if (reputationResponse[0].kind === 6312) {
-    const reputablePubkeys = JSON.parse(reputationResponse[0].content).map((e) => e.pubkey);
+    const results = JSON.parse(reputationResponse[0].content);
+    const reputablePubkeys = results.map((e) => e.pubkey);
 
     const authorResponse = await query({ kinds: [0], authors: [publicKey, ...reputablePubkeys] });
     const author = authorResponse.find((e) => e.pubkey == publicKey);
@@ -31,8 +32,7 @@ export async function load({ params }) {
     }
     const profile = await formatProfile(author);
     const reputableProfiles = await Promise.all(authorResponse.filter((e) => e.pubkey !== publicKey).map(formatProfile));
-
-    profile.reputable = reputableProfiles;
+    profile.reputable = reputableProfiles.sort((a, b) => results.find(e => e.pubkey == nip19.decode(b.npub).data).rank - results.find(e => e.pubkey == nip19.decode(a.npub).data).rank);
     return profile;
   } else {
     const authorResponse = await query({ kinds: [0], authors: [publicKey] });

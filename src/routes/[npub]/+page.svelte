@@ -29,3 +29,18 @@
     </div>
   {/each}
 {/if}
+
+<div class="links">
+  <h4>View full profile with</h4>
+  <a href={"nostr:" + data.npub}>default app</a> |
+  <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a> |
+  <a href={"https://coracle.social/" + data.npub}>Coracle</a> |
+  <a href={"https://primal.net/p/" + data.npub}>Primal</a> |
+  <a href={"https://snort.social/" + data.npub}>Snort</a>
+</div>
+
+<style>
+  .links {
+    font-size: 1.2rem;
+  }
+</style>

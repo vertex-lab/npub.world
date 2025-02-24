@@ -56,7 +56,8 @@ a {
 	text-decoration: none;
 }
 
-.about a {
+.about a,
+.links a {
 	text-decoration: underline;
 }
 

@@ -75,6 +75,8 @@ export const fetchBase64Image = async (profile) => {
 
     return compressedImageBuffer.toString('base64');
   } catch (e) {
+    console.log('Could not fetch or write', info.picture);
+    console.log(e);
     return fallbackImage;
   }
 }

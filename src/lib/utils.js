@@ -60,7 +60,11 @@ export const fetchBase64Image = async (profile) => {
   if (!info.picture) return fallbackImage;
 
   try {
-    const response = await fetch(info.picture);
+    const response = await fetch(info.picture, { redirect: 'follow' });
+
+    if (response.status !== 200) {
+      throw `Status ${response.status}`;
+    }
 
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);

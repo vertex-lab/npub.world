@@ -1,4 +1,6 @@
 <script>
+  import { decode } from "nostr-tools/nip19";
+
   let { data } = $props();
 </script>
 
@@ -38,6 +40,8 @@
   <a href={"https://primal.net/p/" + data.npub}>Primal</a> |
   <a href={"https://snort.social/" + data.npub}>Snort</a>
 </div>
+
+<p><br /><small>{decode(data.npub).data}</small></p>
 
 <style>
   .links {

@@ -4,6 +4,7 @@ import sharp from 'sharp';
 import { fetch } from 'undici';
 import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
+import { createHash } from 'crypto';
 
 const npubRegexp = /nostr:(npub[a-z0-9]+)\s/g;
 const fallbackImage = 'UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
@@ -12,7 +13,7 @@ export const formatProfile = async (event) => {
   if (!event) return;
 
   const info = JSON.parse(event.content);
-  const base64Image = await loadBase64Image(event);
+  const base64Image = await loadBase64Image(event, info);
 
   if (info.about) {
     // Replace npub mentions in about with npub.world links
@@ -43,24 +44,27 @@ export const formatProfile = async (event) => {
   };
 }
 
-export const loadBase64Image = async (profile) => {
-  // Attempt to load profile for this pubkey+timestamp
+export const loadBase64Image = async (profile, parsedContent) => {
+  // Attempt to load profile for this pubkey + picture url hash
+  if (typeof parsedContent.picture !== 'string') {
+    return fallbackImage;
+  }
+
   try {
-    const bytes = await readFile(`/tmp/${profile.pubkey}-${profile.created_at}.webp`);
+    const hash = createHash('sha256');
+    hash.update(parsedContent.picture, 'utf8');
+    const pictureHash = hash.digest('hex');
+    const bytes = await readFile(`/tmp/${profile.pubkey}-${pictureHash}.webp`);
     return bytes.toString('base64');
   } catch (e) {
     // Otherwise fetch and write to disk
-    return await fetchBase64Image(profile);
+    return await fetchBase64Image(profile, parsedContent);
   }
 }
 
-export const fetchBase64Image = async (profile) => {
-  const info = JSON.parse(profile.content);
-
-  if (!info.picture) return fallbackImage;
-
+export const fetchBase64Image = async (profile, parsedContent) => {
   try {
-    const response = await fetch(info.picture, { redirect: 'follow' });
+    const response = await fetch(parsedContent.picture, { redirect: 'follow' });
 
     if (response.status !== 200) {
       throw `Status ${response.status}`;
@@ -75,7 +79,10 @@ export const fetchBase64Image = async (profile) => {
       .toBuffer();
 
     // Write in background
-    writeFile(`/tmp/${profile.pubkey}-${profile.created_at}.webp`, compressedImageBuffer);
+    const hash = createHash('sha256');
+    hash.update(parsedContent.picture, 'utf8');
+    const pictureHash = hash.digest('hex');
+    writeFile(`/tmp/${profile.pubkey}-${pictureHash}.webp`, compressedImageBuffer);
 
     return compressedImageBuffer.toString('base64');
   } catch (e) {

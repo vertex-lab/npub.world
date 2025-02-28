@@ -4,7 +4,7 @@ import * as nip19 from 'nostr-tools/nip19';
 import { redirect } from "@sveltejs/kit";
 
 export async function load({ url }) {
-  const q = url.searchParams.get('q');
+  const q = url.searchParams.get('q')?.trim();
 
   if (!q) return;
 

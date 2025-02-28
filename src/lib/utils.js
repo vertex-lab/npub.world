@@ -6,7 +6,8 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 
-export const NPUB_REGEXP = /nostr:(npub[a-z0-9]+)\s/g;
+export const NPUB_REGEXP = /\bnpub[a-z0-9]+\b/;
+export const NPUB_EMBED_REGEXP = /\bnostr:(npub[a-z0-9]{59})\b/g;
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,7 +21,7 @@ export const formatProfile = async (event) => {
 
   if (info.about) {
     // Replace npub mentions in about with npub.world links
-    const npubAboutMatches = Array.from(info.about.matchAll(NPUB_REGEXP)).map((m) => m[1]);
+    const npubAboutMatches = Array.from(info.about.matchAll(NPUB_EMBED_REGEXP)).map((m) => m[1]);
     const npubNames = {};
     if (npubAboutMatches.length > 0) {
       const authors = npubAboutMatches.map((m) => nip19.decode(m).data);
@@ -32,7 +33,7 @@ export const formatProfile = async (event) => {
         }
       }
     }
-    info.about = info.about.replace(NPUB_REGEXP, (match, p1) => {
+    info.about = info.about.replace(NPUB_EMBED_REGEXP, (match, p1) => {
       const name = npubNames[p1];
       return `<a href="/${p1}">${name}</a> `;
     });
@@ -43,6 +44,7 @@ export const formatProfile = async (event) => {
     picture: base64Image && `data:image/webp;base64,${base64Image}`,
     about: info.about && marked(info.about),
     nip05: info.nip05,
+    lud16: info.lud16,
     npub: nip19.npubEncode(event.pubkey)
   };
 }

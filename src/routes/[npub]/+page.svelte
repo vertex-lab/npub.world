@@ -41,7 +41,7 @@
   <a href={"https://snort.social/" + data.npub}>Snort</a>
 </div>
 
-<p><br /><small>{decode(data.npub).data}</small></p>
+<p><br /><small>Hex: {decode(data.npub).data}</small></p>
 
 <style>
   .links {

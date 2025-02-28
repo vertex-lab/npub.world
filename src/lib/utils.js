@@ -6,7 +6,10 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 
-const npubRegexp = /nostr:(npub[a-z0-9]+)\s/g;
+export const NPUB_REGEXP = /nostr:(npub[a-z0-9]+)\s/g;
+export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
+export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const fallbackImage = 'UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
 export const formatProfile = async (event) => {
@@ -17,7 +20,7 @@ export const formatProfile = async (event) => {
 
   if (info.about) {
     // Replace npub mentions in about with npub.world links
-    const npubAboutMatches = Array.from(info.about.matchAll(npubRegexp)).map((m) => m[1]);
+    const npubAboutMatches = Array.from(info.about.matchAll(NPUB_REGEXP)).map((m) => m[1]);
     const npubNames = {};
     if (npubAboutMatches.length > 0) {
       const authors = npubAboutMatches.map((m) => nip19.decode(m).data);
@@ -29,7 +32,7 @@ export const formatProfile = async (event) => {
         }
       }
     }
-    info.about = info.about.replace(npubRegexp, (match, p1) => {
+    info.about = info.about.replace(NPUB_REGEXP, (match, p1) => {
       const name = npubNames[p1];
       return `<a href="/${p1}">${name}</a> `;
     });
@@ -90,4 +93,17 @@ export const fetchBase64Image = async (profile, parsedContent) => {
     console.log(e);
     return fallbackImage;
   }
+}
+
+export const resolveNIP05 = async (nip05) => {
+  const [name, domain] = nip05.split('@');
+  const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${name}`, { redirect: 'follow' });
+
+  if (response.status !== 200) {
+    throw `Status ${response.status}`;
+  }
+
+  const obj = await response.json();
+  const pubkey = obj['names'][name];
+  return nip19.npubEncode(pubkey);
 }

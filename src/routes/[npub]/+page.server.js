@@ -1,9 +1,19 @@
 import { relay, query } from "$lib/relay.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, json } from '@sveltejs/kit';
-import { formatProfile, } from "$lib/utils";
+import { formatProfile, HEXKEY_REGEXP, NIP05_REGEXP, resolveNIP05 } from "$lib/utils";
+import { redirect } from "@sveltejs/kit";
 
 export async function load({ params }) {
+  if (HEXKEY_REGEXP.test(params.npub)) {
+    return redirect(301, `/${nip19.npubEncode(params.npub)}`);
+  }
+
+  if (NIP05_REGEXP.test(params.npub)) {
+    const npub = await resolveNIP05(params.npub);
+    return redirect(301, `/${npub}`);
+  }
+
   let publicKey;
   try {
     let { type, data } = nip19.decode(params.npub);
@@ -11,8 +21,9 @@ export async function load({ params }) {
       throw error(400, 'Bad URL');
     }
     publicKey = data;
+
   } catch (e) {
-    throw error(400, `Invalid npub: ${params.npub}`);
+    throw error(400, `Invalid npub: ${e} ${params.npub}`);
   }
 
   // Verify reputation

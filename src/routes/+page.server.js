@@ -1,11 +1,16 @@
 import { relay, query } from "$lib/relay.js";
-import { formatProfile } from "$lib/utils";
+import { formatProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
 import * as nip19 from 'nostr-tools/nip19';
+import { redirect } from "@sveltejs/kit";
 
 export async function load({ url }) {
   const q = url.searchParams.get('q');
 
   if (!q) return;
+
+  if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
+    return redirect(301, `/${q}`);
+  }
 
   const searchResponse = await query({
     kinds: [6315, 7000],

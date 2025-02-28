@@ -52,11 +52,17 @@
       {:else}
         <p>No profiles found</p>
       {/each}
+    {:else}
+      <p class="error">{data.error}</p>
     {/if}
   </div>
 </div>
 
 <style>
+  .error {
+    font-size: 1.2rem;
+    color: red;
+  }
   form {
     margin: 0;
   }

@@ -8,6 +8,10 @@ export async function load({ url }) {
 
   if (!q) return;
 
+  if (q.length < 3) {
+    return { error: 'Please input 3 or more characters' };
+  }
+
   if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
     return redirect(301, `/${q}`);
   }

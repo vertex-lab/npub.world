@@ -10,15 +10,14 @@
 </svelte:head>
 
 <main class="container">
-	<h1><a id="logo" href="/">npub.world 🌎</a></h1>
-	<br />
 	{@render children()}
 </main>
 
 <footer>
-	<p>
-		<small
-			>Ranked by the <a href="https://vertexlab.io">Vertex</a> Global Pagerank algorithm</small
-		>
+	<p class="disclaimer">
+		Results are processed in real time by the <a href="https://vertexlab.io"
+			>Vertex</a
+		> Global Pagerank algorithm to display authentic profiles, excluding bots, spammers
+		and impersonators.
 	</p>
 </footer>

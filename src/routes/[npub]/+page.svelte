@@ -1,5 +1,8 @@
 <script>
   import { decode } from "nostr-tools/nip19";
+  import CopyText from "./copy.svelte";
+  import Follower from "./follower.svelte";
+  import FlexTable from "./FlexTable.svelte";
 
   let { data } = $props();
 </script>
@@ -7,58 +10,282 @@
 {#if Object.keys(data).length === 0}
   <h2>Not found</h2>
 {:else}
-  <div class="profile-container">
-    <img src={data.picture} alt="Profile" class="profile-picture big" />
-    <div class="profile-info">
-      <h1>{data.name}</h1>
-    </div>
-  </div>
-
-  <div style="overflow-wrap: break-word">
-    <p>
-      <strong>{data.npub}</strong><br />
-      <span class="hex">Hex: {decode(data.npub).data}</span>
-    </p>
-
-    <p class="about">{@html data.about}</p>
-
-    <p>
-      {#if data.nip05}NIP-05: <strong>{data.nip05}</strong>{#if data.lud16}<br
-          />
-        {/if}{/if}
-      {#if data.lud16}⚡️: <strong>{data.lud16}</strong>{/if}
-    </p>
-  </div>
-
-  <h3>Top reputable followers</h3>
-
-  {#each data.reputable as profile}
-    <div class="profile-container">
-      <img src={profile.picture} alt="Profile" class="profile-picture" />
-      <div class="profile-info">
-        <a class="profile-name" href={"/" + profile.npub}>{profile.name}</a>
+  <div class="container">
+    <header class="header">
+      <div class="logo-wrapper">
+        <a href="/">
+          <img src="/logo-small.png" alt="logo" />
+        </a>
       </div>
-    </div>
-  {/each}
+
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-icon"></span>
+          <input type="text" placeholder="Search nostr profiles" />
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="profile-card card">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <img src={data.picture} alt="Profile Avatar" />
+          </div>
+          <div class="profile-identity">
+            <div style="height: 0.9rem"></div>
+            <!-- temp until follower count below -->
+            <h1 class="profile-name">{data.name}</h1>
+            <p class="profile-handle">{data.nip05}</p>
+            <!-- <div class="profile-stats">
+              <span class="stat">Following: 354</span>
+              <span class="stat">Followers: 124,894</span>
+            </div> -->
+          </div>
+          <div class="profile-actions"></div>
+        </div>
+
+        <div class="profile-details">
+          <FlexTable profile={data} />
+        </div>
+
+        <div class="followers-card">
+          <h2 class="section-title">Reputable Followers:</h2>
+          <div class="followers-grid">
+            {#each data.reputable as profile}
+              <Follower {profile} />
+            {/each}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 {/if}
 
-<div class="links">
-  <h4>View full profile with</h4>
-  <a href={"nostr:" + data.npub}>Default app</a> |
-  <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a> |
-  <a href={"https://coracle.social/" + data.npub}>Coracle</a> |
-  <a href={"https://primal.net/p/" + data.npub}>Primal</a> |
-  <a href={"https://snort.social/" + data.npub}>Snort</a>
-</div>
-
 <style>
-  .links {
-    font-size: 1.2rem;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .hex {
-    font-size: 0.8rem;
+
+  .logo-wrapper {
+    flex-shrink: 0;
+    margin-right: 1rem;
   }
-  .about {
-    font-size: 1.15rem;
+
+  .search-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: calc(100% - 70px);
+    box-sizing: border-box;
+  }
+
+  .search-box {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* Override the shared.css styles for input to ensure it doesn't overflow */
+  input[type="text"] {
+    width: 100%;
+    padding: 15px 15px 15px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .profile-card {
+    margin-bottom: 2rem;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1.5rem;
+  }
+
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-identity {
+    flex-grow: 1;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+
+  .profile-handle {
+    font-size: 0.95rem;
+    color: var(--light-text);
+    margin: 0 0 12px 0;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+    color: var(--secondary-text);
+  }
+
+  .followers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  /* Responsive styles */
+  /* Small screens (mobile) */
+  @media (max-width: 576px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .header {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-wrapper {
+      margin-right: 0.5rem;
+    }
+
+    .search-container {
+      max-width: calc(100% - 45px);
+    }
+
+    input[type="text"] {
+      padding: 10px 10px 10px 32px;
+      font-size: 0.85rem;
+    }
+
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+
+    .profile-identity {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .profile-actions {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* .detail-row {
+      flex-direction: column;
+    }
+
+    .detail-label {
+      width: 100%;
+      margin-bottom: 4px;
+    } */
+
+    .followers-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+  }
+
+  /* Medium screens (tablet) */
+  @media (min-width: 577px) and (max-width: 992px) {
+    .container {
+      padding: 1.5rem;
+    }
+
+    .header {
+      flex-direction: row;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-wrapper {
+      margin-right: 1rem;
+    }
+
+    .search-container {
+      max-width: calc(100% - 60px);
+    }
+
+    .profile-header {
+      flex-wrap: wrap;
+    }
+
+    .profile-identity {
+      width: calc(100% - 100px - 1.5rem);
+    }
+
+    .profile-actions {
+      margin-top: 1rem;
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    .followers-grid {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+  }
+
+  /* Large screens (desktop) */
+  @media (min-width: 993px) {
+    .header {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .search-container {
+      max-width: calc(100% - 80px);
+    }
+
+    .followers-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
   }
 </style>

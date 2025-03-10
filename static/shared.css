@@ -1,202 +1,230 @@
-/*  General Styles & Reset */
+/* shared.css */
 :root {
-	--primary-color: #222;
-	/* Example primary color */
-	--body-bg: #f8f9fa;
-	--text-color: #343a40;
-	--font-family: sans-serif;
+	--primary-text: #333;
+	--secondary-text: #666;
+	--light-text: #888;
+	--border-color: #ddd;
+	--background-color: #f9f9f9;
+	--card-background: #fff;
+	--highlight-color: #f0f7ff;
+	--primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
-	font-family: var(--font-family);
-	background-color: var(--body-bg);
-	color: var(--text-color);
+	font-family: var(--primary-font);
+	background-color: var(--background-color);
 	margin: 0;
 	padding: 0;
-	line-height: 1.6;
-	height: 100vh;
+	color: var(--primary-text);
 }
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-weight: bold;
-	line-height: 1.2;
-	margin-bottom: 0.5rem;
-}
-
-h1 {
-	font-size: 2.5rem;
-}
-
-h2 {
-	font-size: 2rem;
-}
-
-h3 {
-	font-size: 1.75rem;
-}
-
-p {
-	margin-bottom: 1rem;
-}
-
-a {
-	color: var(--primary-color);
-	text-decoration: none;
-}
-
-.about a,
-.links a {
-	text-decoration: underline;
-}
-
-h1 a {
-	color: rgba(0, 0, 0, 0.912);
-}
-
-a:hover {
-	text-decoration: none;
+footer {
+	padding-bottom: 3em;
 }
 
 .container {
-	width: 90%;
 	max-width: 1200px;
 	margin: 0 auto;
-	padding: 1rem;
+	padding: 2rem;
 }
 
-/* Basic Navigation */
-nav {
-	background-color: #fff;
-	padding: 1rem 0;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-nav ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	justify-content: flex-start;
-	/*  Adjust as needed */
-	align-items: center;
-}
-
-nav li {
-	margin-right: 1rem;
-}
-
-nav a {
-	display: block;
-	padding: 0.5rem 1rem;
-	border-radius: 5px;
-}
-
-nav a:hover {
-	background-color: var(--primary-color);
-	color: white;
-	text-decoration: none;
-}
-
-/* Simple Footer */
-footer {
-	text-align: center;
-	padding: 2rem 0;
-	border-top: 1px solid #eee;
-}
-
-footer a {
-	text-decoration: underline;
-}
-
-/* Form Elements */
-input[type="text"],
-input[type="email"],
-textarea {
+.search-box {
+	position: relative;
 	width: 100%;
-	padding: 0.75rem;
-	margin-bottom: 1rem;
-	border: 1px solid #ccc;
-	border-radius: 4px;
 }
 
-button,
-.button {
-	background-color: var(--primary-color);
-	color: white;
-	padding: 0.75rem 1.5rem;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	text-decoration: none;
-	/* For use as a class on `a` tags */
-	display: inline-block;
+.search-icon {
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 1;
+	width: 14px;
+	height: 14px;
 }
 
-/*  Mobile-Friendly Adjustments */
-@media (max-width: 768px) {
-	h1 {
-		font-size: 2rem;
-	}
-
-	h2 {
-		font-size: 1.75rem;
-	}
-
-	h3 {
-		font-size: 1.5rem;
-	}
-
-	nav ul {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	nav li {
-		margin-right: 0;
-		margin-bottom: 0.5rem;
-	}
+.search-icon:before,
+.search-icon:after {
+	content: "";
+	position: absolute;
 }
 
-.profile-container {
-	display: flex;
-	align-items: center;
-}
-
-.profile-picture {
-	width: 35px;
-	height: 35px;
+.search-icon:before {
+	/* Magnifying glass lens/circle */
+	width: 8px;
+	height: 8px;
+	border: 2px solid #AAAAAA;
 	border-radius: 50%;
-	margin: 0.5em 0.5em 0.5em 0;
+	background-color: transparent;
+	left: 0;
+	top: 0;
 }
 
-.big {
-	width: 80px;
-	height: 80px;
-	margin-right: 1.5em;
+.search-icon:after {
+	/* Magnifying glass handle */
+	width: 7px;
+	height: 2px;
+	background-color: #AAAAAA;
+	transform: rotate(45deg);
+	border-radius: 1px;
+	left: 7px;
+	top: 8px;
 }
 
-.profile-info {
-	display: flex;
-	flex-direction: column;
+input[type="text"] {
+	width: 100%;
+	padding: 15px 15px 15px 34px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	font-size: 1rem;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	box-sizing: border-box;
 }
 
-.profile-name,
-h1 {
-	margin: 0;
+input[type="text"]::placeholder {
+	color: var(--light-text);
 }
 
-#logo {
-	font-size: 1.6rem;
+input[type="text"]:focus {
+	outline: 2px solid #555;
+}
+
+.card {
+	background-color: var(--card-background);
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.profile-img {
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.profile-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.button {
+	padding: 8px 16px;
+	border-radius: 6px;
+	border: 1px solid var(--border-color);
+	background-color: var(--card-background);
+	cursor: pointer;
+	font-size: 0.9rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	transition: all 0.2s;
+}
+
+.button:hover {
+	background-color: var(--highlight-color);
+}
+
+.npub-logo-svg {
+	width: 50px;
+	height: 50px;
+}
+
+.disclaimer {
+	font-size: 0.9rem;
+	color: var(--secondary-text);
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--border-color);
+	width: 100%;
+	box-sizing: border-box;
+	max-width: 700px;
+}
+
+.disclaimer strong {
+	color: var(--primary-text);
+}
+
+/* Responsive styles for shared elements */
+@media (max-width: 576px) {
+	.container {
+		padding: 1rem;
+	}
+
+	.card {
+		padding: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	input[type="text"] {
+		padding: 12px 12px 12px 30px;
+		font-size: 0.9rem;
+	}
+
+	.search-icon {
+		left: 9px;
+		width: 12px;
+		height: 12px;
+	}
+
+	.search-icon:before {
+		width: 7px;
+		height: 7px;
+		border-width: 1.5px;
+	}
+
+	.search-icon:after {
+		width: 6px;
+		height: 1.75px;
+		left: 6px;
+		top: 7px;
+	}
+
+	.button {
+		padding: 6px 12px;
+		font-size: 0.8rem;
+	}
+
+	.search-results {
+		max-height: 350px;
+	}
+
+	.search-result {
+		padding: 10px 12px;
+	}
+
+	.profile-img-small {
+		width: 32px;
+		height: 32px;
+		margin-right: 10px;
+	}
+
+	.profile-name {
+		font-size: 0.95rem;
+	}
+
+	.profile-email {
+		font-size: 0.8rem;
+	}
+
+	.profile-followers {
+		font-size: 0.8rem;
+	}
+
+	.disclaimer {
+		font-size: 0.8rem;
+		padding-bottom: 1rem;
+		max-width: 80%;
+	}
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+	.container {
+		padding: 1.5rem;
+	}
+
+	.card {
+		padding: 1.25rem;
+	}
 }

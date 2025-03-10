@@ -18,10 +18,14 @@ export async function load({ url }) {
 
   const searchResponse = await query({
     kinds: [6315, 7000],
-    search: JSON.stringify({ search: q, limit: 7 }),
+    search: JSON.stringify({ search: q, limit: 8 }),
   });
   if (searchResponse[0].kind == 6315) {
-    const results = JSON.parse(searchResponse[0].content);
+    const content = searchResponse[0].content;
+    const results = JSON.parse(content);
+    if (!content || content == 'null') {
+      return { data: [] };
+    }
     const pubkeys = results.map((e) => e.pubkey);
     const profilesResponse = await query({ kinds: [0], authors: pubkeys });
     const profiles = await Promise.all(profilesResponse.map(formatProfile));

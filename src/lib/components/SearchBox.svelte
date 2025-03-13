@@ -1,64 +1,63 @@
 <script>
-  import { goto } from "$app/navigation";
+  let query = $state("");
+  let loading = $state(false);
+  let show = $state(true);
+  let data = $state({});
 
-  // Props
-  export let results = [];
-  export let loading = false;
-  export let query = '';
-  export let onSubmit = undefined;
+  async function handleSubmit(event) {
+    try {
+      const response = await fetch("/api/query", {
+        method: "POST",
+        body: JSON.stringify({ q: query }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  function handleSubmit(event) {
-    // Prevent default form submission
-    event.preventDefault();
-    
-    // Get the form data
-    const formData = new FormData(event.target);
-    const searchQuery = formData.get('q');
-    
-    if (searchQuery) {
-      // Navigate to the root with the search query
-      goto(`/?q=${encodeURIComponent(searchQuery)}`);
-    }
-    
-    if (onSubmit) {
-      onSubmit(event);
+      loading = false;
+
+      data = await response.json();
+    } catch (error) {
+      // $status = 'Error: ' + error.message;
     }
   }
 </script>
 
 <div class="search-wrapper">
   <div class="search-container">
-    <form action="/" method="GET" on:submit={handleSubmit} class="search-box">
+    <form onsubmit={handleSubmit} class="search-box">
       <span class="search-icon"></span>
-      <input type="text" name="q" placeholder="Search nostr profiles" value={query} />
+      <input
+        type="text"
+        name="q"
+        placeholder="Search nostr profiles"
+        bind:value={query}
+      />
     </form>
   </div>
-  
-  {#if results.length > 0 || loading}
+  {#if !data.data && data.error}
+    <p class="error">{data.error}</p>
+  {/if}
+
+  {#if show && data.data && data.data.length > 0}
     <div class="search-results">
-      {#if loading}
-        <p class="loading">Searching...</p>
-      {:else if results.length > 0}
-        {#each results as profile}
-          <a href={"/" + profile.npub}>
-            <div class="search-result">
-              <div class="profile-img-small">
-                <img src={profile.picture} alt="Profile" />
-              </div>
-              <div class="profile-info">
-                <div class="profile-name">{profile.name}</div>
-                {#if profile.nip05}
-                  <div class="profile-email">
-                    {profile.nip05}
-                  </div>
-                {/if}
-              </div>
+      {#each data.data as profile}
+        <a href={"/" + profile.npub}>
+          <div class="search-result">
+            <div class="profile-img-small">
+              <img src={profile.picture} alt="Profile" />
             </div>
-          </a>
-        {:else}
-          <p>No profiles found</p>
-        {/each}
-      {/if}
+            <div class="profile-info">
+              <div class="profile-name">{profile.name}</div>
+              {#if profile.nip05}
+                <div class="profile-email">
+                  {profile.nip05}
+                </div>
+              {/if}
+            </div>
+          </div>
+        </a>
+      {/each}
     </div>
   {/if}
 </div>
@@ -91,6 +90,34 @@
     background-repeat: no-repeat;
     background-size: contain;
     z-index: 1;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 15px 15px 15px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .search-wrapper {
+    margin: 0 auto;
+    width: 90%;
+    max-width: 550px;
+  }
+
+  .error {
+    color: var(--error-color);
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .loading {
+    padding: 12px 16px;
+    color: var(--light-text);
+    text-align: center;
   }
 
   .search-results {
@@ -167,20 +194,11 @@
     text-overflow: ellipsis;
   }
 
-  .loading {
-    padding: 12px 16px;
-    color: var(--light-text);
-    text-align: center;
-  }
-
-  input[type="text"] {
-    width: 100%;
-    padding: 15px 15px 15px 40px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
+  @media (min-width: 577px) and (max-width: 992px) {
+    .search-wrapper {
+      width: 75%;
+      max-width: 500px;
+    }
   }
 
   /* Responsive adjustments */
@@ -188,6 +206,15 @@
     input[type="text"] {
       padding: 12px 12px 12px 36px;
       font-size: 0.9rem;
+    }
+
+    .header {
+      gap: 1rem;
+    }
+
+    .search-wrapper {
+      width: 90%;
+      max-width: 320px;
     }
   }
 </style>

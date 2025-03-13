@@ -33,44 +33,6 @@ footer {
 	width: 100%;
 }
 
-.search-icon {
-	position: absolute;
-	left: 12px;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 1;
-	width: 14px;
-	height: 14px;
-}
-
-.search-icon:before,
-.search-icon:after {
-	content: "";
-	position: absolute;
-}
-
-.search-icon:before {
-	/* Magnifying glass lens/circle */
-	width: 8px;
-	height: 8px;
-	border: 2px solid #AAAAAA;
-	border-radius: 50%;
-	background-color: transparent;
-	left: 0;
-	top: 0;
-}
-
-.search-icon:after {
-	/* Magnifying glass handle */
-	width: 7px;
-	height: 2px;
-	background-color: #AAAAAA;
-	transform: rotate(45deg);
-	border-radius: 1px;
-	left: 7px;
-	top: 8px;
-}
-
 input[type="text"] {
 	width: 100%;
 	padding: 15px 15px 15px 34px;

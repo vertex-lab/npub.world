@@ -48,7 +48,7 @@
         </div>
 
         <div class="followers-card">
-          <h2 class="section-title">Reputable Followers:</h2>
+          <h2 class="section-title">Top Reputable Followers:</h2>
           <div class="followers-grid">
             {#each data.reputable as profile}
               <Follower {profile} />
@@ -61,6 +61,10 @@
 {/if}
 
 <style>
+  .followers-card {
+    margin: 2rem 0;
+  }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -139,7 +143,7 @@
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 500;
     margin: 0 0 1rem 0;
     color: var(--secondary-text);

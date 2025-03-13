@@ -1,32 +1,7 @@
 <script>
-  import SearchBox from '$lib/components/SearchBox.svelte';
-  import { page } from '$app/stores';
-  import { onMount, afterUpdate } from 'svelte';
-  
-  export let data;
-  let loading = false;
-  let searchQuery = '';
-  let prevData = null;
-
-  onMount(() => {
-    searchQuery = $page.url.searchParams.get('q') || '';
-  });
-
-  page.subscribe(value => {
-    searchQuery = value.url.searchParams.get('q') || '';
-  });
-
-  function handleSubmit() {
-    loading = true;
-  }
-  
-  // Update loading state when data changes
-  afterUpdate(() => {
-    if (data !== prevData) {
-      loading = false;
-      prevData = data;
-    }
-  });
+  import SearchBox from "$lib/components/SearchBox.svelte";
+  let searchQuery = $state("");
+  let { data } = $props();
 </script>
 
 <div class="container">
@@ -38,17 +13,7 @@
     </div>
   </div>
 
-  <div class="search-wrapper">
-    <SearchBox 
-      results={data.data || []} 
-      {loading}
-      onSubmit={handleSubmit}
-      query={searchQuery}
-    />
-    {#if !data.data && data.error}
-      <p class="error">{data.error}</p>
-    {/if}
-  </div>
+  <SearchBox query={searchQuery} {data} />
 </div>
 
 <style>
@@ -70,18 +35,6 @@
     color: var(--primary-text);
     line-height: 1.1;
   }
-  
-  .search-wrapper {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 550px;
-  }
-  
-  .error {
-    color: var(--error-color);
-    text-align: center;
-    margin-top: 1rem;
-  }
 
   /* Responsive styles */
   /* Small screens (mobile) */
@@ -91,17 +44,8 @@
       box-sizing: border-box;
     }
 
-    .header {
-      gap: 1rem;
-    }
-
     .logo-text span {
       font-size: 1.4rem;
-    }
-
-    .search-wrapper {
-      width: 90%;
-      max-width: 320px;
     }
   }
 
@@ -117,11 +61,6 @@
 
     .logo-text span {
       font-size: 1.6rem;
-    }
-
-    .search-wrapper {
-      width: 75%;
-      max-width: 500px;
     }
   }
 

@@ -5,6 +5,14 @@
   let data = $state({});
 
   async function handleSubmit(event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (!query.trim()) return;
+
+    loading = true;
+
     try {
       const response = await fetch("/api/query", {
         method: "POST",
@@ -14,11 +22,11 @@
         },
       });
 
-      loading = false;
-
       data = await response.json();
     } catch (error) {
       // $status = 'Error: ' + error.message;
+    } finally {
+      loading = false;
     }
   }
 </script>
@@ -32,7 +40,11 @@
         name="q"
         placeholder="Search nostr profiles"
         bind:value={query}
+        onfocus={() => (show = true)}
       />
+      {#if loading}
+        <span class="spinner"></span>
+      {/if}
     </form>
   </div>
   {#if !data.data && data.error}
@@ -42,7 +54,7 @@
   {#if show && data.data && data.data.length > 0}
     <div class="search-results">
       {#each data.data as profile}
-        <a href={"/" + profile.npub}>
+        <a href={"/" + profile.npub} onclick={() => (show = false)}>
           <div class="search-result">
             <div class="profile-img-small">
               <img src={profile.picture} alt="Profile" />
@@ -100,6 +112,29 @@
     font-size: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+  }
+
+  .spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: translateY(-50%) rotate(0deg);
+    }
+    100% {
+      transform: translateY(-50%) rotate(360deg);
+    }
   }
 
   .search-wrapper {

@@ -3,6 +3,7 @@
   import CopyText from "./copy.svelte";
   import Follower from "./follower.svelte";
   import FlexTable from "./FlexTable.svelte";
+  import SearchBox from "$lib/components/SearchBox.svelte";
 
   let { data } = $props();
 </script>
@@ -19,10 +20,7 @@
       </div>
 
       <div class="search-container">
-        <div class="search-box">
-          <span class="search-icon"></span>
-          <input type="text" placeholder="Search nostr profiles" />
-        </div>
+        <SearchBox results={[]} />
       </div>
     </header>
 
@@ -82,27 +80,6 @@
     flex-shrink: 1;
     max-width: calc(100% - 70px);
     box-sizing: border-box;
-  }
-
-  .search-box {
-    width: 100%;
-    position: relative;
-    box-sizing: border-box;
-  }
-
-  /* Override the shared.css styles for input to ensure it doesn't overflow */
-  input[type="text"] {
-    width: 100%;
-    padding: 15px 15px 15px 40px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-  }
-
-  .profile-card {
-    margin-bottom: 2rem;
   }
 
   .profile-header {
@@ -195,11 +172,6 @@
       max-width: calc(100% - 45px);
     }
 
-    input[type="text"] {
-      padding: 10px 10px 10px 32px;
-      font-size: 0.85rem;
-    }
-
     .profile-header {
       flex-direction: column;
       align-items: center;
@@ -220,15 +192,6 @@
       width: 100%;
       justify-content: center;
     }
-
-    /* .detail-row {
-      flex-direction: column;
-    }
-
-    .detail-label {
-      width: 100%;
-      margin-bottom: 4px;
-    } */
 
     .followers-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

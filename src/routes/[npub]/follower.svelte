@@ -33,7 +33,7 @@
   }
 
   .follower-avatar {
-    width: 40px;
+    min-width: 40px;
     height: 40px;
     border-radius: 50%;
     overflow: hidden;

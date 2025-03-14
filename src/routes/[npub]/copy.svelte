@@ -1,24 +1,27 @@
 <script>
   import { onMount } from "svelte";
   let { text, color, backgroundColor } = $props();
-  let displayText = $state("");
+  let displayText = $state(text);
 
   onMount(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 400) {
-        displayText = truncateString(text, 18);
-      } else if (window.innerWidth < 768) {
-        displayText = truncateString(text, 32);
-      } else if (window.innerWidth < 992) {
-        displayText = truncateString(text, 40);
-      } else {
-        displayText = text;
-      }
-    };
-
-    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  });
+
+  const handleResize = () => {
+    if (window.innerWidth < 400) {
+      displayText = truncateString(text, 18);
+    } else if (window.innerWidth < 768) {
+      displayText = truncateString(text, 32);
+    } else if (window.innerWidth < 992) {
+      displayText = truncateString(text, 40);
+    } else {
+      displayText = text;
+    }
+  };
+
+  $effect(() => {
+    handleResize();
   });
 
   // State to show copy feedback

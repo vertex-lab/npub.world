@@ -6,7 +6,7 @@
 
 <div class="container">
   <div class="logo-container">
-    <img src="/logo.png" alt="logo" />
+    <div class="theme-logo"></div>
     <div class="logo-text">
       <span>NPUB</span>
       <span>.WORLD</span>

@@ -14,8 +14,9 @@
   <div class="container">
     <header class="header">
       <div class="logo-wrapper">
+        <!-- svelte-ignore a11y_consider_explicit_label -->
         <a href="/">
-          <img src="/logo-small.png" alt="logo" />
+          <div class="theme-logo theme-logo-small"></div>
         </a>
       </div>
 
@@ -79,6 +80,12 @@
     margin-right: 1rem;
   }
 
+  .theme-logo-small {
+    width: 110px;
+    height: 110px;
+    margin: -1.5rem;
+  }
+
   .search-container {
     flex-grow: 1;
     flex-shrink: 1;
@@ -138,7 +145,7 @@
   .section-title {
     font-size: 1.25rem;
     font-weight: 500;
-    margin: 0 0 1rem 0;
+    margin: 0 0 2rem 0;
     color: var(--secondary-text);
   }
 

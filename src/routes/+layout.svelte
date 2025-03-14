@@ -50,7 +50,7 @@
 	<div class="theme-container">
 		<button
 			class="theme-toggle"
-			on:click={toggleTheme}
+			onclick={toggleTheme}
 			title="Toggle dark/light mode"
 		>
 			<span class="theme-toggle-icon">

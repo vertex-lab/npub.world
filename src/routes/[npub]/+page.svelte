@@ -99,6 +99,8 @@
 {/if}
 
 <style>
+  @import "../../../static/shared.css";
+
   .followers-card {
     margin-top: 2rem;
   }

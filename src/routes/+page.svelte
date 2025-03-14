@@ -19,6 +19,8 @@
 </div>
 
 <style>
+  @import "../../static/shared.css";
+
   .logo-container {
     display: flex;
     align-items: center;

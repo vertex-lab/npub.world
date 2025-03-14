@@ -34,8 +34,22 @@ footer {
 	padding-bottom: 3em;
 }
 
+footer p {
+	font-size: 0.85rem;
+	color: var(--secondary-text);
+	text-align: center;
+	margin: 1rem auto;
+	width: 100%;
+	box-sizing: border-box;
+	max-width: 80%;
+}
+
+footer p strong {
+	color: var(--primary-text);
+}
+
 .container {
-	max-width: 1200px;
+	max-width: 900px;
 	margin: 0 auto;
 	padding: 1rem 2rem;
 }
@@ -55,6 +69,11 @@ input[type="text"] {
 	box-sizing: border-box;
 }
 
+[data-theme="dark"] input[type="text"] {
+	background-color: #313131;
+	color: white;
+}
+
 input[type="text"]::placeholder {
 	color: var(--light-text);
 }
@@ -68,7 +87,7 @@ input[type="text"]:focus {
 	border-radius: 12px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 	padding: 1.5rem;
-	margin-bottom: 1.5rem;
+	margin-bottom: 1rem;
 }
 
 .profile-img {
@@ -102,20 +121,6 @@ input[type="text"]:focus {
 .npub-logo-svg {
 	width: 50px;
 	height: 50px;
-}
-
-.disclaimer {
-	font-size: 0.85rem;
-	color: var(--secondary-text);
-	text-align: center;
-	margin: 0 auto;
-	width: 100%;
-	box-sizing: border-box;
-	max-width: 80%;
-}
-
-.disclaimer strong {
-	color: var(--primary-text);
 }
 
 /* Theme toggle button styles */
@@ -233,15 +238,15 @@ input[type="text"]:focus {
 		font-size: 0.8rem;
 	}
 
-	.disclaimer {
-		font-size: 0.8rem;
-		padding-bottom: 1rem;
-		max-width: 80%;
-	}
-
 	.theme-toggle {
 		width: 36px;
 		height: 36px;
+	}
+
+	footer p {
+		font-size: 0.8rem;
+		padding-bottom: 1rem;
+		max-width: 80%;
 	}
 }
 

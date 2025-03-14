@@ -41,13 +41,19 @@
 </main>
 
 <footer>
-	<p class="disclaimer">
+	<p>
 		Results are processed in real time by the <a href="https://vertexlab.io"
 			>Vertex</a
 		>
 		Search DVM and sorted by Global Pagerank
 	</p>
-	<div class="theme-container">
+	<p>
+		Design by
+		<a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq"
+			>Vladimir</a
+		>
+	</p>
+	<p class="theme-container">
 		<button
 			class="theme-toggle"
 			onclick={toggleTheme}
@@ -61,5 +67,5 @@
 				{/if}
 			</span>
 		</button>
-	</div>
+	</p>
 </footer>

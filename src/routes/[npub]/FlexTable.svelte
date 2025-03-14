@@ -63,7 +63,7 @@
     max-width: 100%;
 
     overflow-wrap: break-word;
-    word-break: break-all;
+    word-break: normal;
     white-space: normal;
   }
 

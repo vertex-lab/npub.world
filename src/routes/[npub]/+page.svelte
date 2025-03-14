@@ -32,8 +32,6 @@
             <img src={data.picture} alt="Profile Avatar" />
           </div>
           <div class="profile-identity">
-            <div style="height: 0.9rem"></div>
-            <!-- temp until follower count below -->
             <h1 class="profile-name">{data.name}</h1>
             <p class="profile-handle">{data.nip05}</p>
             <!-- <div class="profile-stats">
@@ -56,6 +54,45 @@
             {/each}
           </div>
         </div>
+        <div class="followers-card">
+          <h2 class="section-title">Open with:</h2>
+          <div class="followers-grid">
+            <div class="app" target="_blank">
+              <a href={"nostr:" + data.npub}>Default app</a>
+            </div>
+            <div class="app">
+              <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a>
+            </div>
+            <div class="app">
+              <a
+                href={"https://coracle.social/" + data.npub}
+                target="_blank"
+                rel="noopener noreferrer">Coracle</a
+              >
+            </div>
+            <div class="app">
+              <a
+                href={"https://primal.net/p/" + data.npub}
+                target="_blank"
+                rel="noopener noreferrer">Primal</a
+              >
+            </div>
+            <div class="app">
+              <a
+                href={"https://snort.social/" + data.npub}
+                target="_blank"
+                rel="noopener noreferrer">Snort</a
+              >
+            </div>
+            <div class="app">
+              <a
+                href={"https://nosta.me/" + data.npub}
+                target="_blank"
+                rel="noopener noreferrer">Nosta</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -63,7 +100,7 @@
 
 <style>
   .followers-card {
-    margin: 2rem 0;
+    margin-top: 2rem;
   }
 
   .header {
@@ -123,6 +160,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 4px 0;
+    margin-top: 0.8rem; /* TEMP */
   }
 
   .profile-handle {
@@ -155,6 +193,19 @@
     gap: 16px;
   }
 
+  .app {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .app a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
   /* Responsive styles */
   /* Small screens (mobile) */
   @media (max-width: 576px) {
@@ -180,6 +231,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      padding-bottom: 0;
     }
 
     .profile-avatar {
@@ -190,6 +242,10 @@
     .profile-identity {
       margin-bottom: 1rem;
       text-align: center;
+    }
+
+    .profile-name {
+      margin-top: 0; /* TEMP */
     }
 
     .profile-actions {

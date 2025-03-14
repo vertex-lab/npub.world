@@ -64,7 +64,11 @@
   </div>
 
   {#if data && data.error}
-    <p class="error">{data.error}</p>
+    <div class="search-results">
+      <div class="search-result">
+        <p class="error">{data.error}</p>
+      </div>
+    </div>
   {/if}
 
   {#if showResults && data && data.length > 0}

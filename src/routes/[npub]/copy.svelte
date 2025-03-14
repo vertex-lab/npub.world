@@ -12,7 +12,7 @@
     if (window.innerWidth < 400) {
       displayText = truncateString(text, 18);
     } else if (window.innerWidth < 768) {
-      displayText = truncateString(text, 32);
+      displayText = truncateString(text, 29);
     } else if (window.innerWidth < 992) {
       displayText = truncateString(text, 40);
     } else {

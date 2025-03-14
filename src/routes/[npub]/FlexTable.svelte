@@ -60,6 +60,11 @@
     color: var(--secondary-text);
     line-height: 1.5;
     overflow: auto;
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
   }
 
   @media (max-width: 576px) {

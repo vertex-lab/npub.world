@@ -28,10 +28,6 @@
     transition: background-color 0.2s;
   }
 
-  .follower-item:hover {
-    background-color: var(--highlight-color);
-  }
-
   .follower-avatar {
     min-width: 40px;
     height: 40px;

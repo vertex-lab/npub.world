@@ -1,7 +1,7 @@
 <script>
   import { decode } from "nostr-tools/nip19";
-  import CopyText from "./copy.svelte";
-  import Follower from "./follower.svelte";
+  import CopyText from "./CopyPill.svelte";
+  import Follower from "./Follower.svelte";
   import FlexTable from "./FlexTable.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
 

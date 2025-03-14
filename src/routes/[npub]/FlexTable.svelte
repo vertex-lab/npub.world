@@ -1,5 +1,5 @@
 <script>
-  import CopyText from "./copy.svelte";
+  import CopyText from "./CopyPill.svelte";
 
   const { profile } = $props();
 </script>

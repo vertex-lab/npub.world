@@ -93,12 +93,10 @@ input[type="text"]:focus {
 }
 
 .disclaimer {
-	font-size: 0.9rem;
+	font-size: 0.85rem;
 	color: var(--secondary-text);
 	text-align: center;
 	margin: 0 auto;
-	padding-top: 1.5rem;
-	border-top: 1px solid var(--border-color);
 	width: 100%;
 	box-sizing: border-box;
 	max-width: 700px;

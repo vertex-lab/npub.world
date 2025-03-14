@@ -17,7 +17,7 @@
 	<p class="disclaimer">
 		Results are processed in real time by the <a href="https://vertexlab.io"
 			>Vertex</a
-		> Global Pagerank algorithm to display authentic profiles, excluding bots, spammers
-		and impersonators.
+		>
+		Search DVM and sorted by Global Pagerank
 	</p>
 </footer>

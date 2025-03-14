@@ -13,9 +13,11 @@ export async function POST({ request }) {
       throw 'Please input 3 or more characters';
     }
 
-    // if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
-    //   return redirect(301, `/${q}`);
-    // }
+    if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
+      console.log('redirecting', q);
+
+      return redirect(301, `/${q}`);
+    }
 
     let data;
 
@@ -39,15 +41,13 @@ export async function POST({ request }) {
 
     // console.log('returning', data);
 
-    return new Response(JSON.stringify({ data }), {
+    return new Response(JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json'
       }
     });
   } catch (error) {
-    console.log('was error', error);
-
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: error || error.message }), {
       status: 400,
       headers: {
         'Content-Type': 'application/json'

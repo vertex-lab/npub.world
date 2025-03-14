@@ -124,13 +124,6 @@
     margin: 0 0 12px 0;
   }
 
-  .profile-stats {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.9rem;
-    color: var(--secondary-text);
-  }
-
   .profile-actions {
     display: flex;
     gap: 8px;
@@ -143,7 +136,7 @@
   }
 
   .section-title {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 500;
     margin: 0 0 1rem 0;
     color: var(--secondary-text);

@@ -28,10 +28,12 @@
         >
       </tr>
     {/if}
-    <tr>
-      <td class="cell-left">Bio:</td>
-      <td class="bio-value">{@html profile.about}</td>
-    </tr>
+    {#if profile.about}
+      <tr style="vertical-align: top">
+        <td class="cell-left"><p>Bio:</p></td>
+        <td class="bio-value">{@html profile.about}</td>
+      </tr>
+    {/if}
   </tbody>
 </table>
 
@@ -44,6 +46,7 @@
   td {
     overflow: hidden;
     text-overflow: ellipsis;
+    height: 3.5rem;
   }
 
   .cell-left {
@@ -57,5 +60,11 @@
     color: var(--secondary-text);
     line-height: 1.5;
     overflow: auto;
+  }
+
+  @media (max-width: 576px) {
+    .cell-left {
+      display: none;
+    }
   }
 </style>

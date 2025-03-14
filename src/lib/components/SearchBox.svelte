@@ -1,17 +1,29 @@
 <script>
+  import { onMount } from "svelte";
+
   let query = $state("");
   let loading = $state(false);
-  let show = $state(true);
+  let showResults = $state(true);
   let data = $state({});
+  let inputRef;
+
+  onMount(() => {
+    const handleOutsideClick = (event) => {
+      if (!inputRef.contains(event.target)) {
+        showResults = false;
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  });
 
   async function handleSubmit(event) {
-    if (event) {
-      event.preventDefault();
-    }
-
     if (!query.trim()) return;
 
     loading = true;
+    data = [];
 
     try {
       const response = await fetch("/api/query", {
@@ -26,6 +38,7 @@
     } catch (error) {
       // $status = 'Error: ' + error.message;
     } finally {
+      showResults = true;
       loading = false;
     }
   }
@@ -39,22 +52,25 @@
         type="text"
         name="q"
         placeholder="Search nostr profiles"
+        bind:this={inputRef}
         bind:value={query}
-        onfocus={() => (show = true)}
+        disabled={loading}
+        onfocus={() => (showResults = true)}
       />
       {#if loading}
         <span class="spinner"></span>
       {/if}
     </form>
   </div>
-  {#if !data.data && data.error}
+
+  {#if data && data.error}
     <p class="error">{data.error}</p>
   {/if}
 
-  {#if show && data.data && data.data.length > 0}
+  {#if showResults && data && data.length > 0}
     <div class="search-results">
-      {#each data.data as profile}
-        <a href={"/" + profile.npub} onclick={() => (show = false)}>
+      {#each data as profile}
+        <a href={"/" + profile.npub}>
           <div class="search-result">
             <div class="profile-img-small">
               <img src={profile.picture} alt="Profile" />
@@ -78,6 +94,7 @@
   .search-wrapper {
     position: relative;
     width: 100%;
+    margin: 0 auto;
   }
 
   .search-container {
@@ -137,22 +154,10 @@
     }
   }
 
-  .search-wrapper {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 550px;
-  }
-
   .error {
     color: var(--error-color);
     text-align: center;
     margin-top: 1rem;
-  }
-
-  .loading {
-    padding: 12px 16px;
-    color: var(--light-text);
-    text-align: center;
   }
 
   .search-results {
@@ -229,27 +234,11 @@
     text-overflow: ellipsis;
   }
 
-  @media (min-width: 577px) and (max-width: 992px) {
-    .search-wrapper {
-      width: 75%;
-      max-width: 500px;
-    }
-  }
-
   /* Responsive adjustments */
   @media (max-width: 576px) {
     input[type="text"] {
       padding: 12px 12px 12px 36px;
       font-size: 0.9rem;
-    }
-
-    .header {
-      gap: 1rem;
-    }
-
-    .search-wrapper {
-      width: 90%;
-      max-width: 320px;
     }
   }
 </style>

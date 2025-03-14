@@ -1,5 +1,25 @@
 <script>
+  import { onMount } from "svelte";
   let { text, color, backgroundColor } = $props();
+  let displayText = $state("");
+
+  onMount(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 400) {
+        displayText = truncateString(text, 18);
+      } else if (window.innerWidth < 768) {
+        displayText = truncateString(text, 32);
+      } else if (window.innerWidth < 992) {
+        displayText = truncateString(text, 40);
+      } else {
+        displayText = text;
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
 
   // State to show copy feedback
   let copied = $state(false);
@@ -27,6 +47,16 @@
       copyToClipboard();
     }
   }
+
+  function truncateString(str, maxLength) {
+    if (str.length <= maxLength) return str;
+
+    const midPoint = Math.floor(maxLength / 2);
+    const left = str.slice(0, midPoint);
+    const right = str.slice(str.length - midPoint);
+
+    return `${left}...${right}`;
+  }
 </script>
 
 <button
@@ -37,7 +67,7 @@
   aria-label="Copy {text} to clipboard"
   style="background-color: {backgroundColor}; color: {color}"
 >
-  <span class="text">{text}</span>
+  <span class="text">{displayText}</span>
   <span class="icon">
     {#if copied}
       ✓

@@ -13,7 +13,9 @@
     </div>
   </div>
 
-  <SearchBox query={searchQuery} {data} />
+  <div class="search-container">
+    <SearchBox query={searchQuery} {data} />
+  </div>
 </div>
 
 <style>
@@ -22,6 +24,7 @@
     align-items: center;
     gap: 1rem;
     justify-content: center;
+    margin-bottom: 1rem;
   }
 
   .logo-text {
@@ -36,6 +39,12 @@
     line-height: 1.1;
   }
 
+  .search-container {
+    width: 90%;
+    max-width: 550px;
+    margin: 0 auto;
+  }
+
   /* Responsive styles */
   /* Small screens (mobile) */
   @media (max-width: 576px) {
@@ -46,6 +55,10 @@
 
     .logo-text span {
       font-size: 1.4rem;
+    }
+
+    .search-container {
+      width: 100%;
     }
   }
 
@@ -61,6 +74,11 @@
 
     .logo-text span {
       font-size: 1.6rem;
+    }
+
+    .search-container {
+      width: 75%;
+      max-width: 500px;
     }
   }
 

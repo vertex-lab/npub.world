@@ -47,7 +47,7 @@ export async function POST({ request }) {
       }
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error || error.message }), {
+    return new Response(JSON.stringify({ error: error?.toString() || error.message }), {
       status: 400,
       headers: {
         'Content-Type': 'application/json'

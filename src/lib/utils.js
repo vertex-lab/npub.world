@@ -43,7 +43,7 @@ export const formatProfile = async (event) => {
     name: info.display_name || info.displayName || info.name,
     picture: base64Image && `data:image/webp;base64,${base64Image}`,
     about: info.about && marked(info.about),
-    nip05: info.nip05?.toLowerCase(),
+    nip05: info.nip05?.toString().toLowerCase(),
     lud16: info.lud16,
     npub: nip19.npubEncode(event.pubkey)
   };

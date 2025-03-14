@@ -32,10 +32,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{$page?.url?.pathname?.slice(1)}</title>
-</svelte:head>
-
 <main class="container">
 	{@render children()}
 </main>

@@ -1,8 +1,13 @@
 <script>
   import SearchBox from "$lib/components/SearchBox.svelte";
+  import { npubEncode } from "nostr-tools/nip19";
   let searchQuery = $state("");
   let { data } = $props();
 </script>
+
+<svelte:head>
+  <title>npub.world</title>
+</svelte:head>
 
 <div class="container">
   <div class="logo-container">

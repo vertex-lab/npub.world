@@ -6,7 +6,17 @@
   import SearchBox from "$lib/components/SearchBox.svelte";
 
   let { data } = $props();
+
+  let title = $state("");
+
+  $effect(() => {
+    title = data.name ?? data.npub;
+  });
 </script>
+
+<svelte:head>
+  <title>{title} - npub.world</title>
+</svelte:head>
 
 {#if Object.keys(data).length === 0}
   <h2>Not found</h2>

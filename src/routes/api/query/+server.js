@@ -14,8 +14,6 @@ export async function POST({ request }) {
     }
 
     if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
-      console.log('redirecting', q);
-
       return redirect(301, `/${q}`);
     }
 
@@ -25,6 +23,7 @@ export async function POST({ request }) {
       kinds: [6315, 7000],
       search: JSON.stringify({ search: q, limit: 8 }),
     });
+
     if (searchResponse[0].kind == 6315) {
       const content = searchResponse[0].content;
       const results = JSON.parse(content);
@@ -33,13 +32,11 @@ export async function POST({ request }) {
       }
       const pubkeys = results.map((e) => e.pubkey);
       const profilesResponse = await query({ kinds: [0], authors: pubkeys });
-      const profiles = await Promise.all(profilesResponse.map(formatProfile));
+      const profiles = await Promise.all(profilesResponse.map((p) => formatProfile(p, null, true)));
       data = profiles.sort((a, b) => results.find(e => e.pubkey == nip19.decode(b.npub).data).rank - results.find(e => e.pubkey == nip19.decode(a.npub).data).rank);
     } else {
-      data = [];
+      throw `Error: ${searchResponse[0]?.content}`;
     }
-
-    // console.log('returning', data);
 
     return new Response(JSON.stringify(data), {
       headers: {

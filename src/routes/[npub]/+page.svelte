@@ -5,7 +5,7 @@
   import FlexTable from "./FlexTable.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
 
-  let { data } = $props();
+  let { data, error } = $props();
 
   let title = $state("");
 
@@ -18,23 +18,34 @@
   <title>{title} - npub.world</title>
 </svelte:head>
 
-{#if Object.keys(data).length === 0}
-  <h2>Not found</h2>
-{:else}
-  <div class="container">
-    <header class="header">
-      <div class="logo-wrapper">
-        <!-- svelte-ignore a11y_consider_explicit_label -->
-        <a href="/">
-          <div class="theme-logo theme-logo-small"></div>
-        </a>
-      </div>
+<div class="container">
+  <header class="header">
+    <div class="logo-wrapper">
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <a href="/">
+        <div class="theme-logo theme-logo-small"></div>
+      </a>
+    </div>
 
-      <div class="search-container">
-        <SearchBox results={[]} />
-      </div>
-    </header>
+    <div class="search-container">
+      <SearchBox results={[]} />
+    </div>
+  </header>
 
+  {#if data.error}
+    <main>
+      <div class="card">
+        <h2>Error</h2>
+        {data.error}
+      </div>
+    </main>
+  {:else if Object.keys(data).length === 0}
+    <main>
+      <div class="card">
+        <h2>Profile not found</h2>
+      </div>
+    </main>
+  {:else}
     <main>
       <div class="profile-card card">
         <div class="profile-header">
@@ -43,11 +54,12 @@
           </div>
           <div class="profile-identity">
             <h1 class="profile-name">{data.name}</h1>
-            <p class="profile-handle">{data.nip05}</p>
-            <!-- <div class="profile-stats">
-              <span class="stat">Following: 354</span>
-              <span class="stat">Followers: 124,894</span>
-            </div> -->
+            <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
+            <div class="profile-stats">
+              <span>Following:</span> <span class="stat">{data.following}</span>
+              <span>Reputable followers:</span>
+              <span class="stat">{data.followers}</span>
+            </div>
           </div>
           <div class="profile-actions"></div>
         </div>
@@ -105,8 +117,8 @@
         </div>
       </div>
     </main>
-  </div>
-{/if}
+  {/if}
+</div>
 
 <style>
   @import "../../../static/shared.css";
@@ -151,8 +163,8 @@
   }
 
   .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     overflow: hidden;
     margin-right: 1.5rem;
@@ -179,6 +191,16 @@
     font-size: 0.95rem;
     color: var(--light-text);
     margin: 0 0 12px 0;
+  }
+
+  .profile-stats {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+  }
+
+  .stat {
+    font-weight: bold;
+    margin-right: 1rem;
   }
 
   .profile-actions {

@@ -13,11 +13,11 @@ export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const fallbackImage = 'UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
-export const formatProfile = async (event) => {
-  if (!event) return;
+export const formatProfile = async (profileEvent, reputationInfo, minimal = false) => {
+  if (!profileEvent) return;
 
-  const info = JSON.parse(event.content);
-  const base64Image = await loadBase64Image(event, info);
+  const info = JSON.parse(profileEvent.content);
+  const base64Image = await loadBase64Image(profileEvent, info);
 
   if (info.about) {
     // Replace npub mentions in about with npub.world links
@@ -39,13 +39,27 @@ export const formatProfile = async (event) => {
     });
   }
 
+  if (minimal) {
+    return {
+      name: info.display_name || info.displayName || info.name,
+      picture: base64Image && `data:image/webp;base64,${base64Image}`,
+      nip05: info.nip05?.toString().toLowerCase(),
+      npub: nip19.npubEncode(profileEvent.pubkey),
+    }
+  }
+
+  const formatter = new Intl.NumberFormat('en-US');
+
   return {
     name: info.display_name || info.displayName || info.name,
     picture: base64Image && `data:image/webp;base64,${base64Image}`,
     about: info.about && marked(info.about),
     nip05: info.nip05?.toString().toLowerCase(),
     lud16: info.lud16,
-    npub: nip19.npubEncode(event.pubkey)
+    npub: nip19.npubEncode(profileEvent.pubkey),
+    website: info.website,
+    following: formatter.format(reputationInfo.follows),
+    followers: formatter.format(reputationInfo.followers),
   };
 }
 

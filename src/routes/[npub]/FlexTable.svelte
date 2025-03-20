@@ -34,6 +34,12 @@
         <td class="bio-value">{@html profile.about}</td>
       </tr>
     {/if}
+    {#if profile.website}
+      <tr>
+        <td class="cell-left"><p>Website:</p></td>
+        <td><a href={profile.website}>{profile.website}</a></td>
+      </tr>
+    {/if}
   </tbody>
 </table>
 

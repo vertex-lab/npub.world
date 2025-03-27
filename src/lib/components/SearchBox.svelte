@@ -40,6 +40,10 @@
     } finally {
       showResults = true;
       loading = false;
+
+      if (data.redirect) {
+        window.location.href = `/${data.redirect}`;
+      }
     }
   }
 </script>

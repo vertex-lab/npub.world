@@ -13,11 +13,11 @@ export async function POST({ request }) {
       throw 'Please input 3 or more characters';
     }
 
-    if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
-      return redirect(301, `/${q}`);
-    }
-
     let data;
+
+    if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
+      return new Response(JSON.stringify({ redirect: q }));
+    }
 
     const searchResponse = await query({
       kinds: [6315, 7000],

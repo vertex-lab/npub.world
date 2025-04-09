@@ -61,7 +61,6 @@
               <span class="stat">{data.followers}</span>
             </div>
           </div>
-          <div class="profile-actions"></div>
         </div>
 
         <div class="profile-details">
@@ -203,11 +202,6 @@
     margin-right: 1rem;
   }
 
-  .profile-actions {
-    display: flex;
-    gap: 8px;
-  }
-
   .profile-details {
     display: flex;
     flex-direction: column;
@@ -282,11 +276,6 @@
       margin-top: 0; /* TEMP */
     }
 
-    .profile-actions {
-      width: 100%;
-      justify-content: center;
-    }
-
     .followers-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
@@ -316,17 +305,11 @@
     }
 
     .profile-identity {
-      width: calc(100% - 100px - 1.5rem);
-    }
-
-    .profile-actions {
-      margin-top: 1rem;
-      width: 100%;
-      justify-content: flex-end;
+      width: auto;
     }
 
     .followers-grid {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
   }
 

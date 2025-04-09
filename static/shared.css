@@ -31,14 +31,14 @@ body {
 }
 
 footer {
-	padding-bottom: 3em;
+	padding-bottom: 2em;
 }
 
 footer p {
 	font-size: 0.85rem;
 	color: var(--secondary-text);
 	text-align: center;
-	margin: 1rem auto;
+	margin: 0rem auto;
 	width: 100%;
 	box-sizing: border-box;
 	max-width: 80%;

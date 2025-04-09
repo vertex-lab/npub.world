@@ -56,9 +56,14 @@
             <h1 class="profile-name">{data.name}</h1>
             <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
             <div class="profile-stats">
-              <span>Following:</span> <span class="stat">{data.following}</span>
-              <span>Reputable Followers:</span>
-              <span class="stat">{data.followers}</span>
+              <div class="stat-pair">
+                <span>Following:</span>
+                <span class="stat">{data.following}</span>
+              </div>
+              <div class="stat-pair">
+                <span>Reputable Followers:</span>
+                <span class="stat">{data.followers}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -195,11 +200,18 @@
   .profile-stats {
     color: var(--secondary-text);
     font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
   }
+
+.stat-pair {
+  display: flex;
+  gap: 0.25rem;
+  margin-right: 1rem;
+}
 
   .stat {
     font-weight: bold;
-    margin-right: 1rem;
   }
 
   .profile-details {
@@ -238,7 +250,7 @@
   /* Small screens (mobile) */
   @media (max-width: 576px) {
     .container {
-      padding: 1rem;
+      padding: 0.5rem;
     }
 
     .header {
@@ -279,12 +291,23 @@
     .followers-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
+
+    .profile-stats {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
   }
+
+  .stat-pair {
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+}
 
   /* Medium screens (tablet) */
   @media (min-width: 577px) and (max-width: 992px) {
     .container {
-      padding: 1.5rem;
+      padding: 1rem;
     }
 
     .header {

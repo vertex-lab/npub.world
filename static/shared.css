@@ -51,7 +51,7 @@ footer p strong {
 .container {
 	max-width: 900px;
 	margin: 0 auto;
-	padding: 1rem 2rem;
+	padding: 1rem;
 }
 
 .search-box {
@@ -86,8 +86,7 @@ input[type="text"]:focus {
 	background-color: var(--card-background);
 	border-radius: 12px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-	padding: 1.5rem;
-	margin-bottom: 1rem;
+	padding: 1rem;
 }
 
 .profile-img {
@@ -175,12 +174,11 @@ input[type="text"]:focus {
 /* Responsive styles for shared elements */
 @media (max-width: 576px) {
 	.container {
-		padding: 1rem;
+		padding: 0.5rem;
 	}
 
 	.card {
 		padding: 1rem;
-		margin-bottom: 1rem;
 	}
 
 	input[type="text"] {
@@ -252,10 +250,10 @@ input[type="text"]:focus {
 
 @media (min-width: 577px) and (max-width: 992px) {
 	.container {
-		padding: 1.5rem;
+		padding: 1.0rem;
 	}
 
 	.card {
-		padding: 1.25rem;
+		padding: 1.0rem;
 	}
 }

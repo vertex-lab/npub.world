@@ -40,7 +40,7 @@
 	<p>
 		Powered by <a href="https://vertexlab.io">Vertex</a> 
 		&nbsp; • &nbsp;
-		Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vladimir</a>
+		Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vlad</a>
 	</p>
 	<p class="theme-container">
 		<button

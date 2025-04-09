@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="followers-card">
-          <h2 class="section-title">Open with</h2>
+          <h2 class="section-title">Open With</h2>
           <div class="followers-grid">
             <div class="app" target="_blank">
               <a href={"nostr:" + data.npub}>Default App</a>

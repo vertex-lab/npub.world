@@ -1,6 +1,7 @@
 import { relay, query } from "$lib/relay.js";
 import { formatProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
 import * as nip19 from 'nostr-tools/nip19';
+import { finalizeEvent } from 'nostr-tools';
 import { redirect } from "@sveltejs/kit";
 
 export async function POST({ request }) {
@@ -10,7 +11,7 @@ export async function POST({ request }) {
     q = q?.trim();
 
     if (!q || q.length < 3) {
-      throw 'Please input 3 or more characters';
+      throw 'Please input at least 3 characters';
     }
 
     let data;
@@ -19,9 +20,24 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ redirect: q }));
     }
 
+    // SearchProfiles
+    const nsec = process.env.SK;
+    const dvmReqEvent = {
+      created_at: Math.floor(Date.now() / 1000),
+      kind: 5315,
+      tags: [
+        ["param", "search", q],
+        ["param", "limit", "10"],
+      ],
+      content: ''
+    };
+
+    const signedDvmReqEvent = finalizeEvent(dvmReqEvent, nsec);
+    await relay.publish(signedDvmReqEvent);
+
     const searchResponse = await query({
       kinds: [6315, 7000],
-      search: JSON.stringify({ search: q, limit: 8 }),
+      '#e': [signedDvmReqEvent.id]
     });
 
     if (searchResponse[0].kind == 6315) {

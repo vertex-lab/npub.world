@@ -3,7 +3,7 @@ import * as nip19 from 'nostr-tools/nip19';
 import { error, json } from '@sveltejs/kit';
 import { formatProfile, HEXKEY_REGEXP, NIP05_REGEXP, resolveNIP05 } from "$lib/utils";
 import { redirect } from "@sveltejs/kit";
-import { finalizeEvent, getPublicKey } from 'nostr-tools';
+import { finalizeEvent} from 'nostr-tools';
 
 export async function load({ params }) {
 
@@ -29,26 +29,15 @@ export async function load({ params }) {
   }
 
   // Verify reputation
-
   const nsec = process.env.SK;
-  const npubWorldPubkey = getPublicKey(nsec);
   const dvmReqEvent = {
-    pubkey: npubWorldPubkey,
     created_at: Math.floor(Date.now() / 1000),
     kind: 5312,
     tags: [
-      [
-        "param",
-        "target",
-        publicKey
-      ],
-      [
-        "param",
-        "limit",
-        "6"
-      ],
+      ["param", "target", publicKey],
+      ["param", "limit", "6"],
     ],
-    content: ''
+    content:''
   };
 
   const signedDvmReqEvent = finalizeEvent(dvmReqEvent, nsec);

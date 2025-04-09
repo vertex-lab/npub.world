@@ -57,7 +57,7 @@
             <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
             <div class="profile-stats">
               <span>Following:</span> <span class="stat">{data.following}</span>
-              <span>Reputable followers:</span>
+              <span>Reputable Followers:</span>
               <span class="stat">{data.followers}</span>
             </div>
           </div>
@@ -69,7 +69,7 @@
         </div>
 
         <div class="followers-card">
-          <h2 class="section-title">Top Reputable Followers:</h2>
+          <h2 class="section-title">Top Followers</h2>
           <div class="followers-grid">
             {#each data.reputable as profile}
               <Follower {profile} />
@@ -77,10 +77,10 @@
           </div>
         </div>
         <div class="followers-card">
-          <h2 class="section-title">Open with:</h2>
+          <h2 class="section-title">Open with</h2>
           <div class="followers-grid">
             <div class="app" target="_blank">
-              <a href={"nostr:" + data.npub}>Default app</a>
+              <a href={"nostr:" + data.npub}>Default App</a>
             </div>
             <div class="app">
               <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a>

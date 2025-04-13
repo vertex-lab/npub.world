@@ -64,6 +64,10 @@
                 <span>Reputable Followers:</span>
                 <span class="stat">{data.followers}</span>
               </div>
+              <div class="stat-pair">
+                <span>WoT Rate:</span>
+                <span class="stat">{data.rate}</span>
+              </div>
             </div>
           </div>
         </div>

@@ -19,26 +19,6 @@ export const formatProfile = async (profileEvent, reputationInfo, minimal = fals
   const info = JSON.parse(profileEvent.content);
   const base64Image = await loadBase64Image(profileEvent, info);
 
-  if (info.about) {
-    // Replace npub mentions in about with npub.world links
-    const npubAboutMatches = Array.from(info.about.matchAll(NPUB_EMBED_REGEXP)).map((m) => m[1]);
-    const npubNames = {};
-    if (npubAboutMatches.length > 0) {
-      const authors = npubAboutMatches.map((m) => nip19.decode(m).data);
-      if (authors.length > 0) {
-        const profilesResponse = await query({ kinds: [0], authors: authors });
-        for (const e of profilesResponse) {
-          const info = JSON.parse(e.content);
-          npubNames[nip19.npubEncode(e.pubkey)] = info.display_name || info.displayName || info.name;
-        }
-      }
-    }
-    info.about = info.about.replace(NPUB_EMBED_REGEXP, (match, p1) => {
-      const name = npubNames[p1];
-      return `<a href="/${p1}">${name}</a> `;
-    });
-  }
-
   if (minimal) {
     return {
       name: info.display_name || info.displayName || info.name,
@@ -48,6 +28,7 @@ export const formatProfile = async (profileEvent, reputationInfo, minimal = fals
     }
   }
 
+  info.about = await normalizeNpubsMentions(info.about)
   const formatter = new Intl.NumberFormat('en-US');
 
   return {
@@ -57,11 +38,45 @@ export const formatProfile = async (profileEvent, reputationInfo, minimal = fals
     nip05: info.nip05?.toString().toLowerCase(),
     lud16: info.lud16,
     npub: nip19.npubEncode(profileEvent.pubkey),
-    website: info.website,
+    website: normalizeURL(info.website),
     following: formatter.format(reputationInfo.follows),
     followers: formatter.format(reputationInfo.followers),
   };
 }
+
+export const normalizeNpubsMentions = async (about) => {
+  // Replace npub mentions in about with npub.world links
+  if (!about) return null;
+
+  const npubs = Array.from(about.matchAll(NPUB_EMBED_REGEXP)).map((m) => m[1]);  
+  if (npubs.length == 0) return about;
+
+  const npubNames = {};
+  const authors = npubs.map((m) => nip19.decode(m).data);
+  if (authors.length == 0) return about;
+
+  const profilesResponse = await query({ kinds: [0], authors: authors });
+  for (const e of profilesResponse) {
+    const info = JSON.parse(e.content);
+    npubNames[nip19.npubEncode(e.pubkey)] = info.display_name || info.displayName || info.name;
+  }
+
+  return about.replace(NPUB_EMBED_REGEXP, (match, p1) => {
+    const name = npubNames[p1];
+    return `<a href="/${p1}">${name}</a> `;
+  });
+}
+
+export const normalizeURL = (url) => {
+  if (!url || typeof url !== 'string') return null;
+
+  if (!/^https?:\/\//i.test(url)) {
+    url = `https://${url}`;
+  }
+  return url;
+};
+
+
 
 export const loadBase64Image = async (profile, parsedContent) => {
   // Attempt to load profile for this pubkey + picture url hash

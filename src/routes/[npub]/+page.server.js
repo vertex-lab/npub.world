@@ -48,26 +48,36 @@ export async function load({ params }) {
     '#e': [signedDvmReqEvent.id]
   });
 
-  if (reputationResponse[0].kind === 6312) {
-    const reputationResults = JSON.parse(reputationResponse[0].content);
+  let profileResponse
+  switch (reputationResponse[0].kind) {
+    case 6312:
+      const reputationResults = JSON.parse(reputationResponse[0].content);
+      const pubkeys = reputationResults.map((e) => e.pubkey);
 
-    const reputablePubkeys = reputationResults.map((e) => e.pubkey);
+      profileResponse = await query({ kinds: [0], authors: pubkeys });
+      const author = profileResponse.find((e) => e.pubkey == publicKey);
+      if (!author) return {};
 
-    const authorResponse = await query({ kinds: [0], authors: [publicKey, ...reputablePubkeys] });
-    const author = authorResponse.find((e) => e.pubkey == publicKey);
-    const authorReputationInfo = reputationResults.find((e) => e.pubkey == publicKey);
+      const profile = await formatProfile(author, reputationResults[0]);
+      profile.reputable = await Promise.all(
+        pubkeys
+          .slice(1)
+          .map(pk => profileResponse.find(e => e.pubkey === pk))
+          .filter(Boolean)
+          .map(e => formatProfile(e, null, true))
+      );
 
-    if (!author) {
-      return {};
-    }
-    const profile = await formatProfile(author, authorReputationInfo);
-    const reputableProfiles = await Promise.all(authorResponse.filter((e) => e.pubkey !== publicKey).map((p) => formatProfile(p, null, true)));
-    profile.reputable = reputableProfiles.sort((a, b) => reputationResults.find(e => e.pubkey == nip19.decode(b.npub).data).rank - reputationResults.find(e => e.pubkey == nip19.decode(a.npub).data).rank);
-    return profile;
-  } else if (reputationResponse[0].kind === 7000) {
-    return { error: reputationResponse[0].tags.find(t => t[0] == 'status')[2] };
-  } else {
-    const authorResponse = await query({ kinds: [0], authors: [publicKey] });
-    return await formatProfile(authorResponse[0]);
+      return profile;
+      break;
+    
+    case 7000:
+      return { error: reputationResponse[0].tags.find(t => t[0] == 'status')[2] };
+      break;
+  
+    default:
+      // unexpected kind
+      profileResponse = await query({ kinds: [0], authors: [publicKey] });
+      return await formatProfile(profileResponse[0]);
+      break;
   }
 }

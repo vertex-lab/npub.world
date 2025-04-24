@@ -6,7 +6,6 @@ import { redirect } from "@sveltejs/kit";
 import { finalizeEvent} from 'nostr-tools';
 
 export async function load({ params }) {
-
   if (HEXKEY_REGEXP.test(params.npub)) {
     return redirect(301, `/${nip19.npubEncode(params.npub)}`);
   }

@@ -6,15 +6,14 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 
-export const NPUB_REGEXP = /\bnpub[a-z0-9]+\b/;
-export const NPUB_EMBED_REGEXP = /\bnostr:(npub[a-z0-9]{59})\b/g;
+export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;
+export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
+
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const fallbackImage = 'UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
-
 export const formatProfile = async (profileEvent, reputationInfo, minimal = false) => {
-  if (!profileEvent) return;
+  if (!profileEvent) return null;
 
   const info = JSON.parse(profileEvent.content);
   const base64Image = await loadBase64Image(profileEvent, info);
@@ -48,7 +47,7 @@ export const normalizeNpubsMentions = async (about) => {
   // Replace npub mentions in about with npub.world links
   if (!about) return null;
 
-  const npubs = Array.from(about.matchAll(NPUB_EMBED_REGEXP)).map((m) => m[1]);  
+  const npubs = Array.from(about.matchAll(NPUB_EMBED_REGEXP)).map(m => m[1]);
   if (npubs.length == 0) return about;
 
   const npubNames = {};
@@ -76,7 +75,7 @@ export const normalizeURL = (url) => {
   return url;
 };
 
-
+const fallbackImage = 'UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
 export const loadBase64Image = async (profile, parsedContent) => {
   // Attempt to load profile for this pubkey + picture url hash

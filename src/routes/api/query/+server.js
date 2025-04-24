@@ -7,14 +7,10 @@ import { redirect } from "@sveltejs/kit";
 export async function POST({ request }) {
   try {
     let { q } = await request.json();
-
     q = q?.trim();
-
     if (!q || q.length < 3) {
       throw 'Please input at least 3 characters';
     }
-
-    let data;
 
     if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
       return new Response(JSON.stringify({ redirect: q }));
@@ -40,25 +36,34 @@ export async function POST({ request }) {
       '#e': [signedDvmReqEvent.id]
     });
 
-    if (searchResponse[0].kind == 6315) {
-      const content = searchResponse[0].content;
-      const results = JSON.parse(content);
-      if (!content || content == 'null') {
-        data = [];
-      }
-      const pubkeys = results.map((e) => e.pubkey);
-      const profilesResponse = await query({ kinds: [0], authors: pubkeys });
-      const profiles = await Promise.all(profilesResponse.map((p) => formatProfile(p, null, true)));
-      data = profiles.sort((a, b) => results.find(e => e.pubkey == nip19.decode(b.npub).data).rank - results.find(e => e.pubkey == nip19.decode(a.npub).data).rank);
-    } else {
-      throw `Error: ${searchResponse[0]?.content}`;
+    switch (searchResponse[0].kind) {
+      case 6315:
+        const results = JSON.parse(searchResponse[0].content);
+        if (!results || results == 'null') {
+          return new Response(JSON.stringify([]), {headers: { 'Content-Type': 'application/json'}});
+        }
+
+        const pubkeys = results.map((e) => e.pubkey);
+        const profileResponse = await query({ kinds: [0], authors: pubkeys });
+        const profiles = await Promise.all(
+          pubkeys
+            .map(pk => profileResponse.find(e => e.pubkey === pk))
+            .filter(Boolean)
+            .map(e => formatProfile(e, null, true))
+        );
+        
+        return new Response(JSON.stringify(profiles), {headers: {'Content-Type': 'application/json'}});
+        break;
+
+      case 7000:
+        throw `Error: ${searchResponse[0].tags.find(t => t[0] == 'status')[2]};`
+    
+      default:
+        // unexpected kind
+        throw `Error: unexpected kind ${searchResponse[0]?.kind}; content ${searchResponse[0]?.content}`
+        break;
     }
 
-    return new Response(JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
   } catch (error) {
     return new Response(JSON.stringify({ error: error?.toString() || error.message }), {
       status: 400,

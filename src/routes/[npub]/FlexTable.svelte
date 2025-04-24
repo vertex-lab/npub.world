@@ -37,7 +37,8 @@
     {#if profile.website}
       <tr>
         <td class="cell-left"><p>Website:</p></td>
-        <td><a href={profile.website}>{profile.website}</a></td>
+        <td><a href={profile.website} target="_blank" rel="noopener noreferrer">
+          {new URL(profile.website).host}</a></td>
       </tr>
     {/if}
   </tbody>

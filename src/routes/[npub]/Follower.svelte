@@ -23,7 +23,7 @@
   .follower-item {
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 5px;
     border-radius: 8px;
     transition: background-color 0.2s;
   }

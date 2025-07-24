@@ -269,11 +269,13 @@
   @media (max-width: 576px) {
     .container {
       padding: 0rem;
+      padding-bottom: 1rem;
     }
 
     .header {
       flex-direction: row;
       align-items: center;
+      margin-bottom: 1.5rem;
       gap: 0.5rem;
     }
 
@@ -326,11 +328,6 @@
   @media (min-width: 577px) and (max-width: 992px) {
     .container {
       padding: 1rem;
-    }
-
-    .header {
-      flex-direction: row;
-      margin-bottom: 1.5rem;
     }
 
     .logo-wrapper {

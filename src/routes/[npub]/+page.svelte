@@ -92,7 +92,7 @@
         </div>
         <div class="followers-card">
           <h2 class="section-title">Open With</h2>
-          <div class="followers-grid">
+          <div class="app-grid">
             <div class="app" target="_blank">
               <a href={"nostr:" + data.npub}>Default App</a>
             </div>
@@ -254,6 +254,14 @@
   .app a {
     color: var(--primary-color);
     text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .app-grid {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 16px;
   }
 
   /* Responsive styles */

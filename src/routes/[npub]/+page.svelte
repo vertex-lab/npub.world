@@ -280,7 +280,13 @@
     }
 
     .logo-wrapper {
-      margin-right: 0.5rem;
+      margin-right: 0.25rem;
+    }
+
+    .theme-logo-small {
+    width: 80px;
+    height: 80px;
+    margin: -1rem;
     }
 
     .search-container {

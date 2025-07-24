@@ -86,7 +86,7 @@
             <div class="profile-info">
               <div class="profile-name">{profile.name}</div>
               {#if profile.nip05}
-                <div class="profile-email">
+                <div class="profile-handle">
                   {profile.nip05}
                 </div>
               {/if}
@@ -234,7 +234,7 @@
     text-overflow: ellipsis;
   }
 
-  .profile-email {
+  .profile-handle {
     font-size: 0.85rem;
     color: var(--light-text);
     white-space: nowrap;

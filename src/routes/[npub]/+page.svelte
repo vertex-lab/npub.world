@@ -308,6 +308,10 @@
     justify-content: center;
     margin-bottom: 0.5rem;
   }
+
+  .followers-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
   /* Medium screens (tablet) */

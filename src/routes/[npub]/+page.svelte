@@ -71,7 +71,7 @@
                 <span class="stat">{data.following}</span>
               </div>
               <div class="stat-pair">
-                <span>Reputable Followers:</span>
+                <span>Followers:</span>
                 <span class="stat">{data.followers}</span>
               </div>
             </div>

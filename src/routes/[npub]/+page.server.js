@@ -28,17 +28,17 @@ export async function load({ params }) {
   }
 
   // Verify reputation
-  const nsec = process.env.SK;
   const dvmReqEvent = {
     created_at: Math.floor(Date.now() / 1000),
     kind: 5312,
     tags: [
       ["param", "target", publicKey],
-      ["param", "limit", "6"],
+      ["param", "limit", "10"],
     ],
     content:''
   };
 
+  const nsec = process.env.SK;
   const signedDvmReqEvent = finalizeEvent(dvmReqEvent, nsec);
   await relay.publish(signedDvmReqEvent);
 

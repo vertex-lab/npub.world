@@ -4,14 +4,24 @@
   import Follower from "./Follower.svelte";
   import FlexTable from "./FlexTable.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
+  import { onMount } from "svelte";
 
   let { data, error } = $props();
-
   let title = $state("");
+  $effect(() => {title = data.name ?? data.npub;});
 
-  $effect(() => {
-    title = data.name ?? data.npub;
-  });
+  let visibleFollowers = $state(0);
+  onMount(() => {
+    const width = window.innerWidth;
+    if (width <= 576) {
+      visibleFollowers = 5;   // for mobile
+    } else if (width <= 992) {
+      visibleFollowers = 9;   // for tablets
+    } else {
+      visibleFollowers = 10;  // for desktop
+    }
+  })
+
 </script>
 
 <svelte:head>
@@ -75,7 +85,7 @@
         <div class="followers-card">
           <h2 class="section-title">Top Followers</h2>
           <div class="followers-grid">
-            {#each data.reputable as profile}
+            {#each data.reputable.slice(0, visibleFollowers) as profile}
               <Follower {profile} />
             {/each}
           </div>
@@ -229,7 +239,7 @@
 
   .followers-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 16px;
   }
 
@@ -288,10 +298,6 @@
       margin-top: 0; /* TEMP */
     }
 
-    .followers-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
     .profile-stats {
     flex-direction: column;
     align-items: center;
@@ -332,7 +338,7 @@
     }
 
     .followers-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     }
   }
 
@@ -345,10 +351,6 @@
 
     .search-container {
       max-width: calc(100% - 80px);
-    }
-
-    .followers-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
   }
 </style>

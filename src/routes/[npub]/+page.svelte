@@ -212,13 +212,13 @@
     font-size: 0.9rem;
     display: flex;
     flex-wrap: wrap;
+    gap: 1rem;
   }
 
-.stat-pair {
-  display: flex;
-  gap: 0.25rem;
-  margin-right: 1rem;
-}
+  .stat-pair {
+    display: flex;
+    gap: 0.25rem;
+  }
 
   .stat {
     font-weight: bold;
@@ -260,7 +260,7 @@
   /* Small screens (mobile) */
   @media (max-width: 576px) {
     .container {
-      padding: 0.5rem;
+      padding: 0rem;
     }
 
     .header {
@@ -299,7 +299,7 @@
     }
 
     .profile-stats {
-    flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     margin-bottom: 0.5rem;
   }

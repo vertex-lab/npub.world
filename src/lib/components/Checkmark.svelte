@@ -48,21 +48,22 @@
 
   .tooltip {
     visibility: hidden;
-    z-index: 1000;
+    position: relative;
     color: var(--secondary-text);
     font-size: 0.9rem;
     font-weight: normal;
-    padding: 4px 6px;
-    border-color: var(--border-color);
-    border: 1px;
-    border-radius: 4px;
     transition: opacity 0.3s;
   }
 
   .wrapper:hover .tooltip {
     visibility: visible;
-    opacity: 1;
   }
+
+  @media (max-width: 576px) {
+  .tooltip {
+    display: none;
+  }
+}
 
 </style>
   

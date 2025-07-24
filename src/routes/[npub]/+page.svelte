@@ -219,7 +219,6 @@
     color: var(--secondary-text);
     font-size: 0.9rem;
     display: flex;
-    flex-wrap: wrap;
     gap: 1rem;
   }
 
@@ -319,12 +318,12 @@
     }
 
     .profile-name {
-      margin-top: 0; /* TEMP */
+      margin-top: 0;
     }
 
     .profile-stats {
     flex-wrap: nowrap;
-    align-items: center;
+    justify-content: center;
     margin-bottom: 0.5rem;
   }
 

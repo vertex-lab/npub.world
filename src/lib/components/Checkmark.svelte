@@ -48,7 +48,10 @@
 
   .tooltip {
     visibility: hidden;
-    position: relative;
+    position: absolute;
+    top: 20%;
+    left: 120%;
+    white-space: nowrap;
     color: var(--secondary-text);
     font-size: 0.9rem;
     font-weight: normal;

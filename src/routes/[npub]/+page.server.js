@@ -1,9 +1,9 @@
 import { relay, query } from "$lib/relay.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, json } from '@sveltejs/kit';
-import { formatProfile, HEXKEY_REGEXP, NIP05_REGEXP, resolveNIP05 } from "$lib/utils";
+import { reputationStatus, minimalProfile, detailedProfile, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/utils";
 import { redirect } from "@sveltejs/kit";
-import { finalizeEvent} from 'nostr-tools';
+import { finalizeEvent } from 'nostr-tools';
 
 export async function load({ params }) {
   if (HEXKEY_REGEXP.test(params.npub)) {
@@ -15,68 +15,72 @@ export async function load({ params }) {
     return redirect(301, `/${npub}`);
   }
 
-  let publicKey;
+  let targetKey;
   try {
     let { type, data } = nip19.decode(params.npub);
     if (type !== 'npub') {
       throw error(400, 'Bad URL');
     }
-    publicKey = data;
+    targetKey = data;
 
   } catch (e) {
     throw error(400, `Invalid npub: ${e} ${params.npub}`);
   }
 
-  // Verify reputation
-  const dvmReqEvent = {
+  const verifyReputation = {
     created_at: Math.floor(Date.now() / 1000),
     kind: 5312,
     tags: [
-      ["param", "target", publicKey],
+      ["param", "target", targetKey],
       ["param", "limit", "10"],
     ],
     content:''
   };
 
   const nsec = process.env.SK;
-  const signedDvmReqEvent = finalizeEvent(dvmReqEvent, nsec);
-  await relay.publish(signedDvmReqEvent);
+  const signedVerifyReputation = finalizeEvent(verifyReputation, nsec);
+  await relay.publish(signedVerifyReputation);
 
-  const reputationResponse = await query({
+  const reputationResponses = await query({
     kinds: [6312, 7000],
-    '#e': [signedDvmReqEvent.id]
+    '#e': [signedVerifyReputation.id],
+    limit: 1,
   });
 
-  let profileResponse
-  switch (reputationResponse[0].kind) {
+  switch (reputationResponses[0].kind) {
     case 6312:
-      const reputationResults = JSON.parse(reputationResponse[0].content);
+      const reputationResults = JSON.parse(reputationResponses[0].content);
       const pubkeys = reputationResults.map((e) => e.pubkey);
 
-      profileResponse = await query({ kinds: [0], authors: pubkeys });
-      const author = profileResponse.find((e) => e.pubkey == publicKey);
-      if (!author) return {};
+      const profileResponses = await query({ kinds: [0], authors: pubkeys, limit: pubkeys.length});
+      const targetProfile = profileResponses.find((e) => e.pubkey == targetKey);
+      if (!targetProfile) return {};
 
-      const profile = await formatProfile(author, reputationResults[0]);
-      profile.reputable = await Promise.all(
+      const data = await detailedProfile(targetProfile, reputationResults[0]);
+
+      const targetRank = reputationResults[0].rank
+      const nodes = Number(reputationResponses[0].tags.find(tag => tag.length > 1 && tag[0] === 'nodes')?.[1] || 0);
+      data.reputationStatus = reputationStatus(targetRank, nodes)
+
+      data.topFollowers = await Promise.all(
         pubkeys
           .slice(1)
-          .map(pk => profileResponse.find(e => e.pubkey === pk))
+          .map(pk => profileResponses.find(e => e.pubkey === pk))
           .filter(Boolean)
-          .map(e => formatProfile(e, null, true))
+          .map(e => minimalProfile(e))
       );
 
-      return profile;
+      return data;
       break;
     
     case 7000:
-      return { error: reputationResponse[0].tags.find(t => t[0] == 'status')[2] };
+      return { error: reputationResponses[0].tags.find(t => t[0] == 'status')[2] };
       break;
   
     default:
       // unexpected kind
-      profileResponse = await query({ kinds: [0], authors: [publicKey] });
-      return await formatProfile(profileResponse[0]);
+      const profileResponse = await query({ kinds: [0], authors: [targetKey], limit: 1});
+      return await detailedProfile(profileResponse[0]);
       break;
   }
 }

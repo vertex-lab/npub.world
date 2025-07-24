@@ -5,6 +5,7 @@
   import FlexTable from "./FlexTable.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { onMount } from "svelte";
+    import Checkmark from "$lib/components/Checkmark.svelte";
 
   let { data, error } = $props();
   let title = $state("");
@@ -63,7 +64,14 @@
             <img src={data.picture} alt="Profile Avatar" />
           </div>
           <div class="profile-identity">
-            <h1 class="profile-name">{data.name}</h1>
+            <h1 class="profile-name">
+              {data.name}
+              {#if data.reputationStatus == "mid"}
+                <Checkmark variant="blue" size={22}></Checkmark>
+              {:else if data.reputationStatus == "high"}
+                <Checkmark variant="gold" size={22}></Checkmark>
+              {/if}
+            </h1>
             <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
             <div class="profile-stats">
               <div class="stat-pair">
@@ -85,7 +93,7 @@
         <div class="followers-card">
           <h2 class="section-title">Top Followers</h2>
           <div class="followers-grid">
-            {#each data.reputable.slice(0, visibleFollowers) as profile}
+            {#each data.topFollowers.slice(0, visibleFollowers) as profile}
               <Follower {profile} />
             {/each}
           </div>
@@ -196,9 +204,9 @@
 
   .profile-name {
     font-size: 1.5rem;
+    vertical-align: middle;
     font-weight: 600;
-    margin: 0 0 4px 0;
-    margin-top: 0.8rem; /* TEMP */
+    margin: 1rem 0 0.5rem 0;
   }
 
   .profile-handle {

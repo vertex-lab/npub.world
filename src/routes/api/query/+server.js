@@ -1,5 +1,5 @@
 import { relay, query } from "$lib/relay.js";
-import { formatProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
+import { minimalProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
 import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';
 import { redirect } from "@sveltejs/kit";
@@ -49,7 +49,7 @@ export async function POST({ request }) {
           pubkeys
             .map(pk => profileResponse.find(e => e.pubkey === pk))
             .filter(Boolean)
-            .map(e => formatProfile(e, null, true))
+            .map(e => minimalProfile(e, null, true))
         );
         
         return new Response(JSON.stringify(profiles), {headers: {'Content-Type': 'application/json'}});

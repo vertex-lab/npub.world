@@ -12,20 +12,37 @@ export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const formatProfile = async (profileEvent, reputationInfo, minimal = false) => {
+// Returns a qualitative reputation status ("low", "mid", "high")
+// based on a node's PageRank `rank` and total `nodes` in the network.
+export const reputationStatus = (rank, nodes) => {
+  if (!rank || rank === 0 ) return "low"
+  if (!nodes || nodes === 0 ) return "low"
+
+  const midThreshold = pagerankPercentile(0.01, nodes)      // top 1%
+  const highThreshold = pagerankPercentile(0.0001, nodes)   // top 0.01%
+
+  if (rank > highThreshold) {
+    return "high"
+  }
+  if (rank > midThreshold) {
+    return "mid"
+  }
+  return "low"
+}
+
+// pagerankPercentile returns the pagerank value of the top 'percentage' 
+// of a network consisting of 'nodes'.
+// More info here: https://vertexlab.io/blog/pagerank_as_filter/
+export const pagerankPercentile = (percentage, nodes) => {
+  let exponent = 0.76
+  return (1-exponent) * percentage ** (-exponent) * 1/nodes
+}
+
+export const detailedProfile = async (profileEvent, reputationInfo) => {
   if (!profileEvent) return null;
 
   const info = JSON.parse(profileEvent.content);
   const base64Image = await loadBase64Image(profileEvent, info);
-
-  if (minimal) {
-    return {
-      name: info.display_name || info.displayName || info.name,
-      picture: base64Image && `data:image/webp;base64,${base64Image}`,
-      nip05: info.nip05?.toString().toLowerCase(),
-      npub: nip19.npubEncode(profileEvent.pubkey),
-    }
-  }
 
   info.about = await normalizeNpubsMentions(info.about)
   const formatter = new Intl.NumberFormat('en-US');
@@ -35,12 +52,26 @@ export const formatProfile = async (profileEvent, reputationInfo, minimal = fals
     picture: base64Image && `data:image/webp;base64,${base64Image}`,
     about: info.about && marked(info.about),
     nip05: info.nip05?.toString().toLowerCase(),
+    website: normalizeURL(info.website),
     lud16: info.lud16,
     npub: nip19.npubEncode(profileEvent.pubkey),
-    website: normalizeURL(info.website),
     following: formatter.format(reputationInfo.follows),
     followers: formatter.format(reputationInfo.followers),
   };
+}
+
+export const minimalProfile = async (profileEvent) => {
+  if (!profileEvent) return null;
+
+  const info = JSON.parse(profileEvent.content);
+  const base64Image = await loadBase64Image(profileEvent, info);
+
+  return {
+    name: info.display_name || info.displayName || info.name,
+    picture: base64Image && `data:image/webp;base64,${base64Image}`,
+    nip05: info.nip05?.toString().toLowerCase(),
+    npub: nip19.npubEncode(profileEvent.pubkey),
+  }
 }
 
 export const normalizeNpubsMentions = async (about) => {

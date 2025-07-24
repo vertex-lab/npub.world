@@ -67,9 +67,9 @@
             <h1 class="profile-name">
               {data.name}
               {#if data.reputationStatus == "mid"}
-                <Checkmark variant="blue" size={22}></Checkmark>
+                <Checkmark variant="blue" tooltip=true size={22}></Checkmark>
               {:else if data.reputationStatus == "high"}
-                <Checkmark variant="gold" size={22}></Checkmark>
+                <Checkmark variant="gold" tooltip=true size={22}></Checkmark>
               {/if}
             </h1>
             <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>

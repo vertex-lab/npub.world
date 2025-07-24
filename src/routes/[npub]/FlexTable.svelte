@@ -70,7 +70,7 @@
     max-width: 100%;
 
     overflow-wrap: break-word;
-    word-break: normal;
+    word-break: break-word;
     white-space: normal;
   }
 

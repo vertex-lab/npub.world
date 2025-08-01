@@ -126,8 +126,6 @@ export const reputationStatus = (rank, nodes) => {
   const midThreshold = pagerankPercentile(0.01, nodes)      // top 1%
   const highThreshold = pagerankPercentile(0.0001, nodes)   // top 0.01%
 
-  console.log("rank", rank, "midThreshold", midThreshold, "highThreshold", highThreshold);
-
   if (rank > highThreshold) {
     return "high"
   }

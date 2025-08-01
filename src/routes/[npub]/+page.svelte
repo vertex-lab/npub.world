@@ -94,7 +94,7 @@
             {/each}
           </div>
         </div>
-        
+
         <div class="followers-card">
           <h2 class="section-title">Open With</h2>
           <div class="app-grid">
@@ -230,7 +230,7 @@
   .followers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
+    gap: 8px;
   }
 
   .app {

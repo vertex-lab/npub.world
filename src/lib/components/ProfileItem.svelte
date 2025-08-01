@@ -1,11 +1,11 @@
 <script>
   import ProfilePicture from "./ProfilePicture.svelte";
 
-  const { profile } = $props();
+  const { profile, style = "" } = $props();
 </script>
 
 <a href={"/" + profile.npub}>
-  <div class="profile-item">
+  <div class="profile-item" style={style}>
     <ProfilePicture source={profile.picture} size="40px" />
     <div class="profile-info">
       <div class="profile-name">{profile.name}</div>
@@ -23,7 +23,7 @@ text-decoration: none;
 .profile-item {
 display: flex;
 align-items: center;
-padding: 5px;
+padding: 8px;
 border-radius: 8px;
 transition: background-color 0.2s;
 }

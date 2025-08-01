@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+    import ProfileItem from "./ProfileItem.svelte";
 
   let query = $state("");
   let loading = $state(false);
@@ -69,30 +70,14 @@
 
   {#if data && data.error}
     <div class="search-results">
-      <div class="search-result">
-        <p class="error">{data.error}</p>
-      </div>
+      <p class="error">{data.error}</p>
     </div>
   {/if}
 
   {#if showResults && data && data.length > 0}
     <div class="search-results">
       {#each data as profile}
-        <a href={"/" + profile.npub}>
-          <div class="search-result">
-            <div class="profile-img-small">
-              <img src={profile.picture} alt="Profile" />
-            </div>
-            <div class="profile-info">
-              <div class="profile-name">{profile.name}</div>
-              {#if profile.nip05}
-                <div class="profile-handle">
-                  {profile.nip05}
-                </div>
-              {/if}
-            </div>
-          </div>
-        </a>
+        <ProfileItem profile={profile} style="padding-left: 15px;"/>
       {/each}
     </div>
   {/if}
@@ -170,76 +155,19 @@
 
   .search-results {
     position: absolute;
-    top: 100%; /* Position directly below the search container */
     left: 0;
+    top: 100%; /* Position directly below the search container */
     width: 100%; /* Match the width of the search container */
-    background-color: var(--card-background);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    border: 1px solid var(--border-color);
     max-height: 400px;
     overflow-y: auto;
-    margin-top: 4px; /* Small gap between search box and results */
-  }
+    z-index: 10;
 
-  .search-result {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.2s;
-  }
+    background-color: var(--card-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  .search-result:last-child {
-    border-bottom: none;
-  }
-
-  .search-result:hover {
-    background-color: var(--highlight-color);
-    cursor: pointer;
-  }
-
-  a {
-    color: var(--primary-color);
-    text-decoration: none;
-  }
-
-  .profile-img-small {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-
-  .profile-img-small img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .profile-info {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-
-  .profile-name {
-    font-weight: 500;
-    color: var(--primary-text);
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .profile-handle {
-    font-size: 0.85rem;
-    color: var(--light-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-top: none;
   }
 
   /* Responsive adjustments */

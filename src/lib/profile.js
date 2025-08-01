@@ -19,7 +19,7 @@
   * @property {number} [followers]
 */
 
-import { relay, query } from "$lib/relay.js";
+import { relay, query } from "$lib/utils.js";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
 import { fetch } from 'undici';

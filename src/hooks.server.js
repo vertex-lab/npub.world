@@ -1,5 +1,5 @@
 
-import { relay } from './lib/relay';
+import { relay } from './lib/utils';
 
 const initializeServices = async () => {
   try {

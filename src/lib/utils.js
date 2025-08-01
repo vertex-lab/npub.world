@@ -1,3 +1,24 @@
+/**
+  * @typedef {Object} Profile
+  * @property {string} npub
+  * @property {string} reputation
+  * @property {string} [name]
+  * @property {string} [picture]
+  * @property {string} [about]
+  * @property {string} [nip05]
+  * @property {string} [lud16]
+  * @property {string} [website]
+  * @property {string} [following]
+  * @property {string} [followers]
+  * 
+  * @typedef {Object} ReputationInfo
+  * @property {string} pubkey
+  * @property {number} rank
+  * @property {number} nodes
+  * @property {number} [follows]
+  * @property {number} [followers]
+*/
+
 import { relay, query } from "$lib/relay.js";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
@@ -13,6 +34,89 @@ export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Extracts and returns an array of ReputationInfo from a reputation event.
+ * @param {Object} nostrEvent
+ * @returns {ReputationInfo[]}
+ */
+export const reputationInfos = (reputationEvent) => {
+  const nodesTag = reputationEvent.tags.find(tag => tag.length > 1 && tag[0] === 'nodes');
+  const nodes = Number(nodesTag?.[1] || 0);  
+
+  let data = [];
+  try {
+    data = JSON.parse(reputationEvent.content);
+  } catch (err) {
+        console.error(`Failed to parse reputation event with ID ${reputationEvent.id}:`, err);
+    return [];
+  }
+
+  return data.map(entry => ({
+      pubkey: entry.pubkey,
+      rank: entry.rank,
+      nodes: nodes,
+      follows: entry.follows,
+      followers: entry.followers,
+    }));
+}
+
+/**
+ * Builds a detailed profile object from a kind:0 profile event and its reputation info.
+ *
+ * @param {Object} profileEvent
+ * @param {ReputationInfo} reputationInfo
+ * @returns {Promise<Profile|null>}
+ */
+export const detailedProfile = async (profileEvent, reputationInfo) => {
+  if (!profileEvent) return null;
+  if (!reputationInfo) { return null; }
+
+  const info = JSON.parse(profileEvent.content);
+  const base64Image = await loadBase64Image(profileEvent, info);
+
+  info.about = await normalizeNpubsMentions(info.about)
+  const formatter = new Intl.NumberFormat('en-US');
+
+  return {
+    npub: nip19.npubEncode(profileEvent.pubkey),
+    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
+
+    name: info.display_name || info.displayName || info.name,
+    picture: base64Image && `data:image/webp;base64,${base64Image}`,
+    about: info.about && marked(info.about),
+    nip05: info.nip05?.toString().toLowerCase(),
+    website: normalizeURL(info.website),
+    lud16: info.lud16,
+
+    following: formatter.format(reputationInfo.follows),
+    followers: formatter.format(reputationInfo.followers),
+  };
+}
+
+/**
+ * Builds a minimal profile object from a kind:0 profile event and its reputation info.
+ *
+ * @param {Object} profileEvent
+ * @param {ReputationInfo} reputationInfo
+ * @returns {Promise<Profile|null>}
+ */
+export const minimalProfile = async (profileEvent, reputationInfo) => {
+  if (!profileEvent) return null;
+  if (!reputationInfo) { return null; }
+
+  const info = JSON.parse(profileEvent.content);
+  const base64Image = await loadBase64Image(profileEvent, info);
+
+  return {
+    npub: nip19.npubEncode(profileEvent.pubkey),
+    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
+
+    name: info.display_name || info.displayName || info.name,
+    picture: base64Image && `data:image/webp;base64,${base64Image}`,
+    nip05: info.nip05?.toString().toLowerCase(),
+  }
+}
+
 // Returns a qualitative reputation status ("low", "mid", "high")
 // based on a node's PageRank `rank` and total `nodes` in the network.
 export const reputationStatus = (rank, nodes) => {
@@ -21,6 +125,8 @@ export const reputationStatus = (rank, nodes) => {
 
   const midThreshold = pagerankPercentile(0.01, nodes)      // top 1%
   const highThreshold = pagerankPercentile(0.0001, nodes)   // top 0.01%
+
+  console.log("rank", rank, "midThreshold", midThreshold, "highThreshold", highThreshold);
 
   if (rank > highThreshold) {
     return "high"
@@ -37,42 +143,6 @@ export const reputationStatus = (rank, nodes) => {
 export const pagerankPercentile = (percentage, nodes) => {
   let exponent = 0.76
   return (1-exponent) * percentage ** (-exponent) * 1/nodes
-}
-
-export const detailedProfile = async (profileEvent, reputationInfo) => {
-  if (!profileEvent) return null;
-
-  const info = JSON.parse(profileEvent.content);
-  const base64Image = await loadBase64Image(profileEvent, info);
-
-  info.about = await normalizeNpubsMentions(info.about)
-  const formatter = new Intl.NumberFormat('en-US');
-
-  return {
-    name: info.display_name || info.displayName || info.name,
-    picture: base64Image && `data:image/webp;base64,${base64Image}`,
-    about: info.about && marked(info.about),
-    nip05: info.nip05?.toString().toLowerCase(),
-    website: normalizeURL(info.website),
-    lud16: info.lud16,
-    npub: nip19.npubEncode(profileEvent.pubkey),
-    following: formatter.format(reputationInfo.follows),
-    followers: formatter.format(reputationInfo.followers),
-  };
-}
-
-export const minimalProfile = async (profileEvent) => {
-  if (!profileEvent) return null;
-
-  const info = JSON.parse(profileEvent.content);
-  const base64Image = await loadBase64Image(profileEvent, info);
-
-  return {
-    name: info.display_name || info.displayName || info.name,
-    picture: base64Image && `data:image/webp;base64,${base64Image}`,
-    nip05: info.nip05?.toString().toLowerCase(),
-    npub: nip19.npubEncode(profileEvent.pubkey),
-  }
 }
 
 export const normalizeNpubsMentions = async (about) => {
@@ -150,8 +220,7 @@ export const fetchBase64Image = async (profile, parsedContent) => {
 
     return compressedImageBuffer.toString('base64');
   } catch (e) {
-    console.log('Could not fetch or write', parsedContent.picture);
-    console.log(e);
+    console.error(`Could not fetch or write ${parsedContent}:`, e);
     return fallbackImage;
   }
 }

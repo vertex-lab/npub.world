@@ -1,14 +1,22 @@
 <script>
   import ProfilePicture from "./ProfilePicture.svelte";
+  import Checkmark from "./Checkmark.svelte";
 
-  const { profile, style = "" } = $props();
+  export let profile;
+  export let style = "";
+  export let reputationBadge = false;
 </script>
 
 <a href={"/" + profile.npub}>
   <div class="profile-item" style={style}>
     <ProfilePicture source={profile.picture} size="40px" />
     <div class="profile-info">
-      <div class="profile-name">{profile.name}</div>
+      <div class="profile-name">
+        {profile.name}
+        {#if reputationBadge }
+          <Checkmark reputation={profile.reputation} size={16} />
+        {/if}
+      </div>
       <div class="profile-nip05">{profile.nip05}</div>
     </div>
   </div>

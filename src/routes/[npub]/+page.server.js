@@ -1,7 +1,7 @@
 import { relay, query } from "$lib/relay.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, json } from '@sveltejs/kit';
-import { reputationStatus, minimalProfile, detailedProfile, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/utils";
+import { reputationInfos, reputationStatus, minimalProfile, detailedProfile, HEXKEY_REGEXP, NIP05_REGEXP, reputationInfos } from "$lib/utils";
 import { redirect } from "@sveltejs/kit";
 import { finalizeEvent } from 'nostr-tools';
 
@@ -27,7 +27,7 @@ export async function load({ params }) {
     throw error(400, `Invalid npub: ${e} ${params.npub}`);
   }
 
-  const verifyReputation = {
+  let verifyReputation = {
     created_at: Math.floor(Date.now() / 1000),
     kind: 5312,
     tags: [
@@ -38,49 +38,51 @@ export async function load({ params }) {
   };
 
   const nsec = process.env.SK;
-  const signedVerifyReputation = finalizeEvent(verifyReputation, nsec);
-  await relay.publish(signedVerifyReputation);
+  verifyReputation = finalizeEvent(verifyReputation, nsec);
+  await relay.publish(verifyReputation);
 
   const reputationResponses = await query({
     kinds: [6312, 7000],
-    '#e': [signedVerifyReputation.id],
+    '#e': [verifyReputation.id],
     limit: 1,
   });
 
   switch (reputationResponses[0].kind) {
     case 6312:
-      const reputationResults = JSON.parse(reputationResponses[0].content);
-      const pubkeys = reputationResults.map((e) => e.pubkey);
+      const reputations = reputationInfos(reputationResponses[0]);
+      const pubkeys = reputations.map((e) => e.pubkey);
 
-      const profileResponses = await query({ kinds: [0], authors: pubkeys, limit: pubkeys.length});
-      const targetProfile = profileResponses.find((e) => e.pubkey == targetKey);
-      if (!targetProfile) return {};
+      let profileEvents = await query({
+        kinds: [0], 
+        authors: pubkeys, 
+        limit: pubkeys.length
+      });
 
-      const profile = await detailedProfile(targetProfile, reputationResults[0]);
+      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
-      const targetRank = reputationResults[0].rank
-      const nodes = Number(reputationResponses[0].tags.find(tag => tag.length > 1 && tag[0] === 'nodes')?.[1] || 0);
-      profile.reputationStatus = reputationStatus(targetRank, nodes)
-
-      profile.topFollowers = await Promise.all(
-        pubkeys
-          .slice(1)
-          .map(pk => profileResponses.find(e => e.pubkey === pk))
-          .filter(Boolean)
-          .map(e => minimalProfile(e))
+      const profile = await detailedProfile(
+        profileEvents.get(targetKey), 
+        reputations[0]
       );
 
-      return profile;
-      break;
+      profile.topFollowers = await Promise.all(
+        reputations
+          .slice(1)
+          .map(rep => {
+            const evt = profileEvents.get(rep.pubkey);
+            return minimalProfile(evt, rep)
+          })
+          .filter(Boolean)
+      );
+    
+    return profile;
     
     case 7000:
       return { error: reputationResponses[0].tags.find(t => t[0] == 'status')[2] };
-      break;
   
     default:
       // unexpected kind
       const profileResponse = await query({ kinds: [0], authors: [targetKey], limit: 1});
       return await detailedProfile(profileResponse[0]);
-      break;
   }
 }

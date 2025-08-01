@@ -58,15 +58,11 @@
     <main>
       <div class="profile-card card">
         <div class="profile-header">
-          <ProfilePicture source={data.picture} size="90px"></ProfilePicture>
+          <ProfilePicture source={data.picture} size="100px"></ProfilePicture>
           <div class="profile-identity">
             <h1 class="profile-name">
               {data.name}
-              {#if data.reputationStatus == "mid"}
-                <Checkmark variant="blue" tooltip=true size={22}></Checkmark>
-              {:else if data.reputationStatus == "high"}
-                <Checkmark variant="gold" tooltip=true size={22}></Checkmark>
-              {/if}
+              <Checkmark reputation={data.reputation} tooltip=true size={22}></Checkmark>
             </h1>
             <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
             <div class="profile-stats">
@@ -90,7 +86,7 @@
           <h2 class="section-title">Top Followers</h2>
           <div class="followers-grid">
             {#each data.topFollowers.slice(0, visibleFollowers) as profile}
-              <ProfileItem {profile} />
+              <ProfileItem {profile}/>
             {/each}
           </div>
         </div>

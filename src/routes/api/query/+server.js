@@ -1,5 +1,5 @@
 import { relay, query } from "$lib/relay.js";
-import { minimalProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
+import { reputationInfos, minimalProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils";
 import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';
 import { redirect } from "@sveltejs/kit";
@@ -16,9 +16,7 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ redirect: q }));
     }
 
-    // SearchProfiles
-    const nsec = process.env.SK;
-    const dvmReqEvent = {
+    let searchProfiles = {
       created_at: Math.floor(Date.now() / 1000),
       kind: 5315,
       tags: [
@@ -28,40 +26,45 @@ export async function POST({ request }) {
       content: ''
     };
 
-    const signedDvmReqEvent = finalizeEvent(dvmReqEvent, nsec);
-    await relay.publish(signedDvmReqEvent);
+    const nsec = process.env.SK;
+    searchProfiles = finalizeEvent(searchProfiles, nsec);
+    await relay.publish(searchProfiles);
 
-    const searchResponse = await query({
+    const searchResponses = await query({
       kinds: [6315, 7000],
-      '#e': [signedDvmReqEvent.id]
+      '#e': [searchProfiles.id]
     });
 
-    switch (searchResponse[0].kind) {
+    switch (searchResponses[0].kind) {
       case 6315:
-        const results = JSON.parse(searchResponse[0].content);
-        if (!results || results == 'null') {
-          return new Response(JSON.stringify([]), {headers: { 'Content-Type': 'application/json'}});
-        }
+        const reputations = reputationInfos(searchResponses[0]);
+        const pubkeys = reputations.map((e) => e.pubkey);
 
-        const pubkeys = results.map((e) => e.pubkey);
-        const profileResponse = await query({ kinds: [0], authors: pubkeys });
+        let profileEvents = await query({
+          kinds: [0], 
+          authors: pubkeys,
+          limit: pubkeys.length
+        });
+
+        profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+
         const profiles = await Promise.all(
-          pubkeys
-            .map(pk => profileResponse.find(e => e.pubkey === pk))
-            .filter(Boolean)
-            .map(e => minimalProfile(e, null, true))
+          reputations
+          .map(rep => {
+            const evt = profileEvents.get(rep.pubkey);
+            return minimalProfile(evt, rep)
+          })
+          .filter(Boolean)
         );
         
         return new Response(JSON.stringify(profiles), {headers: {'Content-Type': 'application/json'}});
-        break;
 
       case 7000:
-        throw `Error: ${searchResponse[0].tags.find(t => t[0] == 'status')[2]};`
+        throw `Error: ${searchResponses[0].tags.find(t => t[0] == 'status')[2]};`
     
       default:
         // unexpected kind
-        throw `Error: unexpected kind ${searchResponse[0]?.kind}; content ${searchResponse[0]?.content}`
-        break;
+        throw `Error: unexpected kind ${searchResponses[0]?.kind}; content ${searchResponses[0]?.content}`
     }
 
   } catch (error) {

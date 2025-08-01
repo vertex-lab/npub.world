@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-    import ProfileItem from "./ProfileItem.svelte";
+  import ProfileItem from "./ProfileItem.svelte";
 
   let query = $state("");
   let loading = $state(false);

@@ -1,5 +1,5 @@
 <script>
-  import CopyText from "./CopyPill.svelte";
+  import CopyPill from "$lib/components/CopyPill.svelte";
 
   const { profile } = $props();
 </script>
@@ -9,7 +9,7 @@
     <tr>
       <td class="cell-left">Nostr Public Key:</td>
       <td
-        ><CopyText
+        ><CopyPill
           text={profile.npub}
           color="#4a63b8"
           backgroundColor="#eef3ff"
@@ -20,7 +20,7 @@
       <tr>
         <td class="cell-left">Lightning Address:</td>
         <td
-          ><CopyText
+          ><CopyPill
             text={profile.lud16}
             backgroundColor="#fff8e1"
             color="#b45309"

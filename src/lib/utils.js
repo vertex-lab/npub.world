@@ -6,6 +6,19 @@ export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const resolveNIP05 = async (nip05) => {
+  const [name, domain] = nip05.split('@');
+  const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${name}`, { redirect: 'follow' });
+
+  if (response.status !== 200) {
+    throw `Status ${response.status}`;
+  }
+
+  const obj = await response.json();
+  const pubkey = obj['names'][name];
+  return nip19.npubEncode(pubkey);
+}
+
 // Replace mentions in about with npub.world links
 export const normalizeMentions = async (about) => {
   if (!about) return null;

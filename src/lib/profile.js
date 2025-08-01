@@ -181,16 +181,3 @@ export const fetchBase64Image = async (url) => {
     return fallbackImage;
   }
 }
-
-export const resolveNIP05 = async (nip05) => {
-  const [name, domain] = nip05.split('@');
-  const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${name}`, { redirect: 'follow' });
-
-  if (response.status !== 200) {
-    throw `Status ${response.status}`;
-  }
-
-  const obj = await response.json();
-  const pubkey = obj['names'][name];
-  return nip19.npubEncode(pubkey);
-}

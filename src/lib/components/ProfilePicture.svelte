@@ -1,19 +1,16 @@
 <script>
-    import { fallbackImage } from "$lib/constants.js";
-
   export let source = "";
   export let size = "40px";
-  $: image = source || fallbackImage;
 </script>
 
 <div class="profile-avatar" style="--size: {size}">
-    <img src={image} alt="Profile Avatar" />
+    <img src={source} alt="Profile Avatar" />
 </div>
 
 <style>
   .profile-avatar {
     overflow: hidden;
-    margin-right: 1.5rem;
+    margin-right: 0.8rem;
     border-radius: 50%;
     width: var(--size);
     height: var(--size);

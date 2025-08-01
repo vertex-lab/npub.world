@@ -1,15 +1,15 @@
 <script>
+  import ProfilePicture from "./ProfilePicture.svelte";
+
   const { profile } = $props();
 </script>
 
 <a href={"/" + profile.npub}>
-  <div class="follower-item">
-    <div class="follower-avatar">
-      <img src={profile.picture} alt="Follower Avatar" />
-    </div>
-    <div class="follower-info">
-      <div class="follower-name">{profile.name}</div>
-      <div class="follower-handle">{profile.nip05}</div>
+  <div class="profile-item">
+    <ProfilePicture source={profile.picture} size="40px" />
+    <div class="profile-info">
+      <div class="profile-name">{profile.name}</div>
+      <div class="profile-nip05">{profile.nip05}</div>
     </div>
   </div>
 </a>
@@ -20,7 +20,7 @@
     text-decoration: none;
   }
 
-  .follower-item {
+  .profile-item {
     display: flex;
     align-items: center;
     padding: 5px;
@@ -28,32 +28,18 @@
     transition: background-color 0.2s;
   }
 
-  .follower-avatar {
-    min-width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 10px;
-  }
-
-  .follower-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .follower-info {
+  .profile-info {
     overflow: hidden;
   }
 
-  .follower-name {
+  .profile-name {
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .follower-handle {
+  .profile-nip05 {
     font-size: 0.75rem;
     color: var(--light-text);
     white-space: nowrap;

@@ -1,4 +1,3 @@
-<!-- src/lib/components/Checkmark.svelte -->
 <script>
   export let size = 16;
   export let variant = "blue"; // "blue" or "gold"

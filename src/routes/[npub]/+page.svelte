@@ -1,11 +1,11 @@
 <script>
   import { decode } from "nostr-tools/nip19";
-  import CopyText from "./CopyPill.svelte";
-  import Follower from "./Follower.svelte";
-  import FlexTable from "./FlexTable.svelte";
+  import InfoTable from "./InfoTable.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { onMount } from "svelte";
-    import Checkmark from "$lib/components/Checkmark.svelte";
+  import ProfilePicture from "$lib/components/ProfilePicture.svelte";
+  import Checkmark from "$lib/components/Checkmark.svelte";
+  import ProfileItem from "$lib/components/ProfileItem.svelte";
 
   let { data, error } = $props();
   let title = $state("");
@@ -32,8 +32,7 @@
 <div class="container">
   <header class="header">
     <div class="logo-wrapper">
-      <!-- svelte-ignore a11y_consider_explicit_label -->
-      <a href="/">
+      <a href="/" aria-label="Home">
         <div class="theme-logo theme-logo-small"></div>
       </a>
     </div>
@@ -43,11 +42,10 @@
     </div>
   </header>
 
-  {#if data.error}
+  {#if error}
     <main>
       <div class="card">
-        <h2>Error</h2>
-        {data.error}
+        <h2>Error</h2>{error}
       </div>
     </main>
   {:else if Object.keys(data).length === 0}
@@ -60,9 +58,7 @@
     <main>
       <div class="profile-card card">
         <div class="profile-header">
-          <div class="profile-avatar">
-            <img src={data.picture} alt="Profile Avatar" />
-          </div>
+          <ProfilePicture source={data.picture} size="90px"></ProfilePicture>
           <div class="profile-identity">
             <h1 class="profile-name">
               {data.name}
@@ -87,17 +83,18 @@
         </div>
 
         <div class="profile-details">
-          <FlexTable profile={data} />
+          <InfoTable profile={data} />
         </div>
 
         <div class="followers-card">
           <h2 class="section-title">Top Followers</h2>
           <div class="followers-grid">
             {#each data.topFollowers.slice(0, visibleFollowers) as profile}
-              <Follower {profile} />
+              <ProfileItem {profile} />
             {/each}
           </div>
         </div>
+        
         <div class="followers-card">
           <h2 class="section-title">Open With</h2>
           <div class="app-grid">
@@ -182,20 +179,6 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
-  }
-
-  .profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 1.5rem;
-  }
-
-  .profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .profile-identity {
@@ -305,11 +288,6 @@
       align-items: center;
       text-align: center;
       padding-bottom: 0;
-    }
-
-    .profile-avatar {
-      margin-right: 0;
-      margin-bottom: 1rem;
     }
 
     .profile-identity {

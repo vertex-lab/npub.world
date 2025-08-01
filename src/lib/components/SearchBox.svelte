@@ -1,4 +1,3 @@
-<!-- src/lib/components/SearchBox.svelte -->
 <script>
   import { onMount } from "svelte";
 

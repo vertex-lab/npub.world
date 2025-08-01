@@ -56,13 +56,13 @@ export async function load({ params }) {
       const targetProfile = profileResponses.find((e) => e.pubkey == targetKey);
       if (!targetProfile) return {};
 
-      const data = await detailedProfile(targetProfile, reputationResults[0]);
+      const profile = await detailedProfile(targetProfile, reputationResults[0]);
 
       const targetRank = reputationResults[0].rank
       const nodes = Number(reputationResponses[0].tags.find(tag => tag.length > 1 && tag[0] === 'nodes')?.[1] || 0);
-      data.reputationStatus = reputationStatus(targetRank, nodes)
+      profile.reputationStatus = reputationStatus(targetRank, nodes)
 
-      data.topFollowers = await Promise.all(
+      profile.topFollowers = await Promise.all(
         pubkeys
           .slice(1)
           .map(pk => profileResponses.find(e => e.pubkey === pk))
@@ -70,7 +70,7 @@ export async function load({ params }) {
           .map(e => minimalProfile(e))
       );
 
-      return data;
+      return profile;
       break;
     
     case 7000:

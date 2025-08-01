@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte";
   let { text, color, backgroundColor } = $props();
+
   let displayText = $state(text);
+  let copied = $state(false);
 
   onMount(() => {
     window.addEventListener("resize", handleResize);
@@ -24,10 +26,6 @@
     handleResize();
   });
 
-  // State to show copy feedback
-  let copied = $state(false);
-
-  // Function to copy text to clipboard
   function copyToClipboard() {
     navigator.clipboard
       .writeText(text)
@@ -57,7 +55,6 @@
     const midPoint = Math.floor(maxLength / 2);
     const left = str.slice(0, midPoint);
     const right = str.slice(str.length - midPoint);
-
     return `${left}...${right}`;
   }
 </script>
@@ -135,13 +132,5 @@
 
   .copy-container:active .icon :global(svg) {
     transform: scale(0.9);
-  }
-
-  @media screen and (max-width: 600px) {
-    .text {
-      white-space: nowrap; /* Prevent text from wrapping */
-      overflow: hidden; /* Hide the overflow text */
-      text-overflow: ellipsis; /* Display ellipsis (...) for overflow text */
-    }
   }
 </style>

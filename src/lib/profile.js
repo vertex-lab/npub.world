@@ -19,7 +19,7 @@
   * @property {number} [followers]
 */
 
-import { relay, query } from "$lib/utils.js";
+import { normalizeMentions, normalizeURL } from "$lib/utils.js";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
 import { fetch } from 'undici';
@@ -27,12 +27,6 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 import { fallbackImage } from '$lib/constants.js';
-
-export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;
-export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
-
-export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
-export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Extracts and returns an array of ReputationInfo from a reputation event.
@@ -72,9 +66,6 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
   if (!reputationInfo) { return null; }
 
   const info = JSON.parse(profileEvent.content);
-  const base64Image = await loadBase64Image(profileEvent, info);
-
-  info.about = await normalizeNpubsMentions(info.about)
   const formatter = new Intl.NumberFormat('en-US');
 
   return {
@@ -82,8 +73,8 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
 
     name: info.display_name || info.displayName || info.name,
-    picture: base64Image && `data:image/webp;base64,${base64Image}`,
-    about: info.about && marked(info.about),
+    picture: await loadBase64Image(info.picture),
+    about: info.about && marked(await normalizeMentions(info.about)),
     nip05: info.nip05?.toString().toLowerCase(),
     website: normalizeURL(info.website),
     lud16: info.lud16,
@@ -105,14 +96,13 @@ export const minimalProfile = async (profileEvent, reputationInfo) => {
   if (!reputationInfo) { return null; }
 
   const info = JSON.parse(profileEvent.content);
-  const base64Image = await loadBase64Image(profileEvent, info);
 
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
     reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
 
     name: info.display_name || info.displayName || info.name,
-    picture: base64Image && `data:image/webp;base64,${base64Image}`,
+    picture: await loadBase64Image(info.picture),
     nip05: info.nip05?.toString().toLowerCase(),
   }
 }
@@ -143,61 +133,30 @@ export const pagerankPercentile = (percentage, nodes) => {
   return (1-exponent) * percentage ** (-exponent) * 1/nodes
 }
 
-export const normalizeNpubsMentions = async (about) => {
-  // Replace npub mentions in about with npub.world links
-  if (!about) return null;
-
-  const npubs = Array.from(about.matchAll(NPUB_EMBED_REGEXP)).map(m => m[1]);
-  if (npubs.length == 0) return about;
-
-  const npubNames = {};
-  const authors = npubs.map((m) => nip19.decode(m).data);
-  if (authors.length == 0) return about;
-
-  const profilesResponse = await query({ kinds: [0], authors: authors });
-  for (const e of profilesResponse) {
-    const info = JSON.parse(e.content);
-    npubNames[nip19.npubEncode(e.pubkey)] = info.display_name || info.displayName || info.name;
-  }
-
-  return about.replace(NPUB_EMBED_REGEXP, (match, p1) => {
-    const name = npubNames[p1];
-    return `<a href="/${p1}">${name}</a> `;
-  });
-}
-
-export const normalizeURL = (url) => {
-  if (!url || typeof url !== 'string') return null;
-
-  if (!/^https?:\/\//i.test(url)) {
-    url = `https://${url}`;
-  }
-  return url;
-};
-
-
-export const loadBase64Image = async (profile, parsedContent) => {
-  // Attempt to load profile for this pubkey + picture url hash
-  if (typeof parsedContent.picture !== 'string') {
-    return fallbackImage;
-  }
+  // Attempt to load picture for this url by its hash
+export const loadBase64Image = async (url) => {
+  if (!url || typeof url !== 'string') return fallbackImage;
 
   try {
     const hash = createHash('sha256');
-    hash.update(parsedContent.picture, 'utf8');
+    hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    const bytes = await readFile(`/tmp/${profile.pubkey}-${pictureHash}.webp`);
-    return bytes.toString('base64');
+    const image = await readFile(`/tmp/${pictureHash}.webp`);
+    return `data:image/webp;base64,${image.toString('base64')}`;
+
   } catch (e) {
     // Otherwise fetch and write to disk
-    return await fetchBase64Image(profile, parsedContent);
+    return await fetchBase64Image(url);
   }
 }
 
-export const fetchBase64Image = async (profile, parsedContent) => {
-  try {
-    const response = await fetch(parsedContent.picture, { redirect: 'follow' });
+// Attempt to fetch picture by its URL and write it to disk
+// Returns base64 encoded image or a fallback image if it fails
+export const fetchBase64Image = async (url) => {
+  if (!url || typeof url !== 'string') return fallbackImage;
 
+  try {
+    const response = await fetch(url, { redirect: 'follow' });
     if (response.status !== 200) {
       throw `Status ${response.status}`;
     }
@@ -205,20 +164,20 @@ export const fetchBase64Image = async (profile, parsedContent) => {
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const compressedImageBuffer = await sharp(buffer)
+    const image = await sharp(buffer)
       .resize({ width: 100, height: 100 })
       .webp({ quality: 50 })
       .toBuffer();
 
     // Write in background
     const hash = createHash('sha256');
-    hash.update(parsedContent.picture, 'utf8');
+    hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    writeFile(`/tmp/${profile.pubkey}-${pictureHash}.webp`, compressedImageBuffer);
+    writeFile(`/tmp/${pictureHash}.webp`, image);
+    return `data:image/webp;base64,${image.toString('base64')}`;
 
-    return compressedImageBuffer.toString('base64');
   } catch (e) {
-    console.error(`Could not fetch or write ${parsedContent}:`, e);
+    console.error(`Could not fetch or write ${url}:`, e);
     return fallbackImage;
   }
 }

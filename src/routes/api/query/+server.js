@@ -1,5 +1,5 @@
-import { relay, query } from "$lib/utils.js";
-import { reputationInfos, minimalProfile, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/profile";
+import { relay, query, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils.js";
+import { reputationInfos, minimalProfile } from "$lib/profile";
 import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';
 import { redirect } from "@sveltejs/kit";

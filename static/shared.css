@@ -9,9 +9,14 @@
 	--card-background: #fff;
 	--highlight-color: #f0f7ff;
 	--primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+	--blueAccent: #eef3ff;
+	--blueAccentText: #4a63b8;
+
+	--yellowAccent: #fff8e1;
+	--yellowAccentText: #b45309;
 }
 
-/* Dark mode theme */
 [data-theme="dark"] {
 	--primary-text: #e1e1e1;
 	--secondary-text: #b0b0b0;
@@ -89,40 +94,12 @@ input[type="text"]:focus {
 	padding: 1rem;
 }
 
-.profile-img {
-	border-radius: 50%;
-	overflow: hidden;
-}
-
-.profile-img img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-
-.button {
-	padding: 8px 16px;
-	border-radius: 6px;
-	border: 1px solid var(--border-color);
-	background-color: var(--card-background);
-	cursor: pointer;
-	font-size: 0.9rem;
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	transition: all 0.2s;
-}
-
-.button:hover {
-	background-color: var(--highlight-color);
-}
 
 .npub-logo-svg {
 	width: 50px;
 	height: 50px;
 }
 
-/* Theme toggle button styles */
 .theme-container {
 	display: flex;
 	justify-content: center;

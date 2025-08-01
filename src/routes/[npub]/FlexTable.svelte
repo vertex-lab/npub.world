@@ -1,6 +1,6 @@
 <script>
   import CopyPill from "$lib/components/CopyPill.svelte";
-
+  
   const { profile } = $props();
 </script>
 
@@ -11,8 +11,8 @@
       <td
         ><CopyPill
           text={profile.npub}
-          color="#4a63b8"
-          backgroundColor="#eef3ff"
+          color="var(--blueAccentText)"
+          backgroundColor="var(--blueAccent)"
         /></td
       >
     </tr>
@@ -22,8 +22,8 @@
         <td
           ><CopyPill
             text={profile.lud16}
-            backgroundColor="#fff8e1"
-            color="#b45309"
+            color=var(--yellowAccentText)
+            backgroundColor=var(--yellowAccent)
           /></td
         >
       </tr>
@@ -45,6 +45,8 @@
 </table>
 
 <style>
+  @import "../../../static/shared.css";
+
   table {
     width: 100%;
     border-collapse: collapse;

@@ -72,7 +72,7 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
 
     name: info.display_name || info.displayName || info.name,
-    picture: await loadBase64Image(info.picture),
+    picture: await loadImage(info.picture, highResolution),
     about: info.about && marked(await normalizeMentions(info.about)),
     nip05: info.nip05?.toString().toLowerCase(),
     website: normalizeURL(info.website),
@@ -101,7 +101,7 @@ export const minimalProfile = async (profileEvent, reputationInfo) => {
     reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
 
     name: info.display_name || info.displayName || info.name,
-    picture: await loadBase64Image(info.picture),
+    picture: await loadImage(info.picture, lowResolution),
     nip05: info.nip05?.toString().toLowerCase(),
   }
 }
@@ -133,38 +133,42 @@ export const pagerankPercentile = (percentage, nodes) => {
 }
 
 const imagesPath = '/tmp/npub.world/pfp/'
+const lowResolution = '_100px'
+const highResolution = '_300px'
 const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
-  // Attempt to load picture for this url by its hash
-export const loadBase64Image = async (url) => {
+// Attempt to load from disk the picture by its url-hash and quality.
+// If not found, tries to fetch by its url. 
+export const loadImage = async (url, quality) => {
   if (!url || typeof url !== 'string') return fallbackImage;
+  if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
   await mkdir(imagesPath, { recursive: true });
 
   try {
     const hash = createHash('sha256');
     hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    const image = await readFile(imagesPath + pictureHash +'.webp');
+    const image = await readFile(imagesPath + pictureHash + quality +'.webp');
     return `data:image/webp;base64,${image.toString('base64')}`;
 
   } catch (e) {
     // Otherwise fetch and write to disk
-    return await fetchBase64Image(url);
+    return await fetchImage(url, quality);
   }
 }
 
 // A ring buffer that tracks the last bad urls to avoid repeated fetching
 const badURLs = new RingBuffer(100);
 
-// Attempt to fetch picture by its URL and write it to disk
-// Returns base64 encoded image or a fallback image if it fails
-const fetchBase64Image = async (url) => {
+// Attempt to fetch picture by its URL and write low and high quality versions
+// of the image to disk.
+// Returns base64 encoded image of the specified quality.
+const fetchImage = async (url, quality) => {
   if (!url || typeof url !== 'string') return fallbackImage;
+  if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
   if (badURLs.contains(url)) return fallbackImage;
 
   try {
-    await mkdir(imagesPath, { recursive: true });
-
     const response = await fetch(url, { redirect: 'follow' });
     if (response.status !== 200) {
       throw `Status ${response.status}`;
@@ -173,18 +177,31 @@ const fetchBase64Image = async (url) => {
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const image = await sharp(buffer)
+    const lowRes = await sharp(buffer)
       .resize({ width: 100, height: 100 })
-      .webp({ quality: 50 })
+      .webp({ quality: 60 })
       .toBuffer();
 
-    // Write in background
+    const highRes = await sharp(buffer)
+      .resize({ width: 300, height: 300 })
+      .webp({ quality: 80 })
+      .toBuffer();
+
     const hash = createHash('sha256');
     hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    writeFile((imagesPath + pictureHash +'.webp'), image);
-    return `data:image/webp;base64,${image.toString('base64')}`;
 
+    // Write in background
+    writeFile((imagesPath + pictureHash + lowResolution +'.webp'), lowRes);
+    writeFile((imagesPath + pictureHash + highResolution +'.webp'), highRes);
+
+    switch (quality) {
+      case lowResolution:
+        return `data:image/webp;base64,${lowRes.toString('base64')}`
+
+      case highResolution:
+        return `data:image/webp;base64,${highRes.toString('base64')}`
+    }
   } catch (e) {
     badURLs.add(url)
     return fallbackImage;

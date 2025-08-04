@@ -1,11 +1,12 @@
 <script>
     import { onMount, onDestroy } from "svelte";
+    import { browser } from "$app/environment";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
 
     const { profile } = $props();
-
     let showPicture = $state(false);
+
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
 
@@ -13,8 +14,8 @@
         if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closePicture()
     }
 
-    onMount(() => { window.addEventListener('keydown', EscClosePicture) });
-    onDestroy(() => { window.removeEventListener('keydown', EscClosePicture) });
+    onMount(() => { if (browser) window.addEventListener('keydown', EscClosePicture) });
+    onDestroy(() => { if (browser) window.removeEventListener('keydown', EscClosePicture) });
 </script>
 
 <div class="profile-header">
@@ -25,7 +26,9 @@
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
-            <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
+            <span class="name-badge-group">
+                <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
+            </span>
         </p>
         <p class="profile-handle">{profile.nip05}</p>
         <div class="profile-stats">
@@ -67,6 +70,12 @@
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid var(--border-color);
+    }
+
+    .name-badge-group {
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
     }
 
     button {

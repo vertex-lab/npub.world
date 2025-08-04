@@ -19,11 +19,11 @@
   * @property {number} [followers]
 */
 
-import { normalizeMentions, normalizeURL } from "$lib/utils.js";
+import { RingBuffer, normalizeMentions, normalizeURL } from "$lib/utils.js";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
 import { fetch } from 'undici';
-import { writeFile, readFile } from 'node:fs/promises';
+import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 import { fallbackImage } from '$lib/constants.js';
@@ -133,15 +133,18 @@ export const pagerankPercentile = (percentage, nodes) => {
   return (1-exponent) * percentage ** (-exponent) * 1/nodes
 }
 
+const imagesPath = '/tmp/npub.world/pfp/'
+
   // Attempt to load picture for this url by its hash
 export const loadBase64Image = async (url) => {
   if (!url || typeof url !== 'string') return fallbackImage;
+  await mkdir(imagesPath, { recursive: true });
 
   try {
     const hash = createHash('sha256');
     hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    const image = await readFile(`/tmp/${pictureHash}.webp`);
+    const image = await readFile(imagesPath + pictureHash +'.webp');
     return `data:image/webp;base64,${image.toString('base64')}`;
 
   } catch (e) {
@@ -150,12 +153,18 @@ export const loadBase64Image = async (url) => {
   }
 }
 
+// A ring buffer that tracks the last bad urls to avoid repeated fetching
+const badURLs = new RingBuffer(100);
+
 // Attempt to fetch picture by its URL and write it to disk
 // Returns base64 encoded image or a fallback image if it fails
-export const fetchBase64Image = async (url) => {
+const fetchBase64Image = async (url) => {
   if (!url || typeof url !== 'string') return fallbackImage;
+  if (badURLs.contains(url)) return fallbackImage;
 
   try {
+    await mkdir(imagesPath, { recursive: true });
+
     const response = await fetch(url, { redirect: 'follow' });
     if (response.status !== 200) {
       throw `Status ${response.status}`;
@@ -173,11 +182,11 @@ export const fetchBase64Image = async (url) => {
     const hash = createHash('sha256');
     hash.update(url, 'utf8');
     const pictureHash = hash.digest('hex');
-    writeFile(`/tmp/${pictureHash}.webp`, image);
+    writeFile((imagesPath + pictureHash +'.webp'), image);
     return `data:image/webp;base64,${image.toString('base64')}`;
 
   } catch (e) {
-    console.error(`Could not fetch or write ${url}:`, e);
+    badURLs.add(url)
     return fallbackImage;
   }
 }

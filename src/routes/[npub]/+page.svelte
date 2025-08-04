@@ -1,6 +1,7 @@
 <script>
   import { decode } from "nostr-tools/nip19";
   import InfoTable from "./InfoTable.svelte";
+  import DetailedProfile from "./DetailedProfile.svelte"
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { onMount } from "svelte";
   import ProfilePicture from "$lib/components/ProfilePicture.svelte";
@@ -52,24 +53,8 @@
 
   <main>
     <div class="card">
-
-      <div class="profile-header">
-        <ProfilePicture source={data.picture} size="100px"></ProfilePicture>
-        <div class="profile-identity">
-          <p class="profile-name">
-            {data.name}
-            <Checkmark reputation={data.reputation} tooltip=true size={22}></Checkmark>
-          </p>
-          <p class="profile-handle">{data.nip05}</p>
-          <div class="profile-stats">
-            <div class="stat-pair">
-              <span>Following:</span><span class="stat">{data.follows}</span>
-            </div>
-            <div class="stat-pair">
-              <span>Followers:</span><span class="stat">{data.followers}</span>
-            </div>
-          </div>
-        </div>
+      <div>
+        <DetailedProfile profile={data} />
       </div>
 
       <div class="profile-details">
@@ -97,7 +82,7 @@
           {/each}
         </div>
       </div>
-      
+
     </div>
   </main>
 </div>
@@ -134,48 +119,6 @@
     flex-shrink: 1;
     max-width: calc(100% - 70px);
     box-sizing: border-box;
-  }
-
-  .profile-header {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .profile-identity {
-    flex-grow: 1;
-  }
-
-  .profile-name {
-    word-wrap: break-word;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 1rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .profile-handle {
-    font-size: 0.95rem;
-    color: var(--light-text);
-    margin: 0 0 12px 0;
-  }
-
-  .profile-stats {
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-    display: flex;
-    gap: 1rem;
-  }
-
-  .stat-pair {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .stat {
-    font-weight: bold;
   }
 
   .profile-details {
@@ -247,33 +190,6 @@
       max-width: calc(100% - 45px);
     }
 
-    .profile-header {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding-bottom: 0;
-    }
-
-    .profile-identity {
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .profile-name {
-      margin-top: 0.5rem;
-    }
-
-    .profile-stats {
-    flex-wrap: nowrap;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-pair {
-    justify-content: center;
-    margin-bottom: 0.5rem;
-  }
-
   .followers-grid {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -291,14 +207,6 @@
 
     .search-container {
       max-width: calc(100% - 60px);
-    }
-
-    .profile-header {
-      flex-wrap: wrap;
-    }
-
-    .profile-identity {
-      width: auto;
     }
 
     .followers-grid {

@@ -4,6 +4,7 @@
   * @property {string} reputation
   * @property {string} [name]
   * @property {string} [picture]
+  * @property {string} [pictureURL]
   * @property {string} [about]
   * @property {string} [nip05]
   * @property {string} [lud16]
@@ -73,6 +74,7 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
 
     name: info.display_name || info.displayName || info.name,
     picture: await loadImage(info.picture, highResolution),
+    pictureURL: info.picture,
     about: info.about && marked(await normalizeMentions(info.about)),
     nip05: info.nip05?.toString().toLowerCase(),
     website: normalizeURL(info.website),

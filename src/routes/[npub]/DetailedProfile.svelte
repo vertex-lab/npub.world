@@ -3,10 +3,18 @@
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
 
     const { profile } = $props();
+
+    let showPicture = $state(false);
+    function openPicture() { showPicture = true; }
+    function closePicture() { showPicture = false; }
+
 </script>
 
 <div class="profile-header">
-    <ProfilePicture source={profile.picture} size="100px"></ProfilePicture>
+    <button onclick={openPicture} aria-label="View profile picture">
+        <ProfilePicture source={profile.picture} size="100px" />
+    </button>
+
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
@@ -22,17 +30,70 @@
         </div>
         </div>
     </div>
+
+    {#if showPicture}
+    <div
+        class="picture-overlay"
+        role="button"
+        tabindex="0"
+        onclick={closePicture}
+        onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? closePicture() : null}
+        aria-label="Close image"
+    >
+        <div class="picture-container">
+            <img src={profile.pictureURL} alt="Full Profile" />
+            <button class="close-button" onclick={closePicture} aria-label="Close image">✕</button>
+        </div>
+    </div>
+    {/if}
 </div>
 
 <style>
 @import "../../../static/shared.css";
-
     .profile-header {
         display: flex;
         align-items: flex-start;
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid var(--border-color);
+    }
+
+    button {
+        all: unset;
+        cursor: pointer;
+    }
+
+    .picture-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--overlay-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+
+    .picture-container {
+        position: relative;
+        text-align: center;
+    }
+
+    .picture-container img {
+        height: 100vh;
+        width: auto;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        padding: 0.4rem 0.6rem;
+        cursor: pointer;
+        z-index: 10;
     }
 
     .profile-identity {
@@ -77,6 +138,11 @@
             align-items: center;
             text-align: center;
             padding-bottom: 0;
+        }
+
+        .picture-container img {
+            width: 100vw;
+            height: auto;
         }
 
         .profile-identity {

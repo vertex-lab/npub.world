@@ -7,7 +7,7 @@
   import Checkmark from "$lib/components/Checkmark.svelte";
   import ProfileItem from "$lib/components/ProfileItem.svelte";
 
-  let { data } = $props();
+  const { data } = $props();
   let title = $state("");
   $effect(() => {title = data.name ?? data.npub;});
 
@@ -23,6 +23,14 @@
     }
   })
 
+  const apps = [
+    { name: "Default App", href: `nostr:${data.npub}` },
+    { name: "Nostrudel", href: `https://nostrudel.ninja/#/u/${data.npub}` },
+    { name: "Coracle", href: `https://coracle.social/${data.npub}` },
+    { name: "Primal", href: `https://primal.net/p/${data.npub}` },
+    { name: "Snort", href: `https://snort.social/${data.npub}` },
+    { name: "Nosta", href: `https://nosta.me/${data.npub}` },
+  ];
 </script>
 
 <svelte:head>
@@ -80,42 +88,16 @@
       <div class="section-card">
         <h2 class="section-title">Open With</h2>
         <div class="app-grid">
-          <div class="app" target="_blank">
-            <a href={"nostr:" + data.npub}>Default App</a>
-          </div>
-          <div class="app">
-            <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a>
-          </div>
-          <div class="app">
-            <a
-              href={"https://coracle.social/" + data.npub}
+          {#each apps as app}
+            <div class="app">
+              <a href={app.href}
               target="_blank"
-              rel="noopener noreferrer">Coracle</a
-            >
-          </div>
-          <div class="app">
-            <a
-              href={"https://primal.net/p/" + data.npub}
-              target="_blank"
-              rel="noopener noreferrer">Primal</a
-            >
-          </div>
-          <div class="app">
-            <a
-              href={"https://snort.social/" + data.npub}
-              target="_blank"
-              rel="noopener noreferrer">Snort</a
-            >
-          </div>
-          <div class="app">
-            <a
-              href={"https://nosta.me/" + data.npub}
-              target="_blank"
-              rel="noopener noreferrer">Nosta</a
-            >
-          </div>
+              rel="noopener noreferrer">{app.name}</a>
+            </div>
+          {/each}
         </div>
       </div>
+      
     </div>
   </main>
 </div>
@@ -167,6 +149,7 @@
   }
 
   .profile-name {
+    word-wrap: break-word;
     font-size: 1.5rem;
     font-weight: 600;
     margin-top: 1rem;

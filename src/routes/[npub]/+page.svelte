@@ -7,7 +7,7 @@
   import Checkmark from "$lib/components/Checkmark.svelte";
   import ProfileItem from "$lib/components/ProfileItem.svelte";
 
-  let { data, error } = $props();
+  let { data } = $props();
   let title = $state("");
   $effect(() => {title = data.name ?? data.npub;});
 
@@ -43,23 +43,22 @@
   </header>
 
   <main>
-    <div class="profile-card card">
+    <div class="card">
+
       <div class="profile-header">
         <ProfilePicture source={data.picture} size="100px"></ProfilePicture>
         <div class="profile-identity">
-          <h1 class="profile-name">
+          <p class="profile-name">
             {data.name}
             <Checkmark reputation={data.reputation} tooltip=true size={22}></Checkmark>
-          </h1>
-          <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
+          </p>
+          <p class="profile-handle">{data.nip05}</p>
           <div class="profile-stats">
             <div class="stat-pair">
-              <span>Following:</span>
-              <span class="stat">{data.following}</span>
+              <span>Following:</span><span class="stat">{data.follows}</span>
             </div>
             <div class="stat-pair">
-              <span>Followers:</span>
-              <span class="stat">{data.followers}</span>
+              <span>Followers:</span><span class="stat">{data.followers}</span>
             </div>
           </div>
         </div>
@@ -169,9 +168,9 @@
 
   .profile-name {
     font-size: 1.5rem;
-    vertical-align: middle;
     font-weight: 600;
-    margin: 1rem 0 0.5rem 0;
+    margin-top: 1rem;
+    margin-bottom: 0.2rem;
   }
 
   .profile-handle {
@@ -278,7 +277,7 @@
     }
 
     .profile-name {
-      margin-top: 0;
+      margin-top: 0.5rem;
     }
 
     .profile-stats {

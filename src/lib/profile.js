@@ -79,7 +79,7 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     website: normalizeURL(info.website),
     lud16: info.lud16,
 
-    following: formatter.format(reputationInfo.follows),
+    follows: formatter.format(reputationInfo.follows),
     followers: formatter.format(reputationInfo.followers),
   };
 }

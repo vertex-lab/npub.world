@@ -42,103 +42,89 @@
     </div>
   </header>
 
-  {#if error}
-    <main>
-      <div class="card">
-        <h2>Error</h2>{error}
-      </div>
-    </main>
-  {:else if Object.keys(data).length === 0}
-    <main>
-      <div class="card">
-        <h2>Profile not found</h2>
-      </div>
-    </main>
-  {:else}
-    <main>
-      <div class="profile-card card">
-        <div class="profile-header">
-          <ProfilePicture source={data.picture} size="100px"></ProfilePicture>
-          <div class="profile-identity">
-            <h1 class="profile-name">
-              {data.name}
-              <Checkmark reputation={data.reputation} tooltip=true size={22}></Checkmark>
-            </h1>
-            <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
-            <div class="profile-stats">
-              <div class="stat-pair">
-                <span>Following:</span>
-                <span class="stat">{data.following}</span>
-              </div>
-              <div class="stat-pair">
-                <span>Followers:</span>
-                <span class="stat">{data.followers}</span>
-              </div>
+  <main>
+    <div class="profile-card card">
+      <div class="profile-header">
+        <ProfilePicture source={data.picture} size="100px"></ProfilePicture>
+        <div class="profile-identity">
+          <h1 class="profile-name">
+            {data.name}
+            <Checkmark reputation={data.reputation} tooltip=true size={22}></Checkmark>
+          </h1>
+          <p class="profile-handle">{@html data.nip05 ?? "&nbsp;"}</p>
+          <div class="profile-stats">
+            <div class="stat-pair">
+              <span>Following:</span>
+              <span class="stat">{data.following}</span>
             </div>
-          </div>
-        </div>
-
-        <div class="profile-details">
-          <InfoTable profile={data} />
-        </div>
-
-        <div class="followers-card">
-          <h2 class="section-title">Top Followers</h2>
-          <div class="followers-grid">
-            {#each data.topFollowers.slice(0, visibleFollowers) as profile}
-              <ProfileItem {profile}/>
-            {/each}
-          </div>
-        </div>
-
-        <div class="followers-card">
-          <h2 class="section-title">Open With</h2>
-          <div class="app-grid">
-            <div class="app" target="_blank">
-              <a href={"nostr:" + data.npub}>Default App</a>
-            </div>
-            <div class="app">
-              <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a>
-            </div>
-            <div class="app">
-              <a
-                href={"https://coracle.social/" + data.npub}
-                target="_blank"
-                rel="noopener noreferrer">Coracle</a
-              >
-            </div>
-            <div class="app">
-              <a
-                href={"https://primal.net/p/" + data.npub}
-                target="_blank"
-                rel="noopener noreferrer">Primal</a
-              >
-            </div>
-            <div class="app">
-              <a
-                href={"https://snort.social/" + data.npub}
-                target="_blank"
-                rel="noopener noreferrer">Snort</a
-              >
-            </div>
-            <div class="app">
-              <a
-                href={"https://nosta.me/" + data.npub}
-                target="_blank"
-                rel="noopener noreferrer">Nosta</a
-              >
+            <div class="stat-pair">
+              <span>Followers:</span>
+              <span class="stat">{data.followers}</span>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  {/if}
+
+      <div class="profile-details">
+        <InfoTable profile={data} />
+      </div>
+
+      <div class="section-card">
+        <h2 class="section-title">Top Followers</h2>
+        <div class="followers-grid">
+          {#each data.topFollowers.slice(0, visibleFollowers) as profile}
+            <ProfileItem {profile}/>
+          {/each}
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2 class="section-title">Open With</h2>
+        <div class="app-grid">
+          <div class="app" target="_blank">
+            <a href={"nostr:" + data.npub}>Default App</a>
+          </div>
+          <div class="app">
+            <a href={"https://nostrudel.ninja/#/u/" + data.npub}>Nostrudel</a>
+          </div>
+          <div class="app">
+            <a
+              href={"https://coracle.social/" + data.npub}
+              target="_blank"
+              rel="noopener noreferrer">Coracle</a
+            >
+          </div>
+          <div class="app">
+            <a
+              href={"https://primal.net/p/" + data.npub}
+              target="_blank"
+              rel="noopener noreferrer">Primal</a
+            >
+          </div>
+          <div class="app">
+            <a
+              href={"https://snort.social/" + data.npub}
+              target="_blank"
+              rel="noopener noreferrer">Snort</a
+            >
+          </div>
+          <div class="app">
+            <a
+              href={"https://nosta.me/" + data.npub}
+              target="_blank"
+              rel="noopener noreferrer">Nosta</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <style>
   @import "../../../static/shared.css";
 
-  .followers-card {
+  .section-card {
     margin-top: 2rem;
   }
 

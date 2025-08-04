@@ -78,11 +78,9 @@ export async function load({ params }) {
     return profile;
     
     case 7000:
-      return { error: reputationResponses[0].tags.find(t => t[0] == 'status')[2] };
+      throw error(403, reputationResponses[0].tags.find(t => t[0] == 'status')[2])
   
     default:
-      // unexpected kind
-      const profileResponse = await query({ kinds: [0], authors: [targetKey], limit: 1});
-      return await detailedProfile(profileResponse[0]);
+      throw error(500, `received unexpected event kind: ${reputationResponses[0].kind}`)
   }
 }

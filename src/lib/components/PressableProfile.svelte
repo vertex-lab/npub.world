@@ -1,6 +1,6 @@
 <script>
   import ProfilePicture from "./ProfilePicture.svelte";
-  import Checkmark from "./Checkmark.svelte";
+  import ReputationBadge from "./ReputationBadge.svelte";
 
   export let profile;
   export let style = "";
@@ -14,7 +14,7 @@
       <div class="profile-name">
         {profile.name}
         {#if reputationBadge }
-          <Checkmark reputation={profile.reputation} size={16} />
+          <ReputationBadge reputation={profile.reputation} size={16} />
         {/if}
       </div>
       <div class="profile-nip05">{profile.nip05}</div>

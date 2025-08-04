@@ -5,7 +5,7 @@
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { onMount } from "svelte";
   import ProfilePicture from "$lib/components/ProfilePicture.svelte";
-  import Checkmark from "$lib/components/Checkmark.svelte";
+  import ReputationBadge from "$lib/components/ReputationBadge.svelte";
   import PressableProfile from "$lib/components/PressableProfile.svelte";
 
   const { data } = $props();

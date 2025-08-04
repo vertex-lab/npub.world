@@ -1,6 +1,6 @@
 <script>
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
-    import Checkmark from "$lib/components/Checkmark.svelte";
+    import ReputationBadge from "$lib/components/ReputationBadge.svelte";
 
     const { profile } = $props();
 </script>
@@ -10,7 +10,7 @@
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
-            <Checkmark reputation={profile.reputation} tooltip=true size={22}/>
+            <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
         </p>
         <p class="profile-handle">{profile.nip05}</p>
         <div class="profile-stats">

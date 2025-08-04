@@ -1,4 +1,5 @@
 <script>
+    import { onMount, onDestroy } from "svelte";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
 
@@ -8,6 +9,12 @@
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
 
+    function EscClosePicture(e) {
+        if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closePicture()
+    }
+
+    onMount(() => { window.addEventListener('keydown', EscClosePicture) });
+    onDestroy(() => { window.removeEventListener('keydown', EscClosePicture) });
 </script>
 
 <div class="profile-header">
@@ -32,15 +39,19 @@
     </div>
 
     {#if showPicture}
-    <div
-        class="picture-overlay"
+    <div class="picture-overlay"
         role="button"
-        tabindex="0"
         onclick={closePicture}
+        tabindex="0"
         onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? closePicture() : null}
         aria-label="Close image"
     >
-        <div class="picture-container">
+        <div class="picture-container" 
+            role="cell"
+            onclick={(e) => e.stopPropagation()}
+            tabindex="0"
+            onkeydown={(e) => e.key === 'Escape' || e.key === ' ' ? closePicture() : null}
+        >
             <img src={profile.pictureURL} alt="Full Profile" />
             <button class="close-button" onclick={closePicture} aria-label="Close image">✕</button>
         </div>

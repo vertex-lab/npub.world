@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
   import ProfilePicture from "$lib/components/ProfilePicture.svelte";
   import Checkmark from "$lib/components/Checkmark.svelte";
-  import ProfileItem from "$lib/components/ProfileItem.svelte";
+  import PressableProfile from "$lib/components/PressableProfile.svelte";
 
   const { data } = $props();
   let title = $state("");
@@ -65,7 +65,7 @@
         <h2 class="section-title">Top Followers</h2>
         <div class="followers-grid">
           {#each data.topFollowers.slice(0, visibleFollowers) as profile}
-            <ProfileItem {profile}/>
+            <PressableProfile {profile}/>
           {/each}
         </div>
       </div>

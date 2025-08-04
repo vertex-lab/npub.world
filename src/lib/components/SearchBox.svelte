@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import ProfileItem from "./ProfileItem.svelte";
+  import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
   let loading = $state(false);
@@ -77,7 +77,7 @@
   {#if showResults && data && data.length > 0}
     <div class="search-results">
       {#each data as profile}
-        <ProfileItem profile={profile} style="padding-left: 15px;"/>
+        <PressableProfile profile={profile} style="padding-left: 15px;"/>
       {/each}
     </div>
   {/if}

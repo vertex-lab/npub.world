@@ -26,9 +26,7 @@
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
-            <span class="name-badge-group">
-                <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
-            </span>
+            <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
         </p>
         <p class="profile-handle">{profile.nip05}</p>
         <div class="profile-stats">
@@ -70,12 +68,6 @@
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid var(--border-color);
-    }
-
-    .name-badge-group {
-        white-space: nowrap;
-        display: inline-flex;
-        align-items: center;
     }
 
     button {
@@ -172,6 +164,7 @@
 
         .profile-name {
             margin-top: 0.5rem;
+            max-width: 17ch;
         }
 
         .profile-stats {

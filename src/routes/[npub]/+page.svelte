@@ -53,6 +53,7 @@
 
   <main>
     <div class="card">
+
       <div>
         <DetailedProfile profile={data} />
       </div>
@@ -190,9 +191,9 @@
       max-width: calc(100% - 45px);
     }
 
-  .followers-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
+    .followers-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
 }
 
   /* Medium screens (tablet) */

@@ -27,7 +27,7 @@
 
     searchTimeout = setTimeout(() => {
       search();
-    }, 500);
+    }, 800);  // 800ms delay
   }
 
   async function search(event) {

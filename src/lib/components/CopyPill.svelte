@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { copyToClipboard, truncateString } from "$lib/utils";
   let { text, color, backgroundColor } = $props();
 
   let displayText = $state(text);
@@ -11,11 +12,12 @@
   });
 
   const handleResize = () => {
-    if (window.innerWidth < 400) {
+    const width = window.innerWidth
+    if (width < 400) {
       displayText = truncateString(text, 18);
-    } else if (window.innerWidth < 768) {
+    } else if (width < 768) {
       displayText = truncateString(text, 29);
-    } else if (window.innerWidth < 992) {
+    } else if (width < 992) {
       displayText = truncateString(text, 40);
     } else {
       displayText = text;
@@ -26,36 +28,12 @@
     handleResize();
   });
 
-  function copyToClipboard() {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        copied = true;
-        // Reset the copied state after 2 seconds
-        setTimeout(() => {
-          copied = false;
-        }, 2000);
-      })
-      .catch((err) => {
-        console.error("Failed to copy text: ", err);
-      });
-  }
-
   // Handle keyboard events for accessibility
   function handleKeyDown(event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       copyToClipboard();
     }
-  }
-
-  function truncateString(str, maxLength) {
-    if (str.length <= maxLength) return str;
-
-    const midPoint = Math.floor(maxLength / 2);
-    const left = str.slice(0, midPoint);
-    const right = str.slice(str.length - midPoint);
-    return `${left}...${right}`;
   }
 </script>
 

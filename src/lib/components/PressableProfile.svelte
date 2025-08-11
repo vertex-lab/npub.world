@@ -29,39 +29,39 @@
 
 <style>
 a {
-color: var(--primary-color);
-text-decoration: none;
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
 .profile-item {
-display: flex;
-align-items: center;
-padding: 8px;
-border-radius: 8px;
-transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
 }
 
 .profile-item:hover {
-background-color: var(--highlight-color);
-cursor: pointer;
+  background-color: var(--highlight-color);
+  cursor: pointer;
 }
 
 .profile-info {
-overflow: hidden;
+  overflow: hidden;
 }
 
 .profile-name {
-font-weight: 500;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-nip05 {
-font-size: 0.75rem;
-color: var(--light-text);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+  font-size: 0.75rem;
+  color: var(--light-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

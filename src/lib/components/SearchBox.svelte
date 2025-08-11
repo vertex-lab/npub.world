@@ -74,10 +74,12 @@
         type="text"
         name="q"
         placeholder="Search nostr profiles"
-        oninput={automaticSearch}
         bind:this={inputRef}
         bind:value={query}
+        autocomplete="off"
+        spellcheck="off"
         disabled={loading}
+        oninput={automaticSearch}
         onfocus={() => (showResults = true)}
       />
       {#if loading}

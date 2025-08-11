@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { copyToClipboard, truncateString } from "$lib/utils";
+  import { truncateString } from "$lib/utils";
   let { text, color, backgroundColor } = $props();
 
   let displayText = $state(text);
@@ -27,6 +27,21 @@
   $effect(() => {
     resize();
   });
+
+  function copyToClipboard() {
+    navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      copied = true;
+      // Reset the copied state after 2 seconds
+      setTimeout(() => {
+        copied = false;
+      }, 2000);
+    })
+    .catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+  }
 
   function enterCopyToClickboard(event) {
     if (event.key === "Enter" || event.key === " ") {

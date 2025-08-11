@@ -76,21 +76,6 @@ export const query = (filter) => {
   });
 }
 
-export function copyToClipboard() {
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      copied = true;
-      // Reset the copied state after 2 seconds
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    })
-    .catch((err) => {
-      console.error("Failed to copy text: ", err);
-    });
-}
-
 export function truncateString(str, maxLength) {
   if (str.length <= maxLength) return str;
   const midPoint = Math.floor(maxLength / 2);

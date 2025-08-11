@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
@@ -59,6 +59,7 @@
       }
 
       if (!isMobile) {
+        await tick()
         inputRef.focus()
       }
     }

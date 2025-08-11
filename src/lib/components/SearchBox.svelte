@@ -1,26 +1,36 @@
 <script>
-  import { onMount } from "svelte";
+  import { tick, onMount } from "svelte";
   import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
   let loading = $state(false);
   let showResults = $state(true);
+  let searchTimeout;
+
   let data = $state({});
   let inputRef;
 
   onMount(() => {
-    const handleOutsideClick = (event) => {
-      if (!inputRef.contains(event.target)) {
-        showResults = false;
-      }
-    };
     document.addEventListener("click", handleOutsideClick);
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
+    return () => { document.removeEventListener("click", handleOutsideClick) };
   });
 
-  async function handleSubmit(event) {
+  const handleOutsideClick = (event) => {
+    if (!inputRef.contains(event.target)) {
+      showResults = false;
+    }
+  };
+
+  function automaticSearch(event) {
+    query = event.target.value;
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+      search();
+    }, 500);
+  }
+
+  async function search(event) {
     if (!query.trim()) return;
 
     loading = true;
@@ -45,18 +55,22 @@
       if (data.redirect) {
         window.location.href = `/${data.redirect}`;
       }
+
+      await tick
+      inputRef.focus()
     }
   }
 </script>
 
 <div class="search-wrapper">
   <div class="search-container">
-    <form onsubmit={handleSubmit} class="search-box">
+    <form onsubmit={search} class="search-box">
       <span class="search-icon"></span>
       <input
         type="text"
         name="q"
         placeholder="Search nostr profiles"
+        oninput={automaticSearch}
         bind:this={inputRef}
         bind:value={query}
         disabled={loading}

@@ -1,5 +1,5 @@
 <script>
-  import { tick, onMount } from "svelte";
+  import { onMount } from "svelte";
   import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
@@ -7,11 +7,13 @@
   let showResults = $state(true);
   let searchTimeout;
 
+  let isMobile = $state(false)
   let data = $state({});
   let inputRef;
 
   onMount(() => {
     document.addEventListener("click", handleOutsideClick);
+    isMobile = /Mobi|Android/i.test(navigator.userAgent);
     return () => { document.removeEventListener("click", handleOutsideClick) };
   });
 
@@ -56,8 +58,9 @@
         window.location.href = `/${data.redirect}`;
       }
 
-      await tick
-      inputRef.focus()
+      if (!isMobile) {
+        inputRef.focus()
+      }
     }
   }
 </script>

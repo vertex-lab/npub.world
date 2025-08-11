@@ -1,6 +1,7 @@
 <script>
   import ProfilePicture from "./ProfilePicture.svelte";
   import ReputationBadge from "./ReputationBadge.svelte";
+  import { truncateString } from "$lib/utils"
 
   export let profile;
   export let style = "";
@@ -17,7 +18,11 @@
           <ReputationBadge reputation={profile.reputation} size={16} />
         {/if}
       </div>
-      <div class="profile-nip05">{profile.nip05}</div>
+      <div class="profile-nip05">
+        {#if profile.nip05 && profile.nip05.length > 0}
+          {truncateString(profile.nip05, 25)}
+        {/if}
+      </div>
     </div>
   </div>
 </a>

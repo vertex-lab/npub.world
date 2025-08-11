@@ -13,16 +13,25 @@
   $effect(() => {title = data.name ?? data.npub;});
 
   let visibleFollowers = $state(0);
-  onMount(() => {
+  const resizeTopFollowers = () => {
     const width = window.innerWidth;
     if (width <= 576) {
-      visibleFollowers = 5;   // for mobile
+      visibleFollowers = 6;   // for mobile
     } else if (width <= 992) {
       visibleFollowers = 9;   // for tablets
     } else {
       visibleFollowers = 10;  // for desktop
     }
+  }
+
+  onMount(() => {
+    window.addEventListener("resize", resizeTopFollowers);
+    return () => window.removeEventListener("resize", resizeTopFollowers);
   })
+
+  $effect(() => {
+    resizeTopFollowers();
+  });
 
   const apps = [
     { name: "Default App", href: `nostr:${data.npub}` },
@@ -189,10 +198,6 @@
 
     .search-container {
       max-width: calc(100% - 45px);
-    }
-
-    .followers-grid {
-      grid-template-columns: repeat(1, 1fr);
     }
 }
 

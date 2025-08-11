@@ -37,7 +37,7 @@ Make sure to have `node` and `pnpm` installed
 
 2. **Run the dev server:**
    ```bash
-   `export $(grep -v '^#' .env | xargs) && pnpm dev`
+   export $(grep -v '^#' .env | xargs) && pnpm dev
    ```
 
 

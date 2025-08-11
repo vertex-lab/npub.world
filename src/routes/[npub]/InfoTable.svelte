@@ -8,24 +8,22 @@
   <tbody>
     <tr>
       <td class="cell-left">Nostr Public Key:</td>
-      <td
-        ><CopyPill
+      <td>
+        <CopyPill
           text={profile.npub}
           color="var(--blueAccentText)"
-          backgroundColor="var(--blueAccent)"
-        /></td
-      >
+          backgroundColor="var(--blueAccent)"/>
+        </td>
     </tr>
     {#if profile.lud16}
       <tr>
         <td class="cell-left">Lightning Address:</td>
-        <td
-          ><CopyPill
+        <td>
+          <CopyPill
             text={profile.lud16}
             color=var(--yellowAccentText)
-            backgroundColor=var(--yellowAccent)
-          /></td
-        >
+            backgroundColor=var(--yellowAccent)/>
+        </td>
       </tr>
     {/if}
     {#if profile.about}

@@ -6,12 +6,7 @@
   let displayText = $state(text);
   let copied = $state(false);
 
-  onMount(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  });
-
-  const handleResize = () => {
+  const resize = () => {
     const width = window.innerWidth
     if (width < 400) {
       displayText = truncateString(text, 18);
@@ -24,12 +19,16 @@
     }
   };
 
-  $effect(() => {
-    handleResize();
+  onMount(() => {
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
   });
 
-  // Handle keyboard events for accessibility
-  function handleKeyDown(event) {
+  $effect(() => {
+    resize();
+  });
+
+  function enterCopyToClickboard(event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       copyToClipboard();
@@ -41,7 +40,7 @@
   type="button"
   class="copy-container"
   onclick={copyToClipboard}
-  onkeydown={handleKeyDown}
+  onkeydown={enterCopyToClickboard}
   aria-label="Copy {text} to clipboard"
   style="background-color: {backgroundColor}; color: {color}"
 >

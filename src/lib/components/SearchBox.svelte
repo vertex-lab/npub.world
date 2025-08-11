@@ -194,7 +194,6 @@
   @media (max-width: 576px) {
     input[type="text"] {
       padding: 12px 12px 12px 36px;
-      font-size: 0.9rem;
     }
   }
 </style>

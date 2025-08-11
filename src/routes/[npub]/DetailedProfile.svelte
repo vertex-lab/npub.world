@@ -28,7 +28,7 @@
             {profile.name}
             <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
         </p>
-        <p class="profile-handle">{profile.nip05}</p>
+        <p class="profile-nip05">{profile.nip05}</p>
         <div class="profile-stats">
         <div class="stat-pair">
             <span>Following:</span><span class="stat">{profile.follows}</span>
@@ -67,6 +67,7 @@
         align-items: flex-start;
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
+        margin: 0 auto 1.5rem;
         border-bottom: 1px solid var(--border-color);
     }
 
@@ -109,21 +110,29 @@
     }
 
     .profile-identity {
+        width: 100%;
+        margin: 0 auto;
         flex-grow: 1;
+        min-width: 0;
+        overflow: hidden;
     }
 
     .profile-name {
         word-wrap: break-word;
         font-size: 1.5rem;
         font-weight: 600;
-        margin-top: 1rem;
-        margin-bottom: 0.2rem;
+        margin: 1rem auto 0;
+        margin-bottom: 0.5rem;
     }
 
-    .profile-handle {
+    .profile-nip05 {
         font-size: 0.95rem;
         color: var(--light-text);
         margin: 0 0 12px 0;
+        max-width: 100%;   
+        white-space: nowrap;
+        overflow: hidden;       
+        text-overflow: ellipsis;
     }
 
     .profile-stats {
@@ -142,7 +151,7 @@
         font-weight: bold;
     }
     
-        /* Responsive styles */
+    /* Responsive styles */
     /* Small screens (mobile) */
     @media (max-width: 576px) {
         .profile-header {
@@ -155,11 +164,6 @@
         .picture-container img {
             width: 100vw;
             height: auto;
-        }
-
-        .profile-identity {
-            margin-bottom: 1rem;
-            text-align: center;
         }
 
         .profile-name {
@@ -176,17 +180,6 @@
         .stat-pair {
             justify-content: center;
             margin-bottom: 0.5rem;
-        }
-    }
-
-    /* Medium screens (tablet) */
-    @media (min-width: 577px) and (max-width: 992px) {
-        .profile-header {
-            flex-wrap: wrap;
-        }
-
-        .profile-identity {
-             width: auto;
         }
     }
 </style>

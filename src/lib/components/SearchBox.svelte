@@ -123,7 +123,7 @@
 
   .search-container.active {
     border-radius: 8px 8px 0 0;
-    border-bottom: none;
+    border-bottom: 1px solid transparent;
   }
 
   .search-box {

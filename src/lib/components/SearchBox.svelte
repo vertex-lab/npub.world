@@ -33,7 +33,7 @@
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       search();
-    }, 500);  // 500ms delay
+    }, 300);  // 300ms delay
   }
 
   async function search(event) {
@@ -82,7 +82,6 @@
         bind:this={inputRef}
         autocomplete="off"
         spellcheck="off"
-        disabled={isLoading}
         oninput={automaticSearch}
         onfocus={() => (hasFocus = true)}
       />

@@ -27,8 +27,8 @@
   };
 
   function automaticSearch(event) {
-    query = event.target.value.trim();
-    if (!query || query.length < 3) return
+    query = event.target.value;
+    if (!query.trim() || query.length < 3) return
 
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
@@ -180,7 +180,6 @@
   }
 
   .error {
-    color: var(--error-color);
     text-align: center;
     margin-top: 1rem;
   }

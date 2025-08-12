@@ -27,12 +27,13 @@
   };
 
   function automaticSearch(event) {
-    query = event.target.value;
-    clearTimeout(searchTimeout);
+    query = event.target.value.trim();
+    if (!query || query.length < 3) return
 
+    clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       search();
-    }, 800);  // 800ms delay
+    }, 500);  // 500ms delay
   }
 
   async function search(event) {

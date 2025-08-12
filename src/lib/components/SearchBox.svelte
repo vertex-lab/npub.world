@@ -5,7 +5,7 @@
   let query = $state("");
   let data = $state({});
 
-  let searchRef;
+  let inputRef;
   let searchTimeout;
 
   let isLoading = $state(false);
@@ -21,7 +21,7 @@
   });
 
   const handleOutsideClick = (event) => {
-    if (!searchRef.contains(event.target)) {
+    if (!inputRef.contains(event.target)) {
       hasFocus = false;
     }
   };
@@ -63,14 +63,14 @@
 
       if (!isMobile) {
         await tick()
-        searchRef.focus()
+        inputRef.focus()
       }
     }
   }
 </script>
 
 <div class="search-wrapper">
-  <div class="search-container" class:active={showResult()} bind:this={searchRef}>
+  <div class="search-container" class:active={showResult()}>
     <form onsubmit={search} class="search-box">
       <span class="search-icon"></span>
       <input
@@ -78,6 +78,7 @@
         name="q"
         placeholder="Search nostr profiles"
         bind:value={query}
+        bind:this={inputRef}
         autocomplete="off"
         spellcheck="off"
         disabled={isLoading}

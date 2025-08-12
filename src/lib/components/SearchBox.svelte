@@ -4,29 +4,30 @@
 
   let query = $state("");
   let data = $state({});
+  let searchTimeout;
 
   let inputRef;
-  let searchTimeout;
+  let selectedResult = $state(-1); // the index of the seleted search result
 
   let isLoading = $state(false);
   let isMobile = $state(false);
   let hasFocus = $state(true);
-
   const showResult = () => { return hasFocus && data && data.length > 0 }
 
   onMount(() => {
-    document.addEventListener("click", handleOutsideClick);
     isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    return () => { document.removeEventListener("click", handleOutsideClick) };
+
+    document.addEventListener("click", closeOnOutsideClick);
+    return () => { document.removeEventListener("click", closeOnOutsideClick) };
   });
 
-  const handleOutsideClick = (event) => {
+  const closeOnOutsideClick = (event) => {
     if (!inputRef.contains(event.target)) {
       hasFocus = false;
     }
   };
 
-  function automaticSearch(event) {
+  const automaticSearch = (event) => {
     query = event.target.value;
     if (!query.trim() || query.length < 3) return
 
@@ -34,6 +35,30 @@
     searchTimeout = setTimeout(() => {
       search();
     }, 300);  // 300ms delay
+  }
+
+  const moveWithArrows = (event) => {
+    if (!data || data.length === 0) return;
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        selectedResult = (selectedResult + 1) % data.length;
+        break;
+
+      case "ArrowUp":
+        event.preventDefault();
+        selectedResult = Math.max( (selectedResult - 1) % data.length, -1);
+        break;
+
+      case "Enter":
+        if (selectedResult >= 0) {
+          event.preventDefault();
+          const profile = data[selectedResult];
+          window.location.href = `/${profile.npub}`;
+        }
+        break;
+    }
   }
 
   async function search(event) {
@@ -83,6 +108,7 @@
         autocomplete="off"
         spellcheck="off"
         oninput={automaticSearch}
+        onkeydown={moveWithArrows}
         onfocus={() => (hasFocus = true)}
       />
       {#if isLoading}
@@ -99,8 +125,11 @@
 
   {#if showResult()}
     <div class="search-results">
-      {#each data as profile}
-        <PressableProfile profile={profile} style="padding-left: 15px;"/>
+      {#each data as profile, i}
+        <PressableProfile
+          profile={profile} 
+          style={i === selectedResult ? "padding-left: 15px; background-color: var(--highlight-color);" : "padding-left: 15px;"}
+        />
       {/each}
     </div>
   {/if}

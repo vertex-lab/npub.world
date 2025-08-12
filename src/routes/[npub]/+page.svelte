@@ -175,14 +175,13 @@
   /* Small screens (mobile) */
   @media (max-width: 576px) {
     .container {
-      padding: 0rem;
-      padding-bottom: 1rem;
+      padding: 1rem 0rem;
     }
 
     .header {
       flex-direction: row;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.0rem;
       gap: 0.5rem;
     }
 

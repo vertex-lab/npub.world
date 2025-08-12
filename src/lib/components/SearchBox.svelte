@@ -6,7 +6,8 @@
   let data = $state({});
   let searchTimeout;
 
-  let inputRef;
+  let inputRef = $state(null)
+  let resultsRef = $state(null);
   let selectedResult = $state(-1); // the index of the seleted search result
 
   let isLoading = $state(false);
@@ -35,30 +36,6 @@
     searchTimeout = setTimeout(() => {
       search();
     }, 300);  // 300ms delay
-  }
-
-  const moveWithArrows = (event) => {
-    if (!data || data.length === 0) return;
-
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault();
-        selectedResult = (selectedResult + 1) % data.length;
-        break;
-
-      case "ArrowUp":
-        event.preventDefault();
-        selectedResult = Math.max( (selectedResult - 1) % data.length, -1);
-        break;
-
-      case "Enter":
-        if (selectedResult >= 0) {
-          event.preventDefault();
-          const profile = data[selectedResult];
-          window.location.href = `/${profile.npub}`;
-        }
-        break;
-    }
   }
 
   async function search(event) {
@@ -93,6 +70,56 @@
       }
     }
   }
+
+  const moveWithArrows = (event) => {
+    if (!data || data.length === 0) return;
+    if (!resultsRef) return;
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        selectedResult = (selectedResult + 1) % data.length;
+        ensureVisible()
+        break;
+
+      case "ArrowUp":
+        event.preventDefault();
+        selectedResult = Math.max( (selectedResult - 1) % data.length, -1);
+        ensureVisible()
+        break;
+
+      case "Enter":
+        if (selectedResult >= 0) {
+          event.preventDefault();
+          const profile = data[selectedResult];
+          window.location.href = `/${profile.npub}`;
+        }
+        break;
+    }
+  }
+
+  function ensureVisible() {
+    if (!resultsRef || selectedResult < 0) return;
+    const top = resultsRef.scrollTop;
+    const bottom = top + resultsRef.clientHeight;
+
+    const selected = resultsRef.children[selectedResult];
+    if (!selected) return;
+
+    const selectedTop = selected.offsetTop;
+    const selectedBottom = selectedTop + selected.offsetHeight;
+
+    if (selectedTop < top) {
+      // selected above the view
+      resultsRef.scrollTop = selectedTop;
+    } 
+    
+    if (selectedBottom > bottom) {
+      // selected below the view
+      resultsRef.scrollTop = selectedBottom - resultsRef.clientHeight;
+    }
+  }
+
 </script>
 
 <div class="search-wrapper">
@@ -124,11 +151,13 @@
   {/if}
 
   {#if showResult()}
-    <div class="search-results">
+    <div class="search-results" bind:this={resultsRef}>
       {#each data as profile, i}
         <PressableProfile
           profile={profile} 
-          style={i === selectedResult ? "padding-left: 15px; background-color: var(--highlight-color);" : "padding-left: 15px;"}
+          style={i === selectedResult 
+            ? "padding-left: 15px; background-color: var(--highlight-color);" 
+            : "padding-left: 15px;"}
         />
       {/each}
     </div>

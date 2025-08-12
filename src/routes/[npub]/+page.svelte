@@ -34,12 +34,12 @@
   });
 
   const apps = [
-    { name: "Default App", href: `nostr:${data.npub}` },
-    { name: "Nostrudel", href: `https://nostrudel.ninja/#/u/${data.npub}` },
-    { name: "Coracle", href: `https://coracle.social/${data.npub}` },
-    { name: "Primal", href: `https://primal.net/p/${data.npub}` },
-    { name: "Snort", href: `https://snort.social/${data.npub}` },
-    { name: "Nosta", href: `https://nosta.me/${data.npub}` },
+    { name: "Default App", url: "nostr:"},
+    { name: "Nostrudel", url: "https://nostrudel.ninja/#/u/" },
+    { name: "Coracle", url: "https://coracle.social/" },
+    { name: "Primal", url: "https://primal.net/p/" },
+    { name: "Snort", url: "https://snort.social/" },
+    { name: "Nosta", url: "https://nosta.me/" },
   ];
 </script>
 
@@ -85,7 +85,7 @@
         <div class="app-grid">
           {#each apps as app}
             <div class="app">
-              <a href={app.href}
+              <a href={app.url + data.npub}
               target="_blank"
               rel="noopener noreferrer">{app.name}</a>
             </div>

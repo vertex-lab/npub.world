@@ -3,13 +3,16 @@
   import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
-  let loading = $state(false);
-  let showResults = $state(true);
+  let data = $state({});
+
+  let searchRef;
   let searchTimeout;
 
-  let isMobile = $state(false)
-  let data = $state({});
-  let inputRef;
+  let isLoading = $state(false);
+  let isMobile = $state(false);
+  let hasFocus = $state(true);
+
+  const showResult = () => { return hasFocus && data && data.length > 0 }
 
   onMount(() => {
     document.addEventListener("click", handleOutsideClick);
@@ -18,8 +21,8 @@
   });
 
   const handleOutsideClick = (event) => {
-    if (!inputRef.contains(event.target)) {
-      showResults = false;
+    if (!searchRef.contains(event.target)) {
+      hasFocus = false;
     }
   };
 
@@ -35,7 +38,7 @@
   async function search(event) {
     if (!query.trim()) return;
 
-    loading = true;
+    isLoading = true;
     data = [];
 
     try {
@@ -51,8 +54,8 @@
     } catch (error) {
       // $status = 'Error: ' + error.message;
     } finally {
-      showResults = true;
-      loading = false;
+      hasFocus = true;
+      isLoading = false;
 
       if (data.redirect) {
         window.location.href = `/${data.redirect}`;
@@ -60,29 +63,28 @@
 
       if (!isMobile) {
         await tick()
-        inputRef.focus()
+        searchRef.focus()
       }
     }
   }
 </script>
 
 <div class="search-wrapper">
-  <div class="search-container">
+  <div class="search-container" class:active={showResult()} bind:this={searchRef}>
     <form onsubmit={search} class="search-box">
       <span class="search-icon"></span>
       <input
         type="text"
         name="q"
         placeholder="Search nostr profiles"
-        bind:this={inputRef}
         bind:value={query}
         autocomplete="off"
         spellcheck="off"
-        disabled={loading}
+        disabled={isLoading}
         oninput={automaticSearch}
-        onfocus={() => (showResults = true)}
+        onfocus={() => (hasFocus = true)}
       />
-      {#if loading}
+      {#if isLoading}
         <span class="spinner"></span>
       {/if}
     </form>
@@ -94,7 +96,7 @@
     </div>
   {/if}
 
-  {#if showResults && data && data.length > 0}
+  {#if showResult()}
     <div class="search-results">
       {#each data as profile}
         <PressableProfile profile={profile} style="padding-left: 15px;"/>
@@ -113,6 +115,14 @@
   .search-container {
     width: 100%;
     box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .search-container.active {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
   }
 
   .search-box {
@@ -137,11 +147,12 @@
   input[type="text"] {
     width: 100%;
     padding: 15px 15px 15px 40px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
     font-size: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
   }
 
   .spinner {
@@ -175,19 +186,17 @@
 
   .search-results {
     position: absolute;
+    top: 100%;
     left: 0;
-    top: 100%; /* Position directly below the search container */
-    width: 100%; /* Match the width of the search container */
+    right: 0;
     max-height: 400px;
     overflow-y: auto;
     z-index: 10;
 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     background-color: var(--card-background);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-    border-radius: 8px;
+    border-radius: 0 0 8px 8px;
     border: 1px solid var(--border-color);
-    border-top: none;
   }
 
   /* Responsive adjustments */

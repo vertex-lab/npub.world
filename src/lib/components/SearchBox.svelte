@@ -129,7 +129,12 @@
 <div class="search-wrapper">
   <div class="search-container" class:active={showResult()}>
     <form onsubmit={search} class="search-box">
-      <span class="search-icon"></span>
+      {#if isLoading}
+        <span class="spinner"></span>
+      {:else}
+        <span class="search-icon"></span>
+      {/if}
+
       <input
         type="text"
         name="q"
@@ -142,9 +147,6 @@
         onkeydown={moveWithArrows}
         onfocus={() => (hasFocus = true)}
       />
-      {#if isLoading}
-        <span class="spinner"></span>
-      {/if}
     </form>
   </div>
 
@@ -220,11 +222,11 @@
 
   .spinner {
     position: absolute;
-    right: 12px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border: 2px solid var(--border-color);
     border-top: 2px solid var(--primary-color);
     border-radius: 50%;

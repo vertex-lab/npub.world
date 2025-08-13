@@ -13,7 +13,13 @@
   let isLoading = $state(false);
   let isMobile = $state(false);
   let hasFocus = $state(true);
-  const showResult = () => { return hasFocus && data && data.length > 0 }
+
+  const showResult = () => {
+    if (!hasFocus || !data) {
+      return false
+    }
+    return data.error || data.length > 0
+  }
 
   onMount(() => {
     isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -152,7 +158,7 @@
 
   {#if data && data.error}
     <div class="search-results">
-      <p class="error">{data.error}</p>
+      <p style="text-align: center;">{data.error}</p>
     </div>
   {/if}
 
@@ -241,11 +247,6 @@
     100% {
       transform: translateY(-50%) rotate(360deg);
     }
-  }
-
-  .error {
-    text-align: center;
-    margin-top: 1rem;
   }
 
   .search-results {

@@ -3,16 +3,37 @@
   import InfoTable from "./InfoTable.svelte";
   import DetailedProfile from "./DetailedProfile.svelte"
   import SearchBox from "$lib/components/SearchBox.svelte";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import ProfilePicture from "$lib/components/ProfilePicture.svelte";
   import ReputationBadge from "$lib/components/ReputationBadge.svelte";
   import PressableProfile from "$lib/components/PressableProfile.svelte";
 
   const { data } = $props();
   let title = $state("");
-  $effect(() => {title = data.name ?? data.npub;});
-
+  let searchBoxRef;
   let visibleFollowers = $state(0);
+
+  const apps = [
+    { name: "Default App", url: "nostr:"},
+    { name: "Nostrudel", url: "https://nostrudel.ninja/#/u/" },
+    { name: "Coracle", url: "https://coracle.social/" },
+    { name: "Primal", url: "https://primal.net/p/" },
+    { name: "Snort", url: "https://snort.social/" },
+    { name: "Nosta", url: "https://nosta.me/" },
+  ];
+
+  onMount( () => {
+    searchBoxRef.focus();
+
+    window.addEventListener("resize", resizeTopFollowers);
+    return () => window.removeEventListener("resize", resizeTopFollowers);
+  })
+
+  $effect(() => {
+    title = data.name ?? data.npub;
+    resizeTopFollowers();
+  });
+
   const resizeTopFollowers = () => {
     const width = window.innerWidth;
     if (width <= 576) {
@@ -23,24 +44,6 @@
       visibleFollowers = 10;  // for desktop
     }
   }
-
-  onMount(() => {
-    window.addEventListener("resize", resizeTopFollowers);
-    return () => window.removeEventListener("resize", resizeTopFollowers);
-  })
-
-  $effect(() => {
-    resizeTopFollowers();
-  });
-
-  const apps = [
-    { name: "Default App", url: "nostr:"},
-    { name: "Nostrudel", url: "https://nostrudel.ninja/#/u/" },
-    { name: "Coracle", url: "https://coracle.social/" },
-    { name: "Primal", url: "https://primal.net/p/" },
-    { name: "Snort", url: "https://snort.social/" },
-    { name: "Nosta", url: "https://nosta.me/" },
-  ];
 </script>
 
 <svelte:head>
@@ -56,7 +59,7 @@
     </div>
 
     <div class="search-container">
-      <SearchBox results={[]} />
+      <SearchBox results={[]} bind:this={searchBoxRef}/>
     </div>
   </header>
 

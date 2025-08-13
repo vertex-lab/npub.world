@@ -120,6 +120,10 @@
     }
   }
 
+  // allow caller to focus on the search bar
+  export function focus() {
+    inputRef?.focus();
+  }
 </script>
 
 <div class="search-wrapper">

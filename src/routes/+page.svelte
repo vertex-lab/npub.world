@@ -1,8 +1,13 @@
 <script>
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { npubEncode } from "nostr-tools/nip19";
+  import { onMount } from "svelte";
+
   let searchQuery = $state("");
   let { data } = $props();
+  let searchBoxRef;
+
+  onMount( () => { searchBoxRef.focus() })
 </script>
 
 <svelte:head>
@@ -19,7 +24,7 @@
   </div>
 
   <div class="search-container">
-    <SearchBox query={searchQuery} {data} />
+    <SearchBox query={searchQuery} {data} bind:this={searchBoxRef}/>
   </div>
 </div>
 

@@ -10,12 +10,12 @@
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
 
-    function EscClosePicture(e) {
+    function escClosePicture(e) {
         if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closePicture()
     }
 
-    onMount(() => { if (browser) window.addEventListener('keydown', EscClosePicture) });
-    onDestroy(() => { if (browser) window.removeEventListener('keydown', EscClosePicture) });
+    onMount(() => { if (browser) window.addEventListener('keydown', escClosePicture) });
+    onDestroy(() => { if (browser) window.removeEventListener('keydown', escClosePicture) });
 </script>
 
 <div class="profile-header">
@@ -98,13 +98,16 @@
 
     .close-button {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 1rem;
+        right: 1rem;
         background: #fff;
         border: none;
         border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        line-height: 2rem;  /* vertical alignment*/
         font-size: 1.2rem;
-        padding: 0.4rem 0.6rem;
+        padding: 0;
         cursor: pointer;
         z-index: 10;
     }

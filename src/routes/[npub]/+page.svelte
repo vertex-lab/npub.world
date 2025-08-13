@@ -10,8 +10,9 @@
 
   const { data } = $props();
   let title = $state("");
-  let searchBoxRef;
   let visibleFollowers = $state(0);
+  let searchBoxRef;
+  let isMobile = $state(false);
 
   const apps = [
     { name: "Default App", url: "nostr:"},
@@ -23,7 +24,11 @@
   ];
 
   onMount( () => {
-    searchBoxRef.focus();
+    isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+      searchBoxRef.focus();
+    }
 
     window.addEventListener("resize", resizeTopFollowers);
     return () => window.removeEventListener("resize", resizeTopFollowers);

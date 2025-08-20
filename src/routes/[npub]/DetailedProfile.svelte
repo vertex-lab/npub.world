@@ -6,27 +6,41 @@
 
     const { profile } = $props();
     let showPicture = $state(false);
+    let isMobile = $state(false);
 
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
+    function checkIfMobile() { isMobile = window.innerWidth <= 576 }
 
     function escClosePicture(e) {
         if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closePicture()
     }
 
-    onMount(() => { if (browser) window.addEventListener('keydown', escClosePicture) });
-    onDestroy(() => { if (browser) window.removeEventListener('keydown', escClosePicture) });
+    onMount(() => { 
+        if (browser) {
+            checkIfMobile()
+            window.addEventListener("resize", checkIfMobile);
+            window.addEventListener('keydown', escClosePicture)
+        }
+    });
+
+    onDestroy(() => { 
+        if (browser) {
+            window.removeEventListener("resize", checkIfMobile);
+            window.removeEventListener('keydown', escClosePicture) 
+        }
+    });
 </script>
 
 <div class="profile-header">
     <button onclick={openPicture} aria-label="View profile picture">
-        <ProfilePicture source={profile.picture} size="100px" />
+        <ProfilePicture source={profile.picture} size={ isMobile ? "130px" : "100px" } />
     </button>
 
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
-            <ReputationBadge reputation={profile.reputation} tooltip=true size={22}/>
+            <ReputationBadge reputation={profile.reputation} tooltip={isMobile ? false : true } size={22}/>
         </p>
         <p class="profile-nip05">{profile.nip05}</p>
         <div class="profile-stats">

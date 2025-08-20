@@ -70,12 +70,5 @@
   .wrapper:hover .tooltip {
     visibility: visible;
   }
-
-  @media (max-width: 576px) {
-  .tooltip {
-    display: none;
-  }
-}
-
 </style>
   

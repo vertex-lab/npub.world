@@ -7,15 +7,12 @@
 	--background-color: #f9f9f9;
 	--card-background: #fff;
 	--highlight-color: #f0f7ff;
-
 	--overlay-color: rgba(0, 0, 0, 0.7);
 
 	--blueAccent: #eef3ff;
 	--blueAccentText: #4a63b8;
-
 	--yellowAccent: #fff8e1;
 	--yellowAccentText: #b45309;
-
 
 	--primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -28,6 +25,12 @@
 	--background-color: #121212;
 	--card-background: #1e1e1e;
 	--highlight-color: #2a3344;
+	--overlay-color: rgba(0, 0, 0, 0.7);
+
+	--blueAccent: #1e293b;
+	--blueAccentText: #93c5fd;
+	--yellowAccent: #3a2e14;
+	--yellowAccentText: #e4ba15;
 }
 
 body {

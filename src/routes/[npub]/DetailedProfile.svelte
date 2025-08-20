@@ -100,7 +100,8 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background: #fff;
+        background: var(--background-color);
+        color: var(--primary-text);
         border: none;
         border-radius: 50%;
         width: 2rem;

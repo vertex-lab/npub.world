@@ -10,9 +10,9 @@
     : "none";
 
   $: tooltipText = reputation === "high"
-    ? "Earned by being in the top 0.01%"
+    ? "Only the top 0.01% earn this badge"
     : reputation === "mid"
-    ? "Earned by being in the top 1%"
+    ? "Only the top 1% earn this badge"
     : "";
 </script>
 

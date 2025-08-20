@@ -1,21 +1,27 @@
 <script>
   import { onMount } from "svelte";
   import { truncateString } from "$lib/utils";
-  let { text, color, backgroundColor } = $props();
 
+  let { text, color, backgroundColor } = $props();
   let displayText = $state(text);
   let copied = $state(false);
 
   const resize = () => {
     const width = window.innerWidth
-    if (width < 400) {
-      displayText = truncateString(text, 18);
-    } else if (width < 768) {
-      displayText = truncateString(text, 29);
+    if (width < 300) {
+      displayText = truncateString(text, 15);
+    } else if (width < 350) {
+      displayText = truncateString(text, 20);
+    } else if (width < 400) {
+      displayText = truncateString(text, 25);
+    } else if (width < 576) {
+      displayText = truncateString(text, 27);
+    } else if (width < 700) {
+      displayText = truncateString(text, 30);
     } else if (width < 992) {
-      displayText = truncateString(text, 40);
+      displayText = truncateString(text, 35);
     } else {
-      displayText = text;
+      displayText = truncateString(text, 70);
     }
   };
 

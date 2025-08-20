@@ -2,7 +2,8 @@ import { Relay } from 'nostr-tools';
 import * as nip19 from 'nostr-tools/nip19';
 
 export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;
-export const NPUB_EMBED_REGEXP = /\bnostr:(npub1[a-z0-9]{58})\b/g;
+export const NPUB_MENTION_REGEXP = /\S*(npub1[a-z0-9]{58})\S*/g;
+
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,31 +20,29 @@ export const resolveNIP05 = async (nip05) => {
   return nip19.npubEncode(pubkey);
 }
 
-// Replace mentions in about with npub.world links
-export const normalizeMentions = async (about) => {
-  if (!about) return null;
+// Replace mentions in a text with npub.world links
+export const normalizeMentions = async (text) => {
+  if (!text || text.length === 0) return null;
 
-  const npubs = Array.from(about.matchAll(NPUB_EMBED_REGEXP)).map(m => m[1]);
-  if (npubs.length == 0) return about;
+  const pubkeys = Array.from(text.matchAll(NPUB_MENTION_REGEXP)).map(m => nip19.decode(m[1]).data);
+  if (pubkeys.length == 0) return text;
 
-  const npubNames = {};
-  const authors = npubs.map((m) => nip19.decode(m).data);
-  if (authors.length == 0) return about;
-
+  const names = {};
   const profileEvents = await query({
      kinds: [0], 
-     authors: authors,
-     limit: authors.length
+     authors: pubkeys,
+     limit: pubkeys.length
   });
 
   for (const e of profileEvents) {
     const info = JSON.parse(e.content);
-    npubNames[nip19.npubEncode(e.pubkey)] = info.display_name || info.displayName || info.name;
+    names[e.pubkey] = info.display_name || info.displayName || info.name;
   }
 
-  return about.replace(NPUB_EMBED_REGEXP, (match, p1) => {
-    const name = npubNames[p1];
-    return `<a href="/${p1}">${name}</a> `;
+  return text.replace(NPUB_MENTION_REGEXP, (match, npub) => {
+    const pubkey = nip19.decode(npub).data
+    const name = names[pubkey] || npub;
+    return `<a href="/${npub}">${name}</a> `;
   });
 }
 

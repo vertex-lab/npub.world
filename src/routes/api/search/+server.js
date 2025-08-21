@@ -1,4 +1,4 @@
-import { relay, query } from "$lib/nostr.js";
+import { query, dvm } from "$lib/nostr.js";
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import { reputationInfos, minimalProfile } from "$lib/profile";
 import * as nip19 from 'nostr-tools/nip19';
@@ -33,59 +33,36 @@ export async function GET({ url }) {
       return json({ redirect: q });
     }
 
-    let searchProfiles = {
-      created_at: Math.floor(Date.now() / 1000),
+    const searchProfiles = {
       kind: 5315,
       tags: [
         ["param", "search", q],
         ["param", "limit", limit.toString()],
       ],
-      content: ''
     };
 
-    const nsec = process.env.SK;
-    searchProfiles = finalizeEvent(searchProfiles, nsec);
-    await relay.publish(searchProfiles);
+    const response = await dvm(searchProfiles)
+    const reputations = reputationInfos(response);
+    const pubkeys = reputations.map((e) => e.pubkey);
 
-    const searchResponses = await query({
-      kinds: [6315, 7000],
-      '#e': [searchProfiles.id]
+    let profileEvents = await query({
+      kinds: [0], 
+      authors: pubkeys,
+      limit: pubkeys.length
     });
 
-    if (!searchResponses.length) {
-      throw error(404, 'No search results returned');
-    }
-
-    switch (searchResponses[0].kind) {
-      case 6315:
-        const reputations = reputationInfos(searchResponses[0]);
-        const pubkeys = reputations.map((e) => e.pubkey);
-
-        let profileEvents = await query({
-          kinds: [0], 
-          authors: pubkeys,
-          limit: pubkeys.length
-        });
-
-        profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
-
-        const profiles = await Promise.all(
-          reputations
-          .map(rep => {
-            const evt = profileEvents.get(rep.pubkey);
-            return minimalProfile(evt, rep)
-          })
-          .filter(Boolean)
-        );
-        
-        return json(profiles);
-
-      case 7000:
-        throw error(403, searchResponses[0].tags.find(t => t[0] == 'status')?.[2] || 'Query rejected');
-
-      default:
-        throw error(500, `Unexpected event kind: ${searchResponses[0].kind}`);}
-
+    profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+    const profiles = await Promise.all(
+      reputations
+      .map(rep => {
+        const evt = profileEvents.get(rep.pubkey);
+        return minimalProfile(evt, rep)
+      })
+      .filter(Boolean)
+    );
+    
+    return json(profiles);
+    
   } catch (err) {
     if (!err.status || err.status !== 400 ) {
       console.error('API /search error:', err);

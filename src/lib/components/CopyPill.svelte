@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { truncateString } from "$lib/utils";
+  import { truncateString } from "$lib/string";
 
   let { text, color, backgroundColor } = $props();
   let displayText = $state(text);

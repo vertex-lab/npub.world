@@ -1,4 +1,5 @@
-import { relay, query, resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/utils.js";
+import { relay, query } from "$lib/nostr.js";
+import { resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, json } from '@sveltejs/kit';
 import { reputationInfos, reputationStatus, minimalProfile, detailedProfile } from "$lib/profile";

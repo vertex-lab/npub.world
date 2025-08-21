@@ -1,4 +1,4 @@
-import { Relay } from 'nostr-tools';
+import { relay } from './nostr';
 import * as nip19 from 'nostr-tools/nip19';
 
 export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;
@@ -55,52 +55,10 @@ export const normalizeURL = (url) => {
   return url;
 };
 
-export const relay = new Relay('wss://relay.vertexlab.io');
-
-export const query = (filter) => {
-  return new Promise((resolve, reject) => {
-    const events = [];
-    const sub = relay.subscribe([filter], {
-      onevent(event) {
-        events.push(event);
-      },
-      oneose() {
-        resolve(events);
-        sub.close();
-      },
-      onclose() {
-        reject();
-      }
-    });
-  });
-}
-
 export function truncateString(str, maxLength) {
   if (str.length <= maxLength) return str;
   const midPoint = Math.floor(maxLength / 2);
   const left = str.slice(0, midPoint);
   const right = str.slice(str.length - midPoint);
   return `${left}...${right}`;
-}
-
-export class RingBuffer {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.buffer = new Array(capacity);
-    this.write = 0;
-  }
-
-  add(item) {
-    this.buffer[this.write] = item
-    this.write = (this.write+1) % this.capacity
-  }
-
-  contains(item) {
-    for (let i = 0; i < this.capacity; i++) {
-      if (this.buffer[i] === item) {
-        return true;
-      }
-    }
-    return false;
-  }
 }

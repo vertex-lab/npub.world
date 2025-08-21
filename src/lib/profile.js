@@ -20,7 +20,8 @@
   * @property {number} [followers]
 */
 
-import { RingBuffer, normalizeMentions, normalizeURL } from "$lib/utils.js";
+import { normalizeMentions, normalizeURL } from "$lib/string.js";
+import RingBuffer from "./buffer";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
 import { fetch } from 'undici';

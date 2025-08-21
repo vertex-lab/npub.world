@@ -1,4 +1,5 @@
-import { relay, query, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/utils.js";
+import { relay, query } from "$lib/nostr.js";
+import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import { reputationInfos, minimalProfile } from "$lib/profile";
 import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';

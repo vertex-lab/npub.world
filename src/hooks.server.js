@@ -1,5 +1,4 @@
-
-import { relay } from './lib/utils';
+import { relay } from './lib/nostr.js';
 
 const initializeServices = async () => {
   try {

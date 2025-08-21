@@ -1,7 +1,7 @@
 <script>
   import ProfilePicture from "./ProfilePicture.svelte";
   import ReputationBadge from "./ReputationBadge.svelte";
-  import { truncateString } from "$lib/utils"
+  import { truncateString } from "$lib/string.js"
 
   export let profile;
   export let style = "";

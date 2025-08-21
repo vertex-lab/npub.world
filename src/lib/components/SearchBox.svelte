@@ -48,15 +48,10 @@
     if (!query.trim()) return;
     isLoading = true;
 
-    const response = await fetch("/api/search", {
-      method: "POST",
-      body: JSON.stringify({ q: query }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    let result = await response.json();
+    const params = new URLSearchParams({ q: query, limit: "10" });
+    const response = await fetch(`/api/search?${params.toString()}`);
+    const result = await response.json();
 
     if (!response.ok) {
       data = { error: result.error || `Server error: ${response.status}` };

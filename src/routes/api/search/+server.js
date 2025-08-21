@@ -4,14 +4,29 @@ import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';
 import { redirect, error, json } from "@sveltejs/kit";
 
-export async function POST({ request }) {
-  try {
-    let { q } = await request.json();
-    q = q?.trim();
+/**
+ * Parse and validate `q` and `limit` from URLSearchParams.
+ * @param {URLSearchParams} params
+ * @returns {{ q: string, limit: number }}
+ */
+function parse(params) {
+  const q = (params.get('q') || '').trim();
+  if (!q || q.length < 3) {
+    throw error(400, 'Please input at least 3 characters');
+  }
 
-    if (!q || q.length < 3) {
-      throw error(400, 'Please input at least 3 characters');
-    }
+  let limit = parseInt(params.get('limit'), 10);
+  if (isNaN(limit) || limit <= 0) {
+    throw error(400, 'Limit must be a positive number');
+  }
+
+  limit = Math.min(limit, 100); // max is 100
+  return { q, limit };
+}
+
+export async function GET({ url }) {
+  try {
+    const { q, limit } = parse(url.searchParams)
 
     if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
       return json({ redirect: q });
@@ -22,7 +37,7 @@ export async function POST({ request }) {
       kind: 5315,
       tags: [
         ["param", "search", q],
-        ["param", "limit", "10"],
+        ["param", "limit", limit.toString()],
       ],
       content: ''
     };
@@ -72,7 +87,7 @@ export async function POST({ request }) {
 
   } catch (err) {
     if (!err.status || err.status !== 400 ) {
-      console.error('API /query error:', err);
+      console.error('API /search error:', err);
     }
 
     return json( 

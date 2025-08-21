@@ -3,9 +3,9 @@ import * as nip19 from 'nostr-tools/nip19';
 
 export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;
 export const NPUB_MENTION_REGEXP = /\S*(npub1[a-z0-9]{58})\S*/g;
-
 export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const HTTP_URL_REGEXP = /^https?:\/\//i;
 
 export const resolveNIP05 = async (nip05) => {
   const [name, domain] = nip05.split('@');
@@ -49,7 +49,7 @@ export const normalizeMentions = async (text) => {
 export const normalizeURL = (url) => {
   if (!url || typeof url !== 'string') return null;
 
-  if (!/^https?:\/\//i.test(url)) {
+  if (!HTTP_URL_REGEXP.test(url)) {
     url = `https://${url}`;
   }
   return url;

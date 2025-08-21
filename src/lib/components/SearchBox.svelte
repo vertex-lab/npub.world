@@ -157,13 +157,13 @@
     </form>
   </div>
 
-  {#if hasFocus && data.error}
+  {#if hasFocus && data && data.error}
     <div class="search-results">
       <p style="text-align: center;">{data.error}</p>
     </div>
   {/if}
 
-  {#if showResult()}
+  {#if hasFocus && data && data.length > 0 }
     <div class="search-results" bind:this={resultsRef}>
       {#each data as profile, i}
         <PressableProfile

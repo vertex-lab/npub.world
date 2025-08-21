@@ -48,7 +48,7 @@
     if (!query.trim()) return;
     isLoading = true;
 
-    const response = await fetch("/api/query", {
+    const response = await fetch("/api/search", {
       method: "POST",
       body: JSON.stringify({ q: query }),
       headers: {

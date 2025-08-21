@@ -3,7 +3,7 @@
   import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
-  let data = $state({});
+  let data = $state({});  // the list of results, or the error
   let searchTimeout;
 
   let inputRef = $state(null)
@@ -46,36 +46,36 @@
 
   async function search(event) {
     if (!query.trim()) return;
-
     isLoading = true;
-    data = [];
 
-    try {
-      const response = await fetch("/api/query", {
-        method: "POST",
-        body: JSON.stringify({ q: query }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const response = await fetch("/api/query", {
+      method: "POST",
+      body: JSON.stringify({ q: query }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      data = await response.json();
-    } catch (error) {
-      // $status = 'Error: ' + error.message;
-    } finally {
-      hasFocus = true;
-      isLoading = false;
+    let result = await response.json();
 
-      if (data.redirect) {
-        window.location.href = `/${data.redirect}`;
-      }
-
-      if (!isMobile) {
-        await tick()
-        inputRef.focus()
-      }
+    if (!response.ok) {
+      data = { error: result.error || `Server error: ${response.status}` };
+    } else {
+      data = result
     }
-  }
+
+    hasFocus = true;
+    isLoading = false;
+
+    if (data.redirect) {
+      window.location.href = `/${data.redirect}`;
+    }
+
+    if (!isMobile) {
+      await tick()
+      inputRef.focus()
+    }
+}
 
   const moveWithArrows = (event) => {
     if (!data || data.length === 0) return;

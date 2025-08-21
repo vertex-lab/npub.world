@@ -2,18 +2,19 @@ import { relay, query, HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/uti
 import { reputationInfos, minimalProfile } from "$lib/profile";
 import * as nip19 from 'nostr-tools/nip19';
 import { finalizeEvent } from 'nostr-tools';
-import { redirect } from "@sveltejs/kit";
+import { redirect, error, json } from "@sveltejs/kit";
 
 export async function POST({ request }) {
   try {
     let { q } = await request.json();
     q = q?.trim();
+
     if (!q || q.length < 3) {
-      throw 'Please input at least 3 characters';
+      throw error(400, 'Please input at least 3 characters');
     }
 
     if (HEXKEY_REGEXP.test(q) || NPUB_REGEXP.test(q) || NIP05_REGEXP.test(q)) {
-      return new Response(JSON.stringify({ redirect: q }));
+      return json({ redirect: q });
     }
 
     let searchProfiles = {
@@ -34,6 +35,10 @@ export async function POST({ request }) {
       kinds: [6315, 7000],
       '#e': [searchProfiles.id]
     });
+
+    if (!searchResponses.length) {
+      throw error(404, 'No search results returned');
+    }
 
     switch (searchResponses[0].kind) {
       case 6315:
@@ -57,22 +62,22 @@ export async function POST({ request }) {
           .filter(Boolean)
         );
         
-        return new Response(JSON.stringify(profiles), {headers: {'Content-Type': 'application/json'}});
+        return json(profiles);
 
       case 7000:
-        throw `Error: ${searchResponses[0].tags.find(t => t[0] == 'status')[2]};`
-    
+        throw error(403, searchResponses[0].tags.find(t => t[0] == 'status')?.[2] || 'Query rejected');
+
       default:
-        // unexpected kind
-        throw `Error: unexpected kind ${searchResponses[0]?.kind}; content ${searchResponses[0]?.content}`
+        throw error(500, `Unexpected event kind: ${searchResponses[0].kind}`);}
+
+  } catch (err) {
+    if (!err.status || err.status !== 400 ) {
+      console.error('API /query error:', err);
     }
 
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error?.toString() || error.message }), {
-      status: 400,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return json( 
+      { error: err.body?.message || err.message || err.toString() },
+      { status: err.status || 400 }
+    );
   }
 }

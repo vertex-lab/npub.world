@@ -144,6 +144,7 @@
       <input
         type="text"
         name="q"
+        class:active={showResult()}
         placeholder="Search nostr profiles"
         bind:value={query}
         bind:this={inputRef}
@@ -156,7 +157,7 @@
     </form>
   </div>
 
-  {#if data && data.error}
+  {#if hasFocus && data.error}
     <div class="search-results">
       <p style="text-align: center;">{data.error}</p>
     </div>
@@ -218,12 +219,17 @@
   input[type="text"] {
     width: 100%;
     padding: 15px 15px 15px 40px;
+    border-radius: 7px;
     font-size: 1rem;
     box-sizing: border-box;
 
     box-shadow: none !important;
     border: none !important;
     outline: none !important;
+  }
+
+  .search-container.active input[type="text"] {
+    border-radius: 7px 7px 0 0;
   }
 
   .spinner {

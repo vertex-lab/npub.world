@@ -6,7 +6,7 @@
   import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 
   let query = $state("");
-  let data = $state({});  // the list of results, or the error
+  let results = $state({});  // the list of search results, or the error
   let searchTimeout;
 
   let inputRef = $state(null)
@@ -18,8 +18,8 @@
   let hasFocus = $state(true);
 
   const showResult = () => {
-    if (!hasFocus || !data) return false
-    return data.error || data.length > 0
+    if (!hasFocus || !results) return false
+    return results.error || results.length > 0
   }
 
   onMount(() => {
@@ -35,7 +35,6 @@
 
   const automaticSearch = () => {
     if (!query.trim() || query.length < 3) return
-
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => { search(); }, 300);  // 300ms delay
   }
@@ -43,6 +42,7 @@
   async function search() {
     query = query.trim()
     if (!query) return
+    
     isLoading = true;
 
     if (HEXKEY_REGEXP.test(query) || NPUB_REGEXP.test(query) || NIP05_REGEXP.test(query)) {
@@ -61,9 +61,9 @@
     response = deserialize(await response.text());
 
     if (response.data.error) {
-      data = { error: response.data.error }; 
+      results = { error: response.data.error }; 
     } else {
-      data = response.data.profiles
+      results = response.data.profiles
     }
 
     hasFocus = true;
@@ -76,26 +76,26 @@
 }
 
   const moveWithArrows = (event) => {
-    if (!data || data.length === 0) return;
+    if (!results || results.length === 0) return;
     if (!resultsRef) return;
 
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        selectedResult = (selectedResult + 1) % data.length;
+        selectedResult = (selectedResult + 1) % results.length;
         ensureVisible()
         break;
 
       case "ArrowUp":
         event.preventDefault();
-        selectedResult = Math.max( (selectedResult - 1) % data.length, -1);
+        selectedResult = Math.max( (selectedResult - 1) % results.length, -1);
         ensureVisible()
         break;
 
       case "Enter":
         if (selectedResult >= 0) {
           event.preventDefault();
-          const profile = data[selectedResult];
+          const profile = results[selectedResult];
           window.location.href = `/${profile.npub}`;
         }
         break;
@@ -155,15 +155,15 @@
     </form>
   </div>
 
-  {#if hasFocus && data && data.error}
+  {#if hasFocus && results && results.error}
     <div class="search-results">
-      <p style="text-align: center;">{data.error}</p>
+      <p style="text-align: center;">{results.error}</p>
     </div>
   {/if}
 
-  {#if hasFocus && data && data.length > 0 }
+  {#if hasFocus && results && results.length > 0 }
     <div class="search-results" bind:this={resultsRef}>
-      {#each data as profile, i}
+      {#each results as profile, i}
         <PressableProfile
           profile={profile} 
           style={i === selectedResult 

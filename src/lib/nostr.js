@@ -39,7 +39,7 @@ export async function dvm(request) {
   }
 
   if (!request.content) {
-    request.content = '';
+    request.content = ''; // prevents error "can't unmarshal unset fields"
   }
 
   request = finalizeEvent(request, process.env.SK);

@@ -1,6 +1,9 @@
 <script>
   import { onMount, tick } from "svelte";
+  import { deserialize } from '$app/forms';
+
   import PressableProfile from "./PressableProfile.svelte";
+  import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 
   let query = $state("");
   let data = $state({});  // the list of results, or the error
@@ -15,9 +18,7 @@
   let hasFocus = $state(true);
 
   const showResult = () => {
-    if (!hasFocus || !data) {
-      return false
-    }
+    if (!hasFocus || !data) return false
     return data.error || data.length > 0
   }
 
@@ -29,42 +30,44 @@
   });
 
   const closeOnOutsideClick = (event) => {
-    if (!inputRef.contains(event.target)) {
-      hasFocus = false;
-    }
+    if (!inputRef.contains(event.target)) hasFocus = false;
   };
 
-  const automaticSearch = (event) => {
-    query = event.target.value;
+  const automaticSearch = () => {
     if (!query.trim() || query.length < 3) return
 
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      search();
-    }, 300);  // 300ms delay
+    searchTimeout = setTimeout(() => { search(); }, 300);  // 300ms delay
   }
 
-  async function search(event) {
-    if (!query.trim()) return;
+  async function search() {
+    query = query.trim()
+    if (!query) return
     isLoading = true;
 
+    if (HEXKEY_REGEXP.test(query) || NPUB_REGEXP.test(query) || NIP05_REGEXP.test(query)) {
+      window.location.href = `/${query}`;
+      return
+    }
 
-    const params = new URLSearchParams({ q: query, limit: "10" });
-    const response = await fetch(`/api/search?${params.toString()}`);
-    const result = await response.json();
+    const params = new FormData();
+    params.set('q', query);
 
-    if (!response.ok) {
-      data = { error: result.error || `Server error: ${response.status}` };
+    let response = await fetch('/?/search', {
+      method: 'POST',
+      body: params
+    });
+
+    response = deserialize(await response.text());
+
+    if (response.data.error) {
+      data = { error: response.data.error }; 
     } else {
-      data = result
+      data = response.data.profiles
     }
 
     hasFocus = true;
     isLoading = false;
-
-    if (data.redirect) {
-      window.location.href = `/${data.redirect}`;
-    }
 
     if (!isMobile) {
       await tick()

@@ -1,12 +1,12 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import { deserialize } from '$app/forms';
+    import { page } from '$app/stores';
 
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
     export let label;   // "Followers" or "Following"
     export let count;   // Number to display
-    export let npub;    // The npub of the profile
     export let action;  // The server action to perform on click
   
     let profiles = [];
@@ -14,19 +14,12 @@
 
     let showModal = false;
     let isLoading = false;
-    let currentNpub = npub;
-
-    $: if (npub !== currentNpub) {
-        profiles = [];
-        currentNpub = npub;
-    }
 
     async function doAction() {
         isLoading = true;
         error = '';
 
         const params = new FormData();
-        params.set('npub', npub)
         params.set('limit', 100);
 
         let response = await fetch(
@@ -40,7 +33,6 @@
             error = response.data.error
         } else {
             profiles = response.data;
-            console.log(profiles);
         }
 
         isLoading = false;

@@ -56,12 +56,14 @@
             </button>
         </form> -->
 
-        <FollowList
+        {#key profile.npub}
+            <FollowList
             label="Followers"
             count={profile.followers}
             action="?/followers"
-            npub= {profile.npub}
-        />
+            />
+        {/key}
+
         </div>
     </div>
 

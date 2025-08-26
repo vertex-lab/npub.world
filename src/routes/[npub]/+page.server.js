@@ -75,34 +75,31 @@ function decodeNpub(npub) {
 }
 
 /**
- * Parse and validate `npub` and `limit` from URLSearchParams.
+ * Parse and validate `limit` from URLSearchParams.
  * @param {URLSearchParams} params
  * @returns {{ limit: number }}
  */
-function parse(params) {
-  const npub = params.get('npub') ?? '';
-  const pubkey = decodeNpub(npub);
-
+function parseLimit(params) {
   let limit = parseInt(params.get('limit') ?? '100', 10);
   if (isNaN(limit) || limit <= 0) {
     return { error: 'Limit must be a positive number' };
   }
 
   limit = Math.min(limit, 100); // max is 100
-  return { pubkey, limit };
+  return { limit };
 }
 
 export const actions = {
   followers: async ({ request }) => {
     try {
       const params = await request.formData();
-      const { pubkey, limit, error } = parse(params);
+      const { limit, error } = parseLimit(params);
       if (error) return { error }
 
       const verifyReputation = {
       kind: 5312,
       tags: [
-        ["param", "target", pubkey],
+        ["param", "target", targetKey],
         ["param", "limit", limit.toString()],
         ],
       };
@@ -127,11 +124,10 @@ export const actions = {
           })
       );
 
-      console.log(followers)
       return followers.filter(Boolean);
 
     } catch(err) {
-      console.error('Internal followers error:', err);
+      console.error('Internal followers action error:', err);
       throw error(500, err)
     }
   }

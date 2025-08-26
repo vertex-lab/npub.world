@@ -1,10 +1,8 @@
-import { relay, query } from "$lib/nostr.js";
+import { relay, query, dvm } from "$lib/nostr.js";
 import { resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
-import { error, json } from '@sveltejs/kit';
-import { reputationInfos, reputationStatus, minimalProfile, detailedProfile } from "$lib/profile";
-import { redirect } from "@sveltejs/kit";
-import { finalizeEvent } from 'nostr-tools';
+import { error, redirect } from '@sveltejs/kit';
+import { reputationInfos, minimalProfile, detailedProfile } from "$lib/profile";
 
 export async function load({ params }) {
   if (HEXKEY_REGEXP.test(params.npub)) {
@@ -22,66 +20,54 @@ export async function load({ params }) {
     if (type !== 'npub') {
       throw error(400, 'Bad URL');
     }
+
     targetKey = data;
 
-  } catch (e) {
-    throw error(400, `Invalid npub: ${e} ${params.npub}`);
+  } catch (err) {
+    throw error(400, `Invalid npub: ${err} ${params.npub}`);
   }
 
   let verifyReputation = {
-    created_at: Math.floor(Date.now() / 1000),
     kind: 5312,
     tags: [
       ["param", "target", targetKey],
       ["param", "limit", "10"],
     ],
-    content:''
   };
 
-  const nsec = process.env.SK;
-  verifyReputation = finalizeEvent(verifyReputation, nsec);
-  await relay.publish(verifyReputation);
+  let response;
+  try {
+    response = await dvm(verifyReputation);
+  } catch(err) {
+    console.log("verify reputation failed: ", err)
+    throw error(500, err)
+  }
 
-  const reputationResponses = await query({
-    kinds: [6312, 7000],
-    '#e': [verifyReputation.id],
-    limit: 1,
+  const reputations = reputationInfos(response);
+  const pubkeys = reputations.map((e) => e.pubkey);
+
+  let profileEvents = await query({
+    kinds: [0], 
+    authors: pubkeys, 
+    limit: pubkeys.length
   });
 
-  switch (reputationResponses[0].kind) {
-    case 6312:
-      const reputations = reputationInfos(reputationResponses[0]);
-      const pubkeys = reputations.map((e) => e.pubkey);
+  profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
-      let profileEvents = await query({
-        kinds: [0], 
-        authors: pubkeys, 
-        limit: pubkeys.length
-      });
+  const profile = await detailedProfile(
+    profileEvents.get(targetKey), 
+    reputations[0]
+  );
 
-      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+  profile.topFollowers = await Promise.all(
+    reputations
+      .slice(1)
+      .map(rep => {
+        const evt = profileEvents.get(rep.pubkey);
+        return minimalProfile(evt, rep)
+      })
+      .filter(Boolean)
+  );
 
-      const profile = await detailedProfile(
-        profileEvents.get(targetKey), 
-        reputations[0]
-      );
-
-      profile.topFollowers = await Promise.all(
-        reputations
-          .slice(1)
-          .map(rep => {
-            const evt = profileEvents.get(rep.pubkey);
-            return minimalProfile(evt, rep)
-          })
-          .filter(Boolean)
-      );
-    
-    return profile;
-    
-    case 7000:
-      throw error(403, reputationResponses[0].tags.find(t => t[0] == 'status')[2])
-  
-    default:
-      throw error(500, `received unexpected event kind: ${reputationResponses[0].kind}`)
-  }
+  return profile;
 }

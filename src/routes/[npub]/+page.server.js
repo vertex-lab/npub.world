@@ -50,16 +50,16 @@ export async function load({ params }) {
     reputations[0]
   );
 
-  profile.topFollowers = await Promise.all(
+  const topFollowers = await Promise.all(
     reputations
       .slice(1)
       .map(rep => {
         const evt = profileEvents.get(rep.pubkey);
         return minimalProfile(evt, rep)
       })
-      .filter(Boolean)
   );
 
+  profile.topFollowers = topFollowers.filter(Boolean);
   return profile;
 }
 

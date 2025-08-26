@@ -1,4 +1,4 @@
-import { relay } from './nostr';
+import { relay, query } from './nostr';
 import * as nip19 from 'nostr-tools/nip19';
 
 export const NPUB_REGEXP = /\bnpub1[a-z0-9]{58}\b/;

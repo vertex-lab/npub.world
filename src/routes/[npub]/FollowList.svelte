@@ -5,15 +5,16 @@
 
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
-    export let label;   // "Followers" or "Following"
-    export let count;   // Number to display
-    export let action;  // The server action to perform on click
-  
-    let profiles = [];
-    let error = '';
+    // label is either "Followers" or "Following"
+    // count is the number to be displayed
+    // action is the server action to perform on click
+    const { label, count, action} = $props();
 
-    let showModal = false;
-    let isLoading = false;
+    let profiles = $state([]);
+    let error = $state('');
+
+    let showModal = $state(false);
+    let isLoading = $state(false);
 
     async function doAction() {
         isLoading = true;

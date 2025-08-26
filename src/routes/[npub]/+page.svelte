@@ -140,57 +140,57 @@
   }
 
   .profile-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
   }
 
   .section-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0 0 2rem 0;
-    color: var(--secondary-text);
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0 0 2rem 0;
+      color: var(--secondary-text);
   }
 
   .followers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
   }
 
   .app {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
   }
 
   .app a {
-    color: var(--primary-color);
-    text-decoration: none;
-    white-space: nowrap;
+      color: var(--primary-color);
+      text-decoration: none;
+      white-space: nowrap;
   }
 
   .app-grid {
-    display: grid;
-    align-items: center;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 16px;
+      display: grid;
+      align-items: center;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 16px;
   }
 
   /* Responsive styles */
   /* Small screens (mobile) */
   @media (max-width: 576px) {
     .container {
-      padding: 1rem 0rem;
+        padding: 1rem 0rem;
     }
 
     .header {
-      flex-direction: row;
-      align-items: center;
-      margin-bottom: 1.0rem;
-      gap: 0.5rem;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 1.0rem;
+        gap: 0.5rem;
     }
 
     .logo-wrapper {
@@ -198,13 +198,13 @@
     }
 
     .theme-logo-small {
-    width: 80px;
-    height: 80px;
-    margin: -1rem;
+      width: 80px;
+      height: 80px;
+      margin: -1rem;
     }
 
     .search-container {
-      max-width: calc(100% - 45px);
+        max-width: calc(100% - 45px);
     }
 }
 

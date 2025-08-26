@@ -57,10 +57,9 @@ export const actions = {
             const evt = profileEvents.get(rep.pubkey);
             return minimalProfile(evt, rep);
           })
-          .filter(Boolean)
       );
 
-      return { profiles };
+      return { profiles: profiles.filter(Boolean) };
 
     } catch (err) {
       console.error('Internal search error:', err);

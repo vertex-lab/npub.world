@@ -3,9 +3,12 @@
     import { browser } from "$app/environment";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
+    import ProfilesModal from "./FollowList.svelte";
+    import FollowList from "./FollowList.svelte";
 
     const { profile } = $props();
     let showPicture = $state(false);
+    let showFollow = $state(false);
     let isMobile = $state(false);
 
     function openPicture() { showPicture = true; }
@@ -47,9 +50,18 @@
         <div class="stat-pair">
             <span>Following:</span><span class="stat">{profile.follows}</span>
         </div>
-        <div class="stat-pair">
-            <span>Followers:</span><span class="stat">{profile.followers}</span>
-        </div>
+        <!-- <form method="POST" action="?/followers">
+            <button type="submit" name="followers" class="stat-pair">
+                <span>Followers:</span><span class="stat">{profile.followers}</span>
+            </button>
+        </form> -->
+
+        <FollowList
+            label="Followers"
+            count={profile.followers}
+            action="?/followers"
+            npub= {profile.npub}
+        />
         </div>
     </div>
 

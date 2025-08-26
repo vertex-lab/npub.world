@@ -8,7 +8,7 @@
   export let reputationBadge = false;
 </script>
 
-<a href={"/" + profile.npub}>
+<a href={"/" + profile.npub } data-sveltekit-preload-data="off">
   <div class="profile-item" style={style}>
     <ProfilePicture source={profile.picture} size="40px" />
     <div class="profile-info">

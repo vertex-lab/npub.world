@@ -64,7 +64,7 @@ export const reputationInfos = (reputationEvent) => {
  */
 export const detailedProfile = async (profileEvent, reputationInfo) => {
   if (!profileEvent) return null;
-  if (!reputationInfo) { return null; }
+  if (!reputationInfo) return null;
 
   const info = JSON.parse(profileEvent.content);
   const formatter = new Intl.NumberFormat('en-US');
@@ -95,7 +95,7 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
  */
 export const minimalProfile = async (profileEvent, reputationInfo) => {
   if (!profileEvent) return null;
-  if (!reputationInfo) { return null; }
+  if (!reputationInfo) return null; 
 
   const info = JSON.parse(profileEvent.content);
 

@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 
 import { query, dvm } from '$lib/nostr.js';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
-import { reputationInfos, minimalProfile } from '$lib/profile';
+import { getPubkeys, minimalProfile } from '$lib/profile';
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.
@@ -29,7 +29,7 @@ export const actions = {
     try {
       const params = await request.formData();
       const { q, limit, error } = parse(params);
-      if (error) return { error }
+      if (error) return { error };
 
       const searchProfiles = {
         kind: 5315,
@@ -40,23 +40,18 @@ export const actions = {
       };
 
       const response = await dvm(searchProfiles);
-      const reputations = reputationInfos(response);
-      const pubkeys = reputations.map(e => e.pubkey);
+      const results = getPubkeys(response);
 
       let profileEvents = await query({
         kinds: [0],
-        authors: pubkeys,
-        limit: pubkeys.length
+        authors: results,
+        limit: results.length
       });
 
       profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
       const profiles = await Promise.all(
-        reputations
-          .map(rep => {
-            const evt = profileEvents.get(rep.pubkey);
-            return minimalProfile(evt, rep);
-          })
+        results.map(pk => { return minimalProfile(profileEvents.get(pk)); })
       );
 
       return { profiles: profiles.filter(Boolean) };

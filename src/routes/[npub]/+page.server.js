@@ -2,7 +2,7 @@ import { relay, query, dvm } from "$lib/nostr.js";
 import { resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
-import { reputationInfos, minimalProfile, detailedProfile } from "$lib/profile";
+import { reputationInfos, minimalProfile, detailedProfile, getPubkeys } from "$lib/profile";
 
 let targetKey;  // the hex public key of the profile
 
@@ -51,12 +51,9 @@ export async function load({ params }) {
   );
 
   const topFollowers = await Promise.all(
-    reputations
+    pubkeys
       .slice(1)
-      .map(rep => {
-        const evt = profileEvents.get(rep.pubkey);
-        return minimalProfile(evt, rep)
-      })
+      .map(pk => { return minimalProfile(profileEvents.get(pk)); })
   );
 
   profile.topFollowers = topFollowers.filter(Boolean);
@@ -105,8 +102,7 @@ export const actions = {
       };
 
       const response = await dvm(verifyReputation);
-      const reputations = reputationInfos(response).slice(1);
-      const pubkeys = reputations.map((e) => e.pubkey);
+      const pubkeys = getPubkeys(response).slice(1);
 
       let profileEvents = await query({
         kinds: [0], 
@@ -116,18 +112,53 @@ export const actions = {
 
       profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
-      let followers = await Promise.all(
-        reputations
-          .map((rep) => {
-            const evt = profileEvents.get(rep.pubkey);
-            return minimalProfile(evt, rep)
-          })
-      );
+      const followers = await Promise.all(
+        pubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
+      ));
 
       return followers.filter(Boolean);
 
     } catch(err) {
       console.error('Internal followers action error:', err);
+      throw error(500, err)
+    }
+  },
+
+  follows: async ({ request }) => {
+    try {
+      const params = await request.formData();
+      const { limit, error } = parseLimit(params);
+      if (error) return { error }
+
+      let followList = await query({
+        kinds: [3], 
+        authors: [targetKey], 
+        limit: 1,
+      });
+
+      let pubkeys = followList[0].tags
+        .filter(tag => tag.length >= 2 && tag[0] === "p")
+        .map(tag => tag[1]);
+
+      if (pubkeys.length === 0) return [];
+      if (pubkeys.length > limit) pubkeys = pubkeys.slice(0, limit);
+
+      let profileEvents = await query({
+        kinds: [0], 
+        authors: pubkeys, 
+        limit: pubkeys.length
+      });
+
+      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+
+      const follows = await Promise.all(
+        pubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
+      ));
+
+      return follows.filter(Boolean);
+
+    } catch(err) {
+      console.error('Internal follows action error:', err);
       throw error(500, err)
     }
   }

@@ -47,21 +47,8 @@
         </p>
         <p class="profile-nip05">{profile.nip05}</p>
         <div class="profile-stats">
-        <div class="stat-pair">
-            <span>Following:</span><span class="stat">{profile.follows}</span>
-        </div>
-        <!-- <form method="POST" action="?/followers">
-            <button type="submit" name="followers" class="stat-pair">
-                <span>Followers:</span><span class="stat">{profile.followers}</span>
-            </button>
-        </form> -->
-
-        <FollowList
-        label="Followers"
-        count={profile.followers}
-        action="?/followers"
-        />
-
+            <FollowList label="Following" count={profile.follows} action="?/follows"/>
+            <FollowList label="Followers" count={profile.followers} action="?/followers"/>
         </div>
     </div>
 

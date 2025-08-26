@@ -1,7 +1,7 @@
 /**
   * @typedef {Object} Profile
   * @property {string} npub
-  * @property {string} reputation
+  * @property {string} [reputation]
   * @property {string} [name]
   * @property {string} [picture]
   * @property {string} [pictureURL]
@@ -30,6 +30,55 @@ import { marked } from 'marked';
 import { createHash } from 'crypto';
 
 /**
+ * Builds a minimal profile object from a kind:0 profile event.
+ *
+ * @param {Object} profileEvent
+ * @returns {Promise<Profile|null>}
+ */
+export const minimalProfile = async (profileEvent) => {
+  if (!profileEvent) return null;
+
+  const info = JSON.parse(profileEvent.content);
+
+  return {
+    npub: nip19.npubEncode(profileEvent.pubkey),
+    name: info.display_name || info.displayName || info.name,
+    picture: await loadImage(info.picture, lowResolution),
+    nip05: info.nip05?.toString().toLowerCase(),
+  }
+}
+
+/**
+ * Builds a detailed profile object from a kind:0 profile event and its reputation info.
+ *
+ * @param {Object} profileEvent
+ * @param {ReputationInfo} reputationInfo
+ * @returns {Promise<Profile|null>}
+ */
+export const detailedProfile = async (profileEvent, reputationInfo) => {
+  if (!profileEvent || !reputationInfo) return null;
+
+  const info = JSON.parse(profileEvent.content);
+  const formatter = new Intl.NumberFormat('en-US');
+
+  return {
+    npub: nip19.npubEncode(profileEvent.pubkey),
+    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
+
+    name: info.display_name || info.displayName || info.name,
+    picture: await loadImage(info.picture, highResolution),
+    pictureURL: info.picture,
+    about: info.about && marked(await normalizeMentions(info.about)),
+    nip05: info.nip05?.toString().toLowerCase(),
+    website: normalizeURL(info.website),
+    lud16: info.lud16,
+
+    follows: formatter.format(reputationInfo.follows),
+    followers: formatter.format(reputationInfo.followers),
+  };
+}
+
+/**
  * Extracts and returns an array of ReputationInfo from a reputation event.
  * @param {Object} nostrEvent
  * @returns {ReputationInfo[]}
@@ -56,57 +105,20 @@ export const reputationInfos = (reputationEvent) => {
 }
 
 /**
- * Builds a detailed profile object from a kind:0 profile event and its reputation info.
- *
- * @param {Object} profileEvent
- * @param {ReputationInfo} reputationInfo
- * @returns {Promise<Profile|null>}
+ * Extracts and returns an array of pubkeys from a reputation event.
+ * @param {Object} nostrEvent
+ * @returns {string[]}
  */
-export const detailedProfile = async (profileEvent, reputationInfo) => {
-  if (!profileEvent) return null;
-  if (!reputationInfo) return null;
-
-  const info = JSON.parse(profileEvent.content);
-  const formatter = new Intl.NumberFormat('en-US');
-
-  return {
-    npub: nip19.npubEncode(profileEvent.pubkey),
-    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
-
-    name: info.display_name || info.displayName || info.name,
-    picture: await loadImage(info.picture, highResolution),
-    pictureURL: info.picture,
-    about: info.about && marked(await normalizeMentions(info.about)),
-    nip05: info.nip05?.toString().toLowerCase(),
-    website: normalizeURL(info.website),
-    lud16: info.lud16,
-
-    follows: formatter.format(reputationInfo.follows),
-    followers: formatter.format(reputationInfo.followers),
-  };
-}
-
-/**
- * Builds a minimal profile object from a kind:0 profile event and its reputation info.
- *
- * @param {Object} profileEvent
- * @param {ReputationInfo} reputationInfo
- * @returns {Promise<Profile|null>}
- */
-export const minimalProfile = async (profileEvent, reputationInfo) => {
-  if (!profileEvent) return null;
-  if (!reputationInfo) return null; 
-
-  const info = JSON.parse(profileEvent.content);
-
-  return {
-    npub: nip19.npubEncode(profileEvent.pubkey),
-    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
-
-    name: info.display_name || info.displayName || info.name,
-    picture: await loadImage(info.picture, lowResolution),
-    nip05: info.nip05?.toString().toLowerCase(),
+export const getPubkeys = (reputationEvent) => {
+  let data = [];
+  try {
+    data = JSON.parse(reputationEvent.content);
+  } catch (err) {
+        console.error(`Failed to parse reputation event with ID ${reputationEvent.id}:`, err);
+    return [];
   }
+
+  return data.map(entry => entry.pubkey)
 }
 
 // Returns a qualitative reputation status ("low", "mid", "high")

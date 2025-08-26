@@ -1,5 +1,4 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
     import { deserialize } from '$app/forms';
     import { page } from '$app/stores';
 
@@ -15,6 +14,16 @@
 
     let showModal = $state(false);
     let isLoading = $state(false);
+
+    // refresh when page updates
+    $effect(() => { 
+        if ($page.url.href) {
+            profiles = [];
+            error = '';
+            showModal = false;
+            isLoading = false;
+        }
+    });
 
     async function doAction() {
         isLoading = true;

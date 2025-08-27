@@ -5,30 +5,9 @@ import { error, redirect } from '@sveltejs/kit';
 import { reputationInfos, minimalProfile, detailedProfile, getPubkeys, fetchMinimalProfiles } from "$lib/profile";
 
 export async function load({ params }) {
-  let npub = params.npub;
-  if (HEXKEY_REGEXP.test(npub)) {
-    try {
-      npub = nip19.npubEncode(npub);
-    } catch(err) {
-      throw error(400, err.message || err.toString());
-    }
-
-    return redirect(301, `/${npub}`);
-  }
-
-  if (NIP05_REGEXP.test(npub)) {
-    try {
-      npub = await resolveNIP05(npub);
-    } catch(err) {
-        throw error(400, err.message || err.toString());
-    }
-
-    return redirect(301, `/${npub}`);
-  }
+  const pubkey = await resolve(params.npub);
 
   try {
-    const pubkey = decodeNpub(npub);
-
     const verifyReputation = {
       kind: 5312,
       tags: [
@@ -74,14 +53,47 @@ export async function load({ params }) {
   }
 }
 
-function decodeNpub(npub) {
+/**
+ * Resolves an input identifier into a pubkey.
+ *
+ * Supports three input types:
+ * 1. HEX pubkey: encodes it to npub and redirects.
+ * 2. NIP-05: resolves it to a npub and redirects.
+ * 3. npub: decodes it and returns the pubkey.
+ *
+ * Throws a 400 error if the input is invalid or cannot be resolved.
+ *
+ * @param {string} input - The input identifier (hex, npub, or NIP-05)
+ * @returns {Promise<string|Response>} - Returns the raw pubkey, or a redirect Response for HEX/NIP-05 inputs.
+ */
+async function resolve(input) {
+  if (HEXKEY_REGEXP.test(input)) {
+    try {
+      input = nip19.npubEncode(input);
+    } catch(err) {
+      throw error(400, err.message || err.toString());
+    }
+
+    return redirect(301, `/${input}`);
+  }
+
+  if (NIP05_REGEXP.test(input)) {
+    try {
+      input = await resolveNIP05(input);
+    } catch(err) {
+        throw error(400, err.message || err.toString());
+    }
+
+    return redirect(301, `/${input}`);
+  }
+
   try {
-    const { type, data } = nip19.decode(npub);
-    if (type !== 'npub') throw error(400, 'Bad URL');
+    const { type, data } = nip19.decode(input);
+    if (type !== 'npub') throw error(400, 'Invalid npub');
     return data;
 
   } catch (err) {
-    throw error(400, `Invalid npub: ${err} ${npub}`);
+    throw error(400, err.message || err.toString());
   }
 }
 

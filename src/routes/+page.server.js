@@ -40,8 +40,7 @@ export const actions = {
       };
 
       const response = await dvm(searchProfiles);
-      const results = getPubkeys(response);
-      
+      const results = getPubkeys(response);   
       return await fetchMinimalProfiles(results);
 
     } catch (err) {

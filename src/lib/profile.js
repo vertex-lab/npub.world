@@ -40,19 +40,19 @@ import { createHash } from 'crypto';
 export const fetchMinimalProfiles = async (pubkeys) => {
   if (!pubkeys || pubkeys.length === 0) return [];
 
-    let profileEvents = await query({
-      kinds: [0],
-      authors: pubkeys,
-      limit: pubkeys.length
-    });
+  let profileEvents = await query({
+    kinds: [0],
+    authors: pubkeys,
+    limit: pubkeys.length
+  });
 
-    profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+  profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
-    const profiles = await Promise.all(
-      pubkeys.map(pk => { return minimalProfile(profileEvents.get(pk)); })
-    );
+  const profiles = await Promise.all(
+    pubkeys.map(pk => { return minimalProfile(profileEvents.get(pk)); })
+  );
 
-    return profiles.filter(Boolean);
+  return profiles.filter(Boolean);
 }
 
 /**
@@ -64,8 +64,14 @@ export const fetchMinimalProfiles = async (pubkeys) => {
 export const minimalProfile = async (profileEvent) => {
   if (!profileEvent) return null;
 
-  const info = JSON.parse(profileEvent.content);
-
+  let info;
+  try {
+    info = JSON.parse(profileEvent.content);
+  } catch (err) {
+    console.error(`Failed to parse profile event ${profileEvent.id}: ${err.message || err.toString()}`);
+    return null;
+  }
+  
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
     name: info.display_name || info.displayName || info.name,
@@ -84,7 +90,13 @@ export const minimalProfile = async (profileEvent) => {
 export const detailedProfile = async (profileEvent, reputationInfo) => {
   if (!profileEvent || !reputationInfo) return null;
 
-  const info = JSON.parse(profileEvent.content);
+    let info;
+    try {
+      info = JSON.parse(profileEvent.content);
+    } catch (err) {
+      console.error(`Failed to parse profile event with ID ${profileEvent.id}:`, err);
+      return null;
+    }
 
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),

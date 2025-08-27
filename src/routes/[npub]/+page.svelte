@@ -9,10 +9,11 @@
   import PressableProfile from "$lib/components/PressableProfile.svelte";
 
   const { data } = $props();
+
   let title = $state("");
+  let isMobile = $state(false);
   let visibleFollowers = $state(0);
   let searchBoxRef;
-  let isMobile = $state(false);
 
   const apps = [
     { name: "Default App", url: "nostr:"},
@@ -25,10 +26,7 @@
 
   onMount( () => {
     isMobile = /Mobi|Android/i.test(navigator.userAgent);
-
-    if (!isMobile) {
-      searchBoxRef.focus();
-    }
+    if (!isMobile) searchBoxRef.focus();
 
     window.addEventListener("resize", resizeTopFollowers);
     return () => window.removeEventListener("resize", resizeTopFollowers);

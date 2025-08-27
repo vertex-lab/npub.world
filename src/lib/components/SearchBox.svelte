@@ -63,7 +63,7 @@
     if (response.data.error) {
       results = { error: response.data.error }; 
     } else {
-      results = response.data.profiles
+      results = response.data;
     }
 
     hasFocus = true;

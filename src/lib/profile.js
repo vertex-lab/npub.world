@@ -21,6 +21,7 @@
 */
 
 import { normalizeMentions, normalizeURL } from "$lib/string.js";
+import { query } from "$lib/nostr.js";
 import RingBuffer from "./buffer";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
@@ -28,6 +29,31 @@ import { fetch } from 'undici';
 import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
+
+/**
+ * Fetches the profile events for a list of public keys and maps them
+ * to minimal profile objects.
+ *
+ * @param {string[]} pubkeys - Array of hex public keys to fetch profiles for
+ * @returns {Promise<object[]>} - Array of minimal profile objects, filtered to remove null/undefined
+ */
+export const fetchMinimalProfiles = async (pubkeys) => {
+  if (!pubkeys || pubkeys.length === 0) return [];
+
+    let profileEvents = await query({
+      kinds: [0],
+      authors: pubkeys,
+      limit: pubkeys.length
+    });
+
+    profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
+
+    const profiles = await Promise.all(
+      pubkeys.map(pk => { return minimalProfile(profileEvents.get(pk)); })
+    );
+
+    return profiles.filter(Boolean);
+}
 
 /**
  * Builds a minimal profile object from a kind:0 profile event.

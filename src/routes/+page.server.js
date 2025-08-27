@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 
 import { query, dvm } from '$lib/nostr.js';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
-import { getPubkeys, minimalProfile } from '$lib/profile';
+import { getPubkeys, fetchMinimalProfiles } from '$lib/profile';
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.
@@ -41,20 +41,8 @@ export const actions = {
 
       const response = await dvm(searchProfiles);
       const results = getPubkeys(response);
-
-      let profileEvents = await query({
-        kinds: [0],
-        authors: results,
-        limit: results.length
-      });
-
-      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
-
-      const profiles = await Promise.all(
-        results.map(pk => { return minimalProfile(profileEvents.get(pk)); })
-      );
-
-      return { profiles: profiles.filter(Boolean) };
+      
+      return await fetchMinimalProfiles(results);
 
     } catch (err) {
       console.error('Internal search error:', err);

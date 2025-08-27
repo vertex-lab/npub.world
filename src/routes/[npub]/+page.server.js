@@ -2,7 +2,7 @@ import { relay, query, dvm } from "$lib/nostr.js";
 import { resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
-import { reputationInfos, minimalProfile, detailedProfile, getPubkeys } from "$lib/profile";
+import { reputationInfos, minimalProfile, detailedProfile, getPubkeys, fetchMinimalProfiles } from "$lib/profile";
 
 let targetKey;  // the hex public key of the profile
 
@@ -104,19 +104,7 @@ export const actions = {
       const response = await dvm(verifyReputation);
       const pubkeys = getPubkeys(response).slice(1);
 
-      let profileEvents = await query({
-        kinds: [0], 
-        authors: pubkeys, 
-        limit: pubkeys.length
-      });
-
-      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
-
-      const followers = await Promise.all(
-        pubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
-      ));
-
-      return followers.filter(Boolean);
+      return await fetchMinimalProfiles(pubkeys);
 
     } catch(err) {
       console.error('Internal followers action error:', err);
@@ -153,20 +141,8 @@ export const actions = {
 
       const response = await dvm(rankProfiles);
       const rankedPubkeys = getPubkeys(response);
-
-      let profileEvents = await query({
-        kinds: [0], 
-        authors: rankedPubkeys, 
-        limit: pubkeys.length
-      });
-
-      profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
       
-      const follows = await Promise.all(
-        rankedPubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
-      ));
-
-      return follows.filter(Boolean);
+      return await fetchMinimalProfiles(rankedPubkeys);
 
     } catch(err) {
       console.error('Internal follows action error:', err);

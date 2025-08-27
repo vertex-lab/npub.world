@@ -51,7 +51,7 @@ export async function dvm(request) {
   });
 
   if (!response || response.length !== 1) {
-    throw new Error(`Unexpected number of responses: ${response?.length || 0}`);
+    throw new Error(`dvm: unexpected number of responses: ${response?.length || 0}`);
   }
   response = response[0]
 
@@ -60,9 +60,9 @@ export async function dvm(request) {
       return response
 
     case 7000:
-      const msg = response.tags.find(t => t[0] === 'status')?.[2] || 'Unknown error';
-      throw new Error(msg);
+      const msg = response.tags.find(t => t[0] === 'status')?.[2] || 'unknown error';
+      throw new Error('dvm: ' + msg);
 
     default:
-      throw new Error(`Unexpected event kind: ${response.kind}`);}
+      throw new Error(`dvm: unexpected event kind: ${response.kind}`);}
 }

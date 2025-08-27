@@ -7,18 +7,46 @@ export const HEXKEY_REGEXP = /^[0-9a-fA-F]{64}$/;
 export const NIP05_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const HTTP_URL_REGEXP = /^https?:\/\//i;
 
+// Resolve a NIP-05 identifier to a npub using the well-known URL.
+// Throws an error if the NIP-05 is invalid or cannot be resolved.
 export const resolveNIP05 = async (nip05) => {
-  const [name, domain] = nip05.split('@');
-  const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${name}`, { redirect: 'follow' });
-
-  if (response.status !== 200) {
-    throw `Status ${response.status}`;
+  if (!nip05 || typeof nip05 !== 'string') {
+    throw new Error('Invalid NIP-05: must be a non-empty string');
   }
 
-  const obj = await response.json();
-  const pubkey = obj['names'][name];
-  return nip19.npubEncode(pubkey);
-}
+  let [name, domain] = nip05.split('@');
+  if (!name || !domain) {
+    throw new Error(`Invalid NIP-05 format: "${nip05}" (expected name@domain)`);
+  }
+
+  name = name.toLowerCase();
+  domain = domain.toLowerCase();
+
+  try {
+    const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${encodeURIComponent(name)}`, { redirect: 'follow' });
+
+    if (!response.ok) {
+      throw new Error(`failed to fetch record: HTTP ${response.status}`);
+    }
+
+    const json = await response.json();
+    const pubkey = json?.names?.[name];
+
+    if (!pubkey) {
+      throw new Error(`missing record for "${name}"`);
+    }
+
+    if (typeof pubkey !== 'string' || !HEXKEY_REGEXP.test(pubkey)) {
+      throw new Error(`invalid pubkey for "${name}"`);
+    }
+
+    return nip19.npubEncode(pubkey);
+
+  } catch (err) {
+    throw new Error(`Failed to resolve NIP-05: ${String(err)}`);
+  }
+};
+
 
 // Replace mentions in a text with npub.world links
 export const normalizeMentions = async (text) => {

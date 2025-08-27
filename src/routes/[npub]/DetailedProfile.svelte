@@ -153,19 +153,8 @@
     }
 
     .profile-stats {
-        color: var(--secondary-text);
-        font-size: 0.9rem;
         display: flex;
         gap: 1rem;
-    }
-
-    .stat-pair {
-        display: flex;
-        gap: 0.25rem;
-    }
-
-    .stat {
-        font-weight: bold;
     }
     
     /* Responsive styles */
@@ -190,11 +179,6 @@
 
         .profile-stats {
             flex-wrap: nowrap;
-            justify-content: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-pair {
             justify-content: center;
             margin-bottom: 0.5rem;
         }

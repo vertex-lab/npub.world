@@ -50,7 +50,7 @@
 
     async function openModal() {
         showModal = true;
-        if (!profiles.length) {
+        if (count !== "0" && !profiles.length) {
             await doAction();
         }
     }
@@ -77,27 +77,32 @@
             </div>
 
             {#if isLoading}
-                <p>Loading {label.toLowerCase()}...</p>
+                <p class="modal-message">Loading {label.toLowerCase()}...</p>
             {:else if error}
-                <p>{error}</p>
+                <p class="modal-message">{error}</p>
             {:else if profiles.length === 0}
-                <p>No {label.toLowerCase()} found.</p>
+                <p class="modal-message">No {label.toLowerCase()} found.</p>
             {:else}
                 {#each profiles as profile}
                     <PressableProfile profile={profile}/>
                 {/each}
+                <p class="modal-message">And {count - profiles.length} others</p>
             {/if}
         </div>
     </div>
 {/if}
 
 <style>
+    @import "../../../static/shared.css";
+
     button {
         all: unset;
         cursor: pointer;
     }
 
     .stat-pair {
+        color: var(--secondary-text);
+        font-size: 0.9rem;
         display: flex;
         gap: 0.25rem;
     }
@@ -121,27 +126,31 @@
         align-items: center;
         justify-content: space-between;
         gap: 0.5rem;
-        margin: 0;
+        margin-bottom: 1rem;
     }
 
     .section-title {
+        margin: 10px;
         font-size: 1.25rem;
         font-weight: 500;
         color: var(--secondary-text);        
     }
 
     .modal {
-        position: fixed;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
+        position: relative;
         background: var(--card-background);
+        text-align: left;
         padding: 1rem;
-        border-radius: 0.5rem;
+        border-radius: 12px;
         z-index: 11;
-        width: 90%;
+        width: 80%;
         max-width: 400px;
         max-height: 80vh;
         overflow-y: auto;
+    }
+
+    .modal-message {
+        margin: 10px;
     }
 
     .close-button {

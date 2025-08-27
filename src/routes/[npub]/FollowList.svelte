@@ -4,9 +4,9 @@
 
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
-    // label is either "Followers" or "Following"
-    // count is the number to be displayed
-    // action is the server action to perform on click
+    // - label is either "Followers" or "Following"
+    // - count is the number to be displayed
+    // - action is the server action to perform on click
     const { label, count, action} = $props();
     const formatter = new Intl.NumberFormat('en-US');
 

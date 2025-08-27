@@ -98,7 +98,10 @@
                 {#each profiles as profile}
                     <PressableProfile profile={profile}/>
                 {/each}
-                <p class="modal-message" style="margin-top: 20px">And { formatter.format(count - profiles.length) } others</p>
+
+                {#if count > profiles.length}
+                    <p class="modal-message" style="margin-top: 20px">And { formatter.format(count - profiles.length) } others</p>
+                {/if}
             {/if}
         </div>
     </div>

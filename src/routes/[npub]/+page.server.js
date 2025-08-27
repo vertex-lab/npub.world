@@ -136,7 +136,7 @@ export const actions = {
         limit: 1,
       });
 
-      let pubkeys = followList[0].tags
+      const pubkeys = followList[0].tags
         .filter(tag => tag.length >= 2 && tag[0] === "p")
         .map(tag => tag[1]);
 

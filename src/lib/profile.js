@@ -179,7 +179,7 @@ const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdAS
 
 // Attempt to load from disk the picture by its url-hash and quality.
 // If not found, tries to fetch by its url. 
-export const loadImage = async (url, quality) => {
+const loadImage = async (url, quality) => {
   if (!url || typeof url !== 'string') return fallbackImage;
   if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
   await mkdir(imagesPath, { recursive: true });
@@ -200,6 +200,10 @@ export const loadImage = async (url, quality) => {
 // A ring buffer that tracks the last bad urls to avoid repeated fetching
 const badURLs = new RingBuffer(100);
 
+const isPermanentFailure = (status) => {
+  return status === 404 || status === 410 || status === 400 || status === 403;
+};
+
 // Attempt to fetch picture by its URL and write low and high quality versions
 // of the image to disk.
 // Returns base64 encoded image of the specified quality.
@@ -211,21 +215,17 @@ const fetchImage = async (url, quality) => {
   try {
     const response = await fetch(url, { redirect: 'follow' });
     if (response.status !== 200) {
-      throw `Status ${response.status}`;
+      if (isPermanentFailure(response.status)) badURLs.add(url);
+      return fallbackImage;
     }
 
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const lowRes = await sharp(buffer)
-      .resize({ width: 100, height: 100 })
-      .webp({ quality: 60 })
-      .toBuffer();
-
-    const highRes = await sharp(buffer)
-      .resize({ width: 300, height: 300 })
-      .webp({ quality: 80 })
-      .toBuffer();
+    const [ lowRes, highRes ] = await Promise.all([
+      sharp(buffer).resize({ width: 100, height: 100 }).webp({ quality: 60 }).toBuffer(),
+      sharp(buffer).resize({ width: 300, height: 300 }).webp({ quality: 80 }).toBuffer()
+    ]);
 
     const hash = createHash('sha256');
     hash.update(url, 'utf8');
@@ -242,8 +242,9 @@ const fetchImage = async (url, quality) => {
       case highResolution:
         return `data:image/webp;base64,${highRes.toString('base64')}`
     }
-  } catch (e) {
-    badURLs.add(url)
+
+  } catch (err) {
+    badURLs.add(url);
     return fallbackImage;
   }
 }

@@ -164,16 +164,17 @@
   }
 
   .app a {
-      color: var(--primary-color);
+      font-size: 0.95rem;
+      color: var(--secondary-text);
       text-decoration: none;
       white-space: nowrap;
   }
 
   .app-grid {
       display: flex;
-      flex-wrap: wrap; /* allow wrapping to new rows */
-      gap: 16px;       /* space between apps */
-      justify-content: flex-start; /* align items to the left */
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: flex-start;
   }
 
   /* Responsive styles */

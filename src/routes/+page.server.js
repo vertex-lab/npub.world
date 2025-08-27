@@ -46,7 +46,7 @@ export const actions = {
 
     } catch (err) {
       console.error('Internal search error:', err);
-      throw error(500, err.message || String(err));
+      return { error: err.message || err.toString() };
     }
   }
 };

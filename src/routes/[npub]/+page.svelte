@@ -16,11 +16,11 @@
 
   const apps = [
     { name: "Default App", url: "nostr:"},
+    { name: "Snort", url: "https://snort.social/" },
+    { name: "Primal", url: "https://primal.net/p/" },
     { name: "Nostrudel", url: "https://nostrudel.ninja/#/u/" },
     { name: "Coracle", url: "https://coracle.social/" },
-    { name: "Primal", url: "https://primal.net/p/" },
-    { name: "Snort", url: "https://snort.social/" },
-    { name: "Nosta", url: "https://nosta.me/" },
+    { name: "Iris", url: "https://iris.to/" },
   ];
 
   onMount( () => {
@@ -88,8 +88,7 @@
         </div>
       </div>
 
-      <div class="section-card">
-        <h2 class="section-title">Open With</h2>
+      <div style="margin-top: 3rem;">
         <div class="app-grid">
           {#each apps as app}
             <div class="app">
@@ -161,7 +160,7 @@
   .app {
       display: flex;
       align-items: center;
-      padding: 8px 0px;
+      padding: 8px;
       border-radius: 8px;
       transition: background-color 0.2s;
   }
@@ -173,10 +172,10 @@
   }
 
   .app-grid {
-      display: grid;
-      align-items: center;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping to new rows */
+      gap: 16px;       /* space between apps */
+      justify-content: flex-start; /* align items to the left */
   }
 
   /* Responsive styles */

@@ -1,6 +1,8 @@
 <script>
     import { deserialize } from '$app/forms';
     import { page } from '$app/stores';
+    import { browser } from "$app/environment";
+    import { onDestroy, onMount } from 'svelte';
 
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
@@ -57,6 +59,13 @@
     }
 
     function closeModal() { showModal = false; }
+
+    function escCloseModal(e) {
+        if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closeModal()
+    }
+
+    onMount(() => { if (browser) window.addEventListener('keydown', escCloseModal) });
+    onDestroy(() => { if (browser) window.removeEventListener('keydown', escCloseModal) });
 </script>
 
 <button class="stat-pair" onclick={openModal}>

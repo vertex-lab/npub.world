@@ -52,6 +52,7 @@
 
     const params = new FormData();
     params.set('q', query);
+    params.set('limit', 15);
 
     let response = await fetch('/?/search', {
       method: 'POST',

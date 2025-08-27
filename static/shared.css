@@ -33,7 +33,14 @@
 	--yellowAccentText: #e4ba15;
 }
 
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 body {
+	scrollbar-width: none;      /* Firefox */
+  	-ms-overflow-style: none;   /* IE and Edge */
+
 	font-family: var(--primary-font);
 	background-color: var(--background-color);
 	margin: 0;

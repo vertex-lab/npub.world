@@ -47,8 +47,8 @@
         </p>
         <p class="profile-nip05">{profile.nip05}</p>
         <div class="profile-stats">
-            <FollowList label="Following" count={profile.follows} action="?/follows"/>
-            <FollowList label="Followers" count={profile.followers} action="?/followers"/>
+            <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
+            <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
         </div>
     </div>
 

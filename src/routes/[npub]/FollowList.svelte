@@ -6,10 +6,11 @@
 
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
+    // - npub of the user whose follow list is being displayed
     // - label is either "Followers" or "Following"
     // - count is the number to be displayed
     // - action is the server action to perform on click
-    const { label, count, action} = $props();
+    const { npub, label, count, action} = $props();
     const formatter = new Intl.NumberFormat('en-US');
 
     let profiles = $state([]);
@@ -33,6 +34,7 @@
         error = '';
 
         const params = new FormData();
+        params.set('npub', npub);
         params.set('limit', 100);
 
         let response = await fetch(

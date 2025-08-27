@@ -4,8 +4,6 @@ import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
 import { reputationInfos, minimalProfile, detailedProfile, getPubkeys, fetchMinimalProfiles } from "$lib/profile";
 
-let targetKey;  // the hex public key of the profile
-
 export async function load({ params }) {
   let npub = params.npub;
   if (HEXKEY_REGEXP.test(npub)) {
@@ -29,12 +27,12 @@ export async function load({ params }) {
   }
 
   try {
-    targetKey = decodeNpub(npub);
+    const pubkey = decodeNpub(npub);
 
     const verifyReputation = {
       kind: 5312,
       tags: [
-        ["param", "target", targetKey],
+        ["param", "target", pubkey],
         ["param", "limit", "10"],
       ],
     };
@@ -52,7 +50,7 @@ export async function load({ params }) {
     profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
     const profile = await detailedProfile(
-      profileEvents.get(targetKey), 
+      profileEvents.get(pubkey), 
       reputations[0]
     );
 
@@ -88,31 +86,43 @@ function decodeNpub(npub) {
 }
 
 /**
- * Parse and validate `limit` from URLSearchParams.
+ * Parse and validate `npub` and `limit` from URLSearchParams.
+ * Returns an object with `pubkey` and `limit` or an `error` message.
  * @param {URLSearchParams} params
- * @returns {{ limit: number }}
+ * @returns {{ pubkey: string, limit: number }}
  */
-function parseLimit(params) {
+function parse(params) {
+  const npub = params.get('npub') ?? '';
+  
+  let pubkey;
+  try {
+    const { type, data } = nip19.decode(npub);
+    if (type !== 'npub') return { error: 'Invalid npub' };
+    pubkey = data;
+  } catch(err) {
+    return { error: 'Invalid npub' };
+  }
+
   let limit = parseInt(params.get('limit') ?? '100', 10);
   if (isNaN(limit) || limit <= 0) {
     return { error: 'Limit must be a positive number' };
   }
 
   limit = Math.min(limit, 100); // max is 100
-  return { limit };
+  return { pubkey, limit };
 }
 
 export const actions = {
   followers: async ({ request }) => {
     try {
       const params = await request.formData();
-      const { limit, error } = parseLimit(params);
+      const { pubkey, limit, error } = parse(params);
       if (error) return { error }
 
       const verifyReputation = {
       kind: 5312,
       tags: [
-        ["param", "target", targetKey],
+        ["param", "target", pubkey],
         ["param", "limit", limit.toString()],
         ],
       };
@@ -124,19 +134,19 @@ export const actions = {
 
     } catch(err) {
       console.error('Internal followers action error:', err);
-      throw error(500, err)
+      return { error: err.message || err.toString() };
     }
   },
 
   follows: async ({ request }) => {
     try {
       const params = await request.formData();
-      const { limit, error } = parseLimit(params);
+      const { pubkey, limit, error } = parse(params);
       if (error) return { error }
 
       let followList = await query({
         kinds: [3], 
-        authors: [targetKey], 
+        authors: [pubkey], 
         limit: 1,
       });
 
@@ -162,7 +172,7 @@ export const actions = {
 
     } catch(err) {
       console.error('Internal follows action error:', err);
-      throw error(500, err)
+      return { error: err.message || err.toString() };
     }
   }
 }

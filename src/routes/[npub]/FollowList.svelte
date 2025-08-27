@@ -8,6 +8,7 @@
     // count is the number to be displayed
     // action is the server action to perform on click
     const { label, count, action} = $props();
+    const formatter = new Intl.NumberFormat('en-US');
 
     let profiles = $state([]);
     let error = $state('');
@@ -50,7 +51,7 @@
 
     async function openModal() {
         showModal = true;
-        if (count !== "0" && !profiles.length) {
+        if (count !== 0 && !profiles.length) {
             await doAction();
         }
     }
@@ -59,7 +60,7 @@
 </script>
 
 <button class="stat-pair" onclick={openModal}>
-    <span>{label}:</span><span class="stat">{count}</span>
+    <span>{label}:</span><span class="stat">{formatter.format(count)}</span>
 </button>
 
 {#if showModal}
@@ -86,7 +87,7 @@
                 {#each profiles as profile}
                     <PressableProfile profile={profile}/>
                 {/each}
-                <p class="modal-message">And {count - profiles.length} others</p>
+                <p class="modal-message" style="margin-top: 20px">And { formatter.format(count - profiles.length) } others</p>
             {/if}
         </div>
     </div>

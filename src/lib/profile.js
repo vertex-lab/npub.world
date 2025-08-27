@@ -9,8 +9,8 @@
   * @property {string} [nip05]
   * @property {string} [lud16]
   * @property {string} [website]
-  * @property {string} [following]
-  * @property {string} [followers]
+  * @property {number} [following]
+  * @property {number} [followers]
   * 
   * @typedef {Object} ReputationInfo
   * @property {string} pubkey
@@ -59,7 +59,6 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
   if (!profileEvent || !reputationInfo) return null;
 
   const info = JSON.parse(profileEvent.content);
-  const formatter = new Intl.NumberFormat('en-US');
 
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
@@ -73,8 +72,8 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     website: normalizeURL(info.website),
     lud16: info.lud16,
 
-    follows: formatter.format(reputationInfo.follows),
-    followers: formatter.format(reputationInfo.followers),
+    follows: reputationInfo.follows,
+    followers: reputationInfo.followers,
   };
 }
 

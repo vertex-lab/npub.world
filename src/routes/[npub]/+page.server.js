@@ -141,18 +141,29 @@ export const actions = {
         .map(tag => tag[1]);
 
       if (pubkeys.length === 0) return [];
-      if (pubkeys.length > limit) pubkeys = pubkeys.slice(0, limit);
+
+      const rankProfiles = {
+        kind: 5314,
+        tags: [["param", "limit", limit.toString()]],
+      };
+
+      for (const pk of pubkeys) {
+        rankProfiles.tags.push(["param", "target", pk]);
+      }
+
+      const response = await dvm(rankProfiles);
+      const rankedPubkeys = getPubkeys(response);
 
       let profileEvents = await query({
         kinds: [0], 
-        authors: pubkeys, 
+        authors: rankedPubkeys, 
         limit: pubkeys.length
       });
 
       profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
-
+      
       const follows = await Promise.all(
-        pubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
+        rankedPubkeys.map((pk) => { return minimalProfile(profileEvents.get(pk))}
       ));
 
       return follows.filter(Boolean);

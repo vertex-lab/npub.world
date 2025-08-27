@@ -162,9 +162,14 @@ export const actions = {
         limit: 1,
       });
 
-      const pubkeys = followList[0].tags
-        .filter(tag => tag.length >= 2 && tag[0] === "p")
-        .map(tag => tag[1]);
+      const pubkeys = [];
+      for (const tag of followList[0]?.tags || []) {
+        if (pubkeys.length >= 1000) break; // prevent dvm error "too many tags"
+
+        if (tag.length >= 2 && tag[0] === "p") {
+          pubkeys.push(tag[1]);
+        }
+      }
 
       if (pubkeys.length === 0) return [];
 

@@ -1,6 +1,7 @@
 <script>
   import { onMount, tick } from "svelte";
   import { deserialize } from '$app/forms';
+  import { goto } from '$app/navigation';
 
   import PressableProfile from "./PressableProfile.svelte";
   import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
@@ -46,7 +47,10 @@
     isLoading = true;
 
     if (HEXKEY_REGEXP.test(query) || NPUB_REGEXP.test(query) || NIP05_REGEXP.test(query)) {
-      window.location.href = `/${query}`;
+      goto(`/${query}`);
+      isLoading = false;
+      hasFocus = false;
+      query = "";
       return
     }
 
@@ -97,7 +101,8 @@
         if (selectedResult >= 0) {
           event.preventDefault();
           const profile = results[selectedResult];
-          window.location.href = `/${profile.npub}`;
+          goto(`/${profile.npub}`);
+          hasFocus = false; // close the search results
         }
         break;
     }

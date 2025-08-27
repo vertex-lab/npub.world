@@ -219,6 +219,12 @@ const fetchImage = async (url, quality) => {
       return fallbackImage;
     }
 
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.startsWith('image/')) {
+      badURLs.add(url);
+      return fallbackImage;
+    }
+
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 

@@ -7,17 +7,29 @@ import { reputationInfos, minimalProfile, detailedProfile, getPubkeys, fetchMini
 let targetKey;  // the hex public key of the profile
 
 export async function load({ params }) {
+  let npub = params.npub;
+  if (HEXKEY_REGEXP.test(npub)) {
+    try {
+      npub = nip19.npubEncode(npub);
+    } catch(err) {
+      throw error(400, err.message || err.toString());
+    }
+
+    return redirect(301, `/${npub}`);
+  }
+
+  if (NIP05_REGEXP.test(npub)) {
+    try {
+      npub = await resolveNIP05(npub);
+    } catch(err) {
+        throw error(400, err.message || err.toString());
+    }
+
+    return redirect(301, `/${npub}`);
+  }
+
   try {
-    if (HEXKEY_REGEXP.test(params.npub)) {
-      return redirect(301, `/${nip19.npubEncode(params.npub)}`);
-    }
-
-    if (NIP05_REGEXP.test(params.npub)) {
-      const npub = await resolveNIP05(params.npub);
-      return redirect(301, `/${npub}`);
-    }
-
-    targetKey = decodeNpub(params.npub);
+    targetKey = decodeNpub(npub);
 
     const verifyReputation = {
       kind: 5312,
@@ -27,14 +39,7 @@ export async function load({ params }) {
       ],
     };
 
-    let response;
-    try {
-      response = await dvm(verifyReputation);
-    } catch(err) {
-      console.log("verify reputation failed: ", err)
-      throw error(500, err)
-    }
-
+    const response = await dvm(verifyReputation);
     const reputations = reputationInfos(response);
     const pubkeys = reputations.map((e) => e.pubkey);
 
@@ -51,6 +56,10 @@ export async function load({ params }) {
       reputations[0]
     );
 
+    if (!profile) {
+      throw error(404, 'Profile not found');
+    }
+
     const topFollowers = await Promise.all(
       pubkeys
         .slice(1)
@@ -59,9 +68,11 @@ export async function load({ params }) {
 
     profile.topFollowers = topFollowers.filter(Boolean);
     return profile;
-    
+
   } catch(err) {
-    throw error(err.status || 500, err.message || err);
+    if (err.status) throw err;
+    console.error('Internal profile load error:', err);
+    throw error(500, err.message || err.toString());
   }
 }
 

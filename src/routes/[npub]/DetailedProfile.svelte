@@ -23,14 +23,14 @@
         if (browser) {
             checkIfMobile()
             window.addEventListener("resize", checkIfMobile);
-            window.addEventListener('keydown', escClosePicture)
+            document.addEventListener('keydown', escClosePicture)
         }
     });
 
     onDestroy(() => { 
         if (browser) {
             window.removeEventListener("resize", checkIfMobile);
-            window.removeEventListener('keydown', escClosePicture) 
+            document.removeEventListener('keydown', escClosePicture) 
         }
     });
 </script>

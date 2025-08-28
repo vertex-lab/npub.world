@@ -1,6 +1,7 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { deserialize } from '$app/forms';
+  import { browser } from "$app/environment";
   import { goto } from '$app/navigation';
 
   import PressableProfile from "./PressableProfile.svelte";
@@ -23,16 +24,28 @@
     return results.error || results.length > 0
   }
 
-  onMount(() => {
-    isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const closeOnOutsideClick = (e) => {
+    if (!inputRef.contains(e.target)) hasFocus = false;
+  };
 
-    document.addEventListener("click", closeOnOutsideClick);
-    return () => { document.removeEventListener("click", closeOnOutsideClick) };
+  const closeOnEsc = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) hasFocus = false;
+  }
+
+  onMount(() => {
+    if (browser) {
+      isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      document.addEventListener("click", closeOnOutsideClick);
+      document.addEventListener("keydown", closeOnEsc);
+    }
   });
 
-  const closeOnOutsideClick = (event) => {
-    if (!inputRef.contains(event.target)) hasFocus = false;
-  };
+  onDestroy(() => {
+    if (browser) {
+      document.removeEventListener("click", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEsc);
+    }
+  });
 
   const automaticSearch = () => {
     if (!query.trim() || query.length < 3) return

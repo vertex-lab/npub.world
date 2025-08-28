@@ -1,9 +1,12 @@
 <script>
+  import { onDestroy, onMount, tick } from "svelte";
+  import { page } from "$app/stores";
+  import { browser } from "$app/environment";
+
   import { decode } from "nostr-tools/nip19";
   import InfoTable from "./InfoTable.svelte";
   import DetailedProfile from "./DetailedProfile.svelte"
   import SearchBox from "$lib/components/SearchBox.svelte";
-  import { onMount, tick } from "svelte";
   import ProfilePicture from "$lib/components/ProfilePicture.svelte";
   import ReputationBadge from "$lib/components/ReputationBadge.svelte";
   import PressableProfile from "$lib/components/PressableProfile.svelte";
@@ -11,9 +14,20 @@
   const { data } = $props();
 
   let title = $state("");
+  let searchBoxRef;
   let isMobile = $state(false);
   let visibleFollowers = $state(0);
-  let searchBoxRef;
+
+  const updateVisibleFollowers = () => {
+    const width = window.innerWidth;
+    if (width <= 576) {
+      visibleFollowers = 6;   // for mobile
+    } else if (width <= 992) {
+      visibleFollowers = 9;   // for tablets
+    } else {
+      visibleFollowers = 10;  // for desktop
+    }
+  }
 
   const apps = [
     { name: "Default App", url: "nostr:"},
@@ -25,28 +39,26 @@
   ];
 
   onMount( () => {
-    isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    if (!isMobile) searchBoxRef.focus();
-
-    window.addEventListener("resize", resizeTopFollowers);
-    return () => window.removeEventListener("resize", resizeTopFollowers);
+    if (browser) {
+      isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      updateVisibleFollowers();
+      window.addEventListener("resize", updateVisibleFollowers);
+    }
   })
 
-  $effect(() => {
-    title = data.name ?? data.npub;
-    resizeTopFollowers();
+  onDestroy( () => {
+    if (browser) {
+      window.removeEventListener("resize", updateVisibleFollowers);
+    }
+  })
+
+  $effect(async () => {
+    if ($page.url.href) {
+      title = data.name ?? data.npub;
+      if (!isMobile) searchBoxRef.focus();
+    }
   });
 
-  const resizeTopFollowers = () => {
-    const width = window.innerWidth;
-    if (width <= 576) {
-      visibleFollowers = 6;   // for mobile
-    } else if (width <= 992) {
-      visibleFollowers = 9;   // for tablets
-    } else {
-      visibleFollowers = 10;  // for desktop
-    }
-  }
 </script>
 
 <svelte:head>

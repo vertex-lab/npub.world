@@ -287,5 +287,9 @@
     input[type="text"] {
       padding: 12px 12px 12px 36px;
     }
+
+    .search-results {
+      max-height: 340px;
+    }
   }
 </style>

@@ -73,11 +73,6 @@
 
     hasFocus = true;
     isLoading = false;
-
-    if (!isMobile) {
-      await tick()
-      inputRef.focus()
-    }
 }
 
   const moveWithArrows = (event) => {

@@ -77,11 +77,26 @@ export const normalizeMentions = async (text) => {
 export const normalizeURL = (url) => {
   if (!url || typeof url !== 'string') return null;
 
+  url = url.trim();
+  if (url.length === 0) return null;
+
   if (!HTTP_URL_REGEXP.test(url)) {
     url = `https://${url}`;
   }
+
   return url;
 };
+
+export const isValidURL = (url) => {
+  if (!url || typeof url !== 'string') return false;
+
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function truncateString(str, maxLength) {
   if (str.length <= maxLength) return str;

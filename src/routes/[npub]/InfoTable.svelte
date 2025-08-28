@@ -1,4 +1,5 @@
 <script>
+  import { isValidURL } from "$lib/string";
   import CopyPill from "$lib/components/CopyPill.svelte";
   
   const { profile } = $props();
@@ -6,15 +7,18 @@
 
 <table>
   <tbody>
-    <tr>
-      <td class="cell-left">Nostr Public Key:</td>
-      <td>
-        <CopyPill
-          text={profile.npub}
-          color="var(--blueAccentText)"
-          backgroundColor="var(--blueAccent)"/>
-        </td>
-    </tr>
+    {#if profile.npub}
+      <tr>
+        <td class="cell-left">Nostr Public Key:</td>
+        <td>
+          <CopyPill
+            text={profile.npub}
+            color="var(--blueAccentText)"
+            backgroundColor="var(--blueAccent)"/>
+          </td>
+      </tr>
+    {/if}
+
     {#if profile.lud16}
       <tr>
         <td class="cell-left">Lightning Address:</td>
@@ -26,19 +30,29 @@
         </td>
       </tr>
     {/if}
+
     {#if profile.about}
       <tr style="vertical-align: top">
         <td class="cell-left"><p>Bio:</p></td>
         <td class="bio-value">{@html profile.about}</td>
       </tr>
     {/if}
+
     {#if profile.website}
       <tr>
         <td class="cell-left"><p>Website:</p></td>
-        <td><a href={profile.website} target="_blank" rel="noopener noreferrer">
-          {new URL(profile.website).host}</a></td>
+
+        {#if isValidURL(profile.website)}
+          <td>
+            <a href={profile.website} target="_blank" rel="noopener noreferrer">{new URL(profile.website).host}</a>
+          </td>
+        {:else}
+          <!-- show as plain text if invalid -->
+          <td>{profile.website}</td>  
+        {/if}
       </tr>
     {/if}
+
   </tbody>
 </table>
 

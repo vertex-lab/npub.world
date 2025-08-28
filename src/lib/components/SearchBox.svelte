@@ -140,30 +140,28 @@
   }
 </script>
 
-<div class="search-wrapper">
-  <div class="search-container" class:active={showResult()}>
-    <form onsubmit={search} class="search-box">
-      {#if isLoading}
-        <span class="spinner"></span>
-      {:else}
-        <span class="search-icon"></span>
-      {/if}
+<div class="search-container">
+  <form onsubmit={search} class="search-form" class:active={showResult()}>
+    {#if isLoading}
+      <span class="spinner"></span>
+    {:else}
+      <span class="search-icon"></span>
+    {/if}
 
-      <input
-        type="text"
-        name="q"
-        class:active={showResult()}
-        placeholder="Search nostr profiles"
-        bind:value={query}
-        bind:this={inputRef}
-        autocomplete="off"
-        spellcheck="off"
-        oninput={automaticSearch}
-        onkeydown={moveWithArrows}
-        onfocus={givenFocus}
-      />
-    </form>
-  </div>
+    <input
+      type="text"
+      name="q"
+      class:active={showResult()}
+      placeholder="Search nostr profiles"
+      bind:value={query}
+      bind:this={inputRef}
+      autocomplete="off"
+      spellcheck="off"
+      oninput={automaticSearch}
+      onkeydown={moveWithArrows}
+      onfocus={givenFocus}
+    />
+  </form>
 
   {#if hasFocus && results && results.error}
     <div class="search-results">
@@ -186,13 +184,13 @@
 </div>
 
 <style>
-  .search-wrapper {
+  .search-container {
     position: relative;
     width: 100%;
     margin: 0 auto;
   }
 
-  .search-container {
+  .search-form {
     width: 100%;
     box-sizing: border-box;
     border: 1px solid var(--border-color);
@@ -200,15 +198,9 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
-  .search-container.active {
+  .search-form.active {
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid transparent;
-  }
-
-  .search-box {
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
   }
 
   .search-icon {
@@ -236,7 +228,7 @@
     outline: none !important;
   }
 
-  .search-container.active input[type="text"] {
+  .search-form.active input[type="text"] {
     border-radius: 7px 7px 0 0;
   }
 

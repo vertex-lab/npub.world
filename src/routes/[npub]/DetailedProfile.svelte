@@ -1,6 +1,8 @@
 <script>
     import { onMount, onDestroy } from "svelte";
     import { browser } from "$app/environment";
+
+    import { onEsc } from "$lib/events.js";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
     import ProfilesModal from "./FollowList.svelte";
@@ -15,22 +17,18 @@
     function closePicture() { showPicture = false; }
     function checkIfMobile() { isMobile = window.innerWidth <= 576 }
 
-    function escClosePicture(e) {
-        if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closePicture()
-    }
-
     onMount(() => { 
         if (browser) {
             checkIfMobile()
             window.addEventListener("resize", checkIfMobile);
-            document.addEventListener('keydown', escClosePicture)
+            document.addEventListener('keydown', onEsc(closePicture))
         }
     });
 
     onDestroy(() => { 
         if (browser) {
             window.removeEventListener("resize", checkIfMobile);
-            document.removeEventListener('keydown', escClosePicture) 
+            document.removeEventListener('keydown', onEsc(closePicture)) 
         }
     });
 </script>

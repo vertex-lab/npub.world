@@ -6,6 +6,7 @@
 
   import PressableProfile from "./PressableProfile.svelte";
   import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
+  import { onEsc, onOutsideClick } from "$lib/events.js";
 
   let query = $state("");
   let results = $state({});  // the list of search results, or the error
@@ -19,31 +20,25 @@
   let isMobile = $state(false);
   let hasFocus = $state(true);
 
+  const removeFocus = () => { hasFocus = false; }
+
   const showResult = () => {
     if (!hasFocus || !results) return false
     return results.error || results.length > 0
   }
 
-  const closeOnOutsideClick = (e) => {
-    if (!inputRef.contains(e.target)) hasFocus = false;
-  };
-
-  const closeOnEsc = (e) => {
-      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) hasFocus = false;
-  }
-
   onMount(() => {
     if (browser) {
       isMobile = /Mobi|Android/i.test(navigator.userAgent);
-      document.addEventListener("click", closeOnOutsideClick);
-      document.addEventListener("keydown", closeOnEsc);
+      document.addEventListener("click", onOutsideClick(inputRef, removeFocus));
+      document.addEventListener("keydown", onEsc(removeFocus));
     }
   });
 
   onDestroy(() => {
     if (browser) {
-      document.removeEventListener("click", closeOnOutsideClick);
-      document.removeEventListener("keydown", closeOnEsc);
+      document.removeEventListener("click", onOutsideClick(inputRef, removeFocus));
+      document.removeEventListener("keydown", onEsc(removeFocus));
     }
   });
 

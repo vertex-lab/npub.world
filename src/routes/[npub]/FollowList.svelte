@@ -4,6 +4,7 @@
     import { browser } from "$app/environment";
     import { onDestroy, onMount } from 'svelte';
 
+    import { onEsc } from '$lib/events';
     import PressableProfile from '$lib/components/PressableProfile.svelte';
 
     // - npub of the user whose follow list is being displayed
@@ -15,19 +16,17 @@
 
     let profiles = $state([]);
     let error = $state('');
-
     let showModal = $state(false);
     let isLoading = $state(false);
 
-    // refresh when page updates
-    $effect(() => { 
-        if ($page.url.href) {
-            profiles = [];
-            error = '';
-            showModal = false;
-            isLoading = false;
+    function closeModal() { showModal = false; }
+
+    async function openModal() {
+        showModal = true;
+        if (count !== 0 && !profiles.length) {
+            await doAction();
         }
-    });
+    }
 
     async function doAction() {
         isLoading = true;
@@ -53,21 +52,19 @@
         isLoading = false;
     }
 
-    async function openModal() {
-        showModal = true;
-        if (count !== 0 && !profiles.length) {
-            await doAction();
+    onMount(() => { if (browser) document.addEventListener('keydown', onEsc(closeModal)) });
+    onDestroy(() => { if (browser) document.removeEventListener('keydown', onEsc(closeModal)) });
+
+    // refresh when page updates
+    $effect(() => { 
+        if ($page.url.href) {
+            profiles = [];
+            error = '';
+            showModal = false;
+            isLoading = false;
         }
-    }
+    });
 
-    function closeModal() { showModal = false; }
-
-    function escCloseModal(e) {
-        if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) closeModal()
-    }
-
-    onMount(() => { if (browser) window.addEventListener('keydown', escCloseModal) });
-    onDestroy(() => { if (browser) window.removeEventListener('keydown', escCloseModal) });
 </script>
 
 <button class="stat-pair" onclick={openModal}>

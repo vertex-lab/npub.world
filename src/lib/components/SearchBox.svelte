@@ -20,6 +20,7 @@
   let isMobile = $state(false);
   let hasFocus = $state(true);
 
+  const givenFocus = () => { hasFocus = true; }
   const removeFocus = () => { hasFocus = false; }
 
   const showResult = () => {
@@ -159,7 +160,7 @@
         spellcheck="off"
         oninput={automaticSearch}
         onkeydown={moveWithArrows}
-        onfocus={() => (hasFocus = true)}
+        onfocus={givenFocus}
       />
     </form>
   </div>

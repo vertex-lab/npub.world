@@ -1,6 +1,5 @@
 <script>
-  import { onDestroy, onMount, tick } from "svelte";
-  import { page } from "$app/stores";
+  import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
 
   import { decode } from "nostr-tools/nip19";
@@ -52,10 +51,11 @@
     }
   })
 
-  $effect(async () => {
-    if ($page.url.href) {
-      title = data.name ?? data.npub;
-      if (!isMobile) searchBoxRef.focus();
+  $effect(async () => { 
+    title = data.name ?? data.npub;
+
+    if (!isMobile) {
+      setTimeout(() => {searchBoxRef.focus();}, 50);
     }
   });
 

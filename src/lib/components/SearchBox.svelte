@@ -1,15 +1,16 @@
 <script>
   import { onDestroy, onMount, tick } from "svelte";
+  import { afterNavigate } from "$app/navigation";
   import { deserialize } from '$app/forms';
   import { browser } from "$app/environment";
   import { goto } from '$app/navigation';
 
-  import PressableProfile from "./PressableProfile.svelte";
   import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
   import { onEsc, onOutsideClick } from "$lib/events.js";
+  import PressableProfile from "./PressableProfile.svelte";
 
   let query = $state("");
-  let results = $state({});  // the list of search results, or the error
+  let results = $state([]);  // the list of search results, or the error
   let searchTimeout;
 
   let inputRef = $state(null)
@@ -17,39 +18,46 @@
   let selectedResult = $state(-1); // the index of the seleted search result
 
   let isLoading = $state(false);
-  let isMobile = $state(false);
-  let hasFocus = $state(true);
+  let isResultVisible = $state(false);
 
-  const givenFocus = () => { hasFocus = true; }
-  const removeFocus = () => { hasFocus = false; }
+  const showResult = () => { isResultVisible = true; }
+  const hideResult = () => { isResultVisible = false; }
 
-  const showResult = () => {
-    if (!hasFocus || !results) return false
+  const isActive = () => {
+    if (!isResultVisible || !results) return false
     return results.error || results.length > 0
   }
 
   onMount(() => {
     if (browser) {
-      isMobile = /Mobi|Android/i.test(navigator.userAgent);
-      document.addEventListener("click", onOutsideClick(inputRef, removeFocus));
-      document.addEventListener("keydown", onEsc(removeFocus));
+      document.addEventListener("click", onOutsideClick(inputRef, hideResult));
+      document.addEventListener("keydown", onEsc(hideResult));
     }
   });
 
   onDestroy(() => {
     if (browser) {
-      document.removeEventListener("click", onOutsideClick(inputRef, removeFocus));
-      document.removeEventListener("keydown", onEsc(removeFocus));
+      document.removeEventListener("click", onOutsideClick(inputRef, hideResult));
+      document.removeEventListener("keydown", onEsc(hideResult));
     }
   });
 
-  const automaticSearch = () => {
+  $effect(() => {
+    afterNavigate(() => {
+      // hide results when navigating to a new page
+      isResultVisible = false;
+      selectedResult = -1;
+    });
+  });
+
+  function automaticSearch(event) {
     if (!query.trim() || query.length < 3) return
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => { search(); }, 300);  // 300ms delay
+    searchTimeout = setTimeout(() => { search(event); }, 300);  // 300ms delay
   }
 
-  async function search() {
+  async function search(event) {
+    event?.preventDefault();
     query = query.trim()
     if (!query) return
     
@@ -57,8 +65,9 @@
 
     if (HEXKEY_REGEXP.test(query) || NPUB_REGEXP.test(query) || NIP05_REGEXP.test(query)) {
       goto(`/${query}`);
+      selectedResult = -1;
       isLoading = false;
-      hasFocus = false;
+      results = [];
       query = "";
       return
     }
@@ -80,8 +89,10 @@
       results = response.data;
     }
 
-    hasFocus = true;
+    selectedResult = -1;
     isLoading = false;
+    isResultVisible = true;
+    inputRef.focus();
 }
 
   const moveWithArrows = (event) => {
@@ -106,7 +117,6 @@
           event.preventDefault();
           const profile = results[selectedResult];
           goto(`/${profile.npub}`);
-          hasFocus = false; // close the search results
         }
         break;
     }
@@ -141,7 +151,7 @@
 </script>
 
 <div class="search-container">
-  <form onsubmit={search} class="search-form" class:active={showResult()}>
+  <form onsubmit={search} class="search-form" class:active={isActive()}>
     {#if isLoading}
       <span class="spinner"></span>
     {:else}
@@ -151,25 +161,25 @@
     <input
       type="text"
       name="q"
-      class:active={showResult()}
+      class:active={isActive()}
       placeholder="Search nostr profiles"
-      bind:value={query}
       bind:this={inputRef}
+      bind:value={query}
       autocomplete="off"
       spellcheck="off"
       oninput={automaticSearch}
       onkeydown={moveWithArrows}
-      onfocus={givenFocus}
+      onclick={showResult}
     />
   </form>
 
-  {#if hasFocus && results && results.error}
+  {#if isResultVisible && results && results.error}
     <div class="search-results">
       <p style="text-align: center;">{results.error}</p>
     </div>
   {/if}
 
-  {#if hasFocus && results && results.length > 0 }
+  {#if isResultVisible && results && results.length > 0 }
     <div class="search-results" bind:this={resultsRef}>
       {#each results as profile, i}
         <PressableProfile

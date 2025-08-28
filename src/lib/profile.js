@@ -9,7 +9,7 @@
   * @property {string} [nip05]
   * @property {string} [lud16]
   * @property {string} [website]
-  * @property {number} [following]
+  * @property {number} [follows]
   * @property {number} [followers]
   * 
   * @typedef {Object} ReputationInfo

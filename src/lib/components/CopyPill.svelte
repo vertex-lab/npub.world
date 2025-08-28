@@ -18,10 +18,12 @@
       displayText = truncateString(text, 27);
     } else if (width < 700) {
       displayText = truncateString(text, 30);
+    } else if (width < 800) {
+      displayText = truncateString(text, 40);
     } else if (width < 992) {
-      displayText = truncateString(text, 35);
+      displayText = truncateString(text, 55);
     } else {
-      displayText = truncateString(text, 70);
+      displayText = truncateString(text, 75);
     }
   };
 

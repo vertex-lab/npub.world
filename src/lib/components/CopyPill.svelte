@@ -3,7 +3,7 @@
   import { browser } from "$app/environment";
 
   import { truncateString } from "$lib/string";
-  import { onEnter, copyToClipboard } from "$lib/events";
+  import { onEnter } from "$lib/events";
 
   let { text, color, backgroundColor } = $props();
   let displayText = $state(text);

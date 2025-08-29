@@ -2,41 +2,37 @@
     import { onMount, onDestroy } from "svelte";
     import { browser } from "$app/environment";
 
-    import { onEsc } from "$lib/events.js";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import CopyLink from "$lib/components/CopyLink.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
     import FollowList from "./FollowList.svelte";
+    import PressableProfilePicture from "$lib/components/PressableProfilePicture.svelte";
 
     const { profile } = $props();
-    let showPicture = $state(false);
-    let showFollow = $state(false);
-    let isMobile = $state(false);
 
-    function openPicture() { showPicture = true; }
-    function closePicture() { showPicture = false; }
-    function checkIfMobile() { isMobile = window.innerWidth <= 576 }
+    let isMobile = $state(false);
+    function checkIfMobile() { isMobile = window.innerWidth < 576 }
 
     onMount(() => { 
         if (browser) {
             checkIfMobile()
             window.addEventListener("resize", checkIfMobile);
-            document.addEventListener('keydown', onEsc(closePicture))
         }
     });
 
     onDestroy(() => { 
         if (browser) {
             window.removeEventListener("resize", checkIfMobile);
-            document.removeEventListener('keydown', onEsc(closePicture)) 
         }
     });
 </script>
 
 <div class="profile-header">
-    <button onclick={openPicture} aria-label="View profile picture">
-        <ProfilePicture source={profile.picture} size={ isMobile ? "130px" : "100px" } />
-    </button>
+    <PressableProfilePicture 
+        picture={profile.picture} 
+        pictureURL={profile.pictureURL} 
+        size={ isMobile ? "130px" : "100px" } 
+    />
 
     <div class="copy-link">
         <CopyLink/>
@@ -57,72 +53,10 @@
             <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
         </div>
     </div>
-
-    {#if showPicture}
-    <div class="picture-overlay"
-        role="button"
-        onclick={closePicture}
-        tabindex="0"
-        onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? closePicture() : null}
-        aria-label="Close image"
-    >
-        <div class="picture-container" 
-            role="cell"
-            onclick={(e) => e.stopPropagation()}
-            tabindex="0"
-            onkeydown={(e) => e.key === 'Escape' || e.key === ' ' ? closePicture() : null}
-        >
-            <img src={profile.pictureURL} alt="Full Profile" />
-            <button class="close-button" onclick={closePicture} aria-label="Close image">✕</button>
-        </div>
-    </div>
-    {/if}
 </div>
 
 <style>
 @import "../../../static/shared.css";
-    button {
-        all: unset;
-        cursor: pointer;
-    }
-
-    .picture-overlay {
-        position: fixed;
-        inset: 0;
-        background: var(--overlay-color);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
-
-    .picture-container {
-        position: relative;
-        text-align: center;
-    }
-
-    .picture-container img {
-        height: 100vh;
-        width: auto;
-    }
-
-    .close-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: var(--background-color);
-        color: var(--primary-text);
-        border: none;
-        border-radius: 50%;
-        width: 2rem;
-        height: 2rem;
-        line-height: 2rem;  /* vertical alignment*/
-        font-size: 1.2rem;
-        padding: 0;
-        cursor: pointer;
-        z-index: 10;
-    }
-
     .profile-header {
         position: relative;
         display: flex;
@@ -183,11 +117,6 @@
         .copy-link {
             top: 0;
             right: 0;
-        }
-
-        .picture-container img {
-            width: 100vw;
-            height: auto;
         }
 
         .profile-name {

@@ -41,7 +41,11 @@
 
   onMount(() => { if (browser) window.addEventListener("resize", resize);} );
   onDestroy(() => { if (browser) window.removeEventListener("resize", resize);} );
-  $effect(() => { resize();});
+
+  $effect(() => {
+    copied = false;
+    resize();
+  });
 </script>
 
 <button

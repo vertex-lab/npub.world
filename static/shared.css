@@ -3,11 +3,14 @@
 	--primary-text: #333;
 	--secondary-text: #666;
 	--light-text: #888;
+	--highlight-color: #f0f7ff;
+
 	--border-color: #ddd;
 	--background-color: #f9f9f9;
 	--card-background: #fff;
-	--highlight-color: #f0f7ff;
+	
 	--overlay-color: rgba(0, 0, 0, 0.7);
+	--shadow-color: rgba(0, 0, 0, 0.05);
 
 	--blueAccent: #eef3ff;
 	--blueAccentText: #4a63b8;
@@ -21,11 +24,14 @@
 	--primary-text: #e1e1e1;
 	--secondary-text: #b0b0b0;
 	--light-text: #999;
+	--highlight-color: #2a3344;
+
 	--border-color: #444;
 	--background-color: #121212;
 	--card-background: #1e1e1e;
-	--highlight-color: #2a3344;
+
 	--overlay-color: rgba(0, 0, 0, 0.7);
+	--shadow-color: rgba(255, 255, 255, 0.05);
 
 	--blueAccent: #1e293b;
 	--blueAccentText: #93c5fd;
@@ -92,8 +98,9 @@ input[type="text"]::placeholder {
 
 .card {
 	background-color: var(--card-background);
+	border: 1px solid var(--border-color);
 	border-radius: 12px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 2px 8px var(--shadow-color);
 	padding: 1rem;
 }
 
@@ -120,7 +127,7 @@ input[type="text"]::placeholder {
 	align-items: center;
 	justify-content: center;
 	background-color: var(--card-background);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 5px var(--shadow-color);
 	transition: all 0.2s;
 }
 

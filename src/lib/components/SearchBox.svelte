@@ -205,7 +205,7 @@
     box-sizing: border-box;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px var(--shadow-color);
   }
 
   .search-form.active {
@@ -273,7 +273,6 @@
     overflow-y: auto;
     z-index: 10;
 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     background-color: var(--card-background);
     border-radius: 0 0 8px 8px;
     border: 1px solid var(--border-color);

@@ -6,33 +6,28 @@
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import { on } from "svelte/events";
 
-    const { picture, pictureURL, size } = $props();
+    const { picture, pictureURL, className } = $props();
 
     let showPicture = $state(false);
-    let isMobile = $state(false);
 
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
-    function checkIfMobile() { isMobile = window.innerWidth <= 576 }
 
     onMount(() => { 
         if (browser) {
-            checkIfMobile()
-            window.addEventListener("resize", checkIfMobile);
             document.addEventListener('keydown', onEsc(closePicture))
         }
     });
 
     onDestroy(() => { 
         if (browser) {
-            window.removeEventListener("resize", checkIfMobile);
             document.removeEventListener('keydown', onEsc(closePicture)) 
         }
     });
 </script>
 
 <button onclick={openPicture} aria-label="View profile picture">
-    <ProfilePicture source={picture} size={ isMobile ? "130px" : "100px" } />
+    <ProfilePicture source={picture} class="pfp" />
 </button>
 
 {#if showPicture}
@@ -62,6 +57,8 @@
         all: unset;
         cursor: pointer;
     }
+
+    :global(.pfp) { --size : 100px !important; }
 
     .picture-overlay {
         position: fixed;
@@ -105,5 +102,7 @@
             height: auto;
             width: 100vw;
         }
+
+        :global(.pfp) { --size : 130px !important; }
     }
 </style>

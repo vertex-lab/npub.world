@@ -1,14 +1,14 @@
 <script>
-  export let source = "";
-  export let size = "40px";
+  let { source, class: className } = $props();
 </script>
 
-<div class="profile-avatar" style="--size: {size}">
-    <img src={source} alt="Profile Avatar" />
+<div class={`${className} profile-avatar`}>
+  <img src={source} alt="Profile Avatar" />
 </div>
 
 <style>
   .profile-avatar {
+    --size: 40px;
     overflow: hidden;
     margin-right: 0.8rem;
     border-radius: 50%;

@@ -9,30 +9,10 @@
     import PressableProfilePicture from "$lib/components/PressableProfilePicture.svelte";
 
     const { profile } = $props();
-
-    let isMobile = $state(false);
-    function checkIfMobile() { isMobile = window.innerWidth < 576 }
-
-    onMount(() => { 
-        if (browser) {
-            checkIfMobile()
-            window.addEventListener("resize", checkIfMobile);
-        }
-    });
-
-    onDestroy(() => { 
-        if (browser) {
-            window.removeEventListener("resize", checkIfMobile);
-        }
-    });
 </script>
 
 <div class="profile-header">
-    <PressableProfilePicture 
-        picture={profile.picture} 
-        pictureURL={profile.pictureURL} 
-        size={ isMobile ? "130px" : "100px" } 
-    />
+    <PressableProfilePicture picture={profile.picture} pictureURL={profile.pictureURL} />
 
     <div class="copy-link">
         <CopyLink/>
@@ -41,7 +21,7 @@
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
-            <ReputationBadge reputation={profile.reputation} tooltip={isMobile ? false : true } size={22}/>
+            <ReputationBadge reputation={profile.reputation} size={22}/>
         </p>
 
         <p class="profile-nip05">

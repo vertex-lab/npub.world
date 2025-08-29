@@ -3,14 +3,12 @@
   import ReputationBadge from "./ReputationBadge.svelte";
   import { truncateString } from "$lib/string.js"
 
-  export let profile;
-  export let style = "";
-  export let reputationBadge = false;
+  let { profile, style, reputationBadge } = $props();
 </script>
 
 <a href={"/" + profile.npub } data-sveltekit-preload-data="off">
   <div class="profile-item" style={style}>
-    <ProfilePicture source={profile.picture} size="40px" />
+    <ProfilePicture source={profile.picture}/>
     <div class="profile-info">
       <div class="profile-name">
         {profile.name}

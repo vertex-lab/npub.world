@@ -151,6 +151,7 @@
     .modal {
         position: relative;
         background: var(--card-background);
+        box-shadow: var(--shadow-elevation-modal);
         text-align: left;
         padding: 1rem;
         border-radius: 12px;

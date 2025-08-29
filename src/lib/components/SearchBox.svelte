@@ -205,12 +205,14 @@
     box-sizing: border-box;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 1px 3px var(--shadow-color);
+	  box-shadow: var(--shadow-elevation-low);
+    background-color: var(--card-background);
   }
 
   .search-form.active {
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid transparent;
+    box-shadow: var(--shadow-elevation-high);
   }
 
   .search-icon {
@@ -276,6 +278,7 @@
     background-color: var(--card-background);
     border-radius: 0 0 8px 8px;
     border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-elevation-high);
   }
 
   /* Responsive adjustments */

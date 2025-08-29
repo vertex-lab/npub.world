@@ -8,14 +8,41 @@
 	--border-color: #ddd;
 	--background-color: #f9f9f9;
 	--card-background: #fff;
-	
-	--overlay-color: rgba(0, 0, 0, 0.7);
-	--shadow-color: rgba(0, 0, 0, 0.05);
 
 	--blueAccent: #eef3ff;
 	--blueAccentText: #4a63b8;
 	--yellowAccent: #fff8e1;
 	--yellowAccentText: #b45309;
+
+	--overlay-color: rgba(0, 0, 0, 0.7);
+	--shadow-color: 0deg 0% 61%;
+	--shadow-color-overlay: 0deg 0% 15%;
+	
+	--shadow-elevation-low:
+		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.41),
+		0.3px 0.6px 0.7px -1.5px hsl(var(--shadow-color) / 0.37),
+		0.7px 1.4px 1.6px -3px hsl(var(--shadow-color) / 0.32);
+	--shadow-elevation-medium:
+		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.43),
+		0.5px 1.1px 1.3px -1px hsl(var(--shadow-color) / 0.4),
+		1.3px 2.8px 3.2px -2px hsl(var(--shadow-color) / 0.36),
+		3.3px 7.2px 8.3px -3px hsl(var(--shadow-color) / 0.32);
+	--shadow-elevation-high:
+		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.415),
+		0.65px 1.45px 1.7px -0.5px hsl(var(--shadow-color) / 0.395),
+		1.4px 3.1px 3.5px -1px hsl(var(--shadow-color) / 0.365),
+		2.8px 6.5px 7.5px -1.7px hsl(var(--shadow-color) / 0.345),
+		5px 11px 12.7px -2.1px hsl(var(--shadow-color) / 0.33),
+		8px 17.5px 20px -2.5px hsl(var(--shadow-color) / 0.31);
+	--shadow-elevation-modal: 
+		0.2px 0.4px 0.5px hsl(var(--shadow-color-overlay) / 0.4),
+		0.8px 1.8px 2.1px -0.4px hsl(var(--shadow-color-overlay) / 0.39),
+		1.5px 3.4px 3.9px -0.9px hsl(var(--shadow-color-overlay) / 0.37),
+		2.6px 5.8px 6.7px -1.3px hsl(var(--shadow-color-overlay) / 0.35),
+		4.4px 9.6px 11.1px -1.7px hsl(var(--shadow-color-overlay) / 0.34),
+		7.1px 15.5px 17.9px -2.1px hsl(var(--shadow-color-overlay) / 0.32),
+		11px 24.1px 27.8px -2.6px hsl(var(--shadow-color-overlay) / 0.3),
+		16.4px 36px 41.5px -3px hsl(var(--shadow-color-overlay) / 0.28);
 
 	--primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -31,7 +58,8 @@
 	--card-background: #1e1e1e;
 
 	--overlay-color: rgba(0, 0, 0, 0.7);
-	--shadow-color: rgba(255, 255, 255, 0.05);
+  	--shadow-color: 0deg 0% 25%;
+	--shadow-color-overlay: 0deg 0% 20%;
 
 	--blueAccent: #1e293b;
 	--blueAccentText: #93c5fd;
@@ -100,7 +128,7 @@ input[type="text"]::placeholder {
 	background-color: var(--card-background);
 	border: 1px solid var(--border-color);
 	border-radius: 12px;
-	box-shadow: 0 2px 8px var(--shadow-color);
+	box-shadow: var(--shadow-elevation-medium);
 	padding: 1rem;
 }
 
@@ -127,7 +155,7 @@ input[type="text"]::placeholder {
 	align-items: center;
 	justify-content: center;
 	background-color: var(--card-background);
-	box-shadow: 0 2px 5px var(--shadow-color);
+	box-shadow: var(--shadow-elevation-medium);
 	transition: all 0.2s;
 }
 

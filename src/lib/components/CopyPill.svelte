@@ -1,10 +1,22 @@
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import { browser } from "$app/environment";
+
   import { truncateString } from "$lib/string";
+  import { onEnter, copyToClipboard } from "$lib/events";
 
   let { text, color, backgroundColor } = $props();
   let displayText = $state(text);
   let copied = $state(false);
+
+  function copy() {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        copied = true;
+        setTimeout(() => copied = false, 2000);
+      })
+      .catch(err => console.error('Failed to copy text:', err));
+  }
 
   const resize = () => {
     const width = window.innerWidth
@@ -27,43 +39,16 @@
     }
   };
 
-  onMount(() => {
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  });
-
-  $effect(() => {
-    resize();
-  });
-
-  function copyToClipboard() {
-    navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      copied = true;
-      // Reset the copied state after 2 seconds
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    })
-    .catch((err) => {
-      console.error("Failed to copy text: ", err);
-    });
-  }
-
-  function enterCopyToClickboard(event) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      copyToClipboard();
-    }
-  }
+  onMount(() => { if (browser) window.addEventListener("resize", resize);} );
+  onDestroy(() => { if (browser) window.removeEventListener("resize", resize);} );
+  $effect(() => { resize();});
 </script>
 
 <button
   type="button"
   class="copy-container"
-  onclick={copyToClipboard}
-  onkeydown={enterCopyToClickboard}
+  onclick={copy}
+  onkeydown={onEnter(copy)}
   aria-label="Copy {text} to clipboard"
   style="background-color: {backgroundColor}; color: {color}"
 >
@@ -100,14 +85,9 @@
     border-radius: 8px;
     cursor: pointer;
     user-select: none;
-    transition: background-color 0.2s;
     border: none;
     font-size: 0.9rem;
     text-align: left;
-  }
-
-  .copy-container:hover {
-    background-color: #fff3cd;
   }
 
   .text {
@@ -123,14 +103,5 @@
     display: flex;
     align-items: center;
     margin-left: 8px;
-  }
-
-  /* Animation for the copied state */
-  .icon :global(svg) {
-    transition: transform 0.2s;
-  }
-
-  .copy-container:active .icon :global(svg) {
-    transform: scale(0.9);
   }
 </style>

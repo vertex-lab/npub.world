@@ -96,8 +96,6 @@
 
   .text {
     display: block;
-    font-family: sans-serif;
-    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -107,5 +105,7 @@
     display: flex;
     align-items: center;
     margin-left: 8px;
+    width: 16px;
+    height: 16px;
   }
 </style>

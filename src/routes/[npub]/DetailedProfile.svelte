@@ -4,8 +4,8 @@
 
     import { onEsc } from "$lib/events.js";
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
+    import CopyLink from "$lib/components/CopyLink.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
-    import ProfilesModal from "./FollowList.svelte";
     import FollowList from "./FollowList.svelte";
 
     const { profile } = $props();
@@ -38,12 +38,20 @@
         <ProfilePicture source={profile.picture} size={ isMobile ? "130px" : "100px" } />
     </button>
 
+    <div class="copy-link">
+        <CopyLink/>
+    </div>
+
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
             <ReputationBadge reputation={profile.reputation} tooltip={isMobile ? false : true } size={22}/>
         </p>
-        <p class="profile-nip05">{profile.nip05}</p>
+
+        <p class="profile-nip05">
+            {profile.nip05}
+        </p>
+
         <div class="profile-stats">
             <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
             <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
@@ -73,15 +81,6 @@
 
 <style>
 @import "../../../static/shared.css";
-    .profile-header {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.5rem;
-        margin: 0 auto 1.5rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
     button {
         all: unset;
         cursor: pointer;
@@ -124,6 +123,22 @@
         z-index: 10;
     }
 
+    .profile-header {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        margin: 0 auto 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .copy-link {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
     .profile-identity {
         width: 100%;
         margin: 0 auto;
@@ -163,6 +178,11 @@
             align-items: center;
             text-align: center;
             padding-bottom: 0;
+        }
+
+        .copy-link {
+            top: 0;
+            right: 0;
         }
 
         .picture-container img {

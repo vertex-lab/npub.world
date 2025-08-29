@@ -233,7 +233,6 @@
     font-size: 1rem;
     box-sizing: border-box;
 
-    box-shadow: none !important;
     border: none !important;
     outline: none !important;
   }
@@ -247,8 +246,8 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border: 2px solid var(--border-color);
     border-top: 2px solid var(--primary-color);
     border-radius: 50%;

@@ -80,24 +80,14 @@ footer p strong {
 input[type="text"] {
 	width: 100%;
 	padding: 15px 15px 15px 34px;
-	border: 1px solid var(--border-color);
-	border-radius: 8px;
 	font-size: 1rem;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 	box-sizing: border-box;
-}
-
-[data-theme="dark"] input[type="text"] {
-	background-color: #313131;
-	color: white;
+	color: var(--primary-text);
+	background-color: var(--card-background);
 }
 
 input[type="text"]::placeholder {
 	color: var(--light-text);
-}
-
-input[type="text"]:focus {
-	outline: 2px solid #555;
 }
 
 .card {

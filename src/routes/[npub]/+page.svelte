@@ -136,9 +136,8 @@
   }
 
   .theme-logo-small {
-    width: 110px;
-    height: 110px;
-    margin: -1.5rem;
+    width: 50px;
+    height: 50px;
   }
 
   .search-container {
@@ -208,9 +207,8 @@
     }
 
     .theme-logo-small {
-      width: 80px;
-      height: 80px;
-      margin: -1rem;
+      width: 45px;
+      height: 45px;
     }
 
     .search-container {

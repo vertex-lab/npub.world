@@ -65,39 +65,9 @@
       box-sizing: border-box;
     }
 
-    .logo-text span {
-      font-size: 1.4rem;
-    }
-
     .search-container {
       width: 100%;
     }
   }
 
-  /* Medium screens (tablet) */
-  @media (min-width: 577px) and (max-width: 992px) {
-    .container {
-      padding: 1.5rem;
-    }
-
-    .logo-container {
-      margin-bottom: 1rem;
-    }
-
-    .logo-text span {
-      font-size: 1.6rem;
-    }
-
-    .search-container {
-      width: 75%;
-      max-width: 500px;
-    }
-  }
-
-  /* Large screens (desktop) */
-  @media (min-width: 993px) {
-    .logo-container {
-      margin-bottom: 2rem;
-    }
-  }
 </style>

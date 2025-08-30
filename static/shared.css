@@ -145,6 +145,7 @@ input[type="text"]::placeholder {
 .theme-container {
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	margin-top: 1rem;
 }
 
@@ -159,16 +160,12 @@ input[type="text"]::placeholder {
 	align-items: center;
 	justify-content: center;
 	background-color: var(--card-background);
-	box-shadow: var(--shadow-elevation-medium);
+	box-shadow: var(--shadow-elevation-low);
 	transition: all 0.2s;
 }
 
 .theme-toggle:hover {
 	background-color: var(--highlight-color);
-}
-
-.theme-toggle-icon {
-	font-size: 1.2rem;
 }
 
 .theme-logo {

@@ -91,7 +91,7 @@ footer {
 }
 
 footer p {
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 	color: var(--secondary-text);
 	text-align: center;
 	margin: 0rem auto;
@@ -178,4 +178,10 @@ input[type="text"]::placeholder {
 /* Links in dark mode */
 [data-theme="dark"] a {
 	color: #6da4ff;
+}
+
+@media (max-width: 576px) {
+	.container {
+		padding: 0.5rem;
+	}
 }

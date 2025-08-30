@@ -3,28 +3,15 @@
 	import { onMount } from "svelte";
 
 	let { children } = $props();
-	let isDarkMode = $state(false);
 
-	onMount(() => {
-		// Check for saved theme preference or use system preference
-		const savedTheme = localStorage.getItem("theme");
-		if (savedTheme) {
-			document.documentElement.setAttribute("data-theme", savedTheme);
-			isDarkMode = savedTheme === "dark";
-		} else if (
-			window.matchMedia &&
-			window.matchMedia("(prefers-color-scheme: dark)").matches
-		) {
-			document.documentElement.setAttribute("data-theme", "dark");
-			isDarkMode = true;
-		}
-	});
+	// read the data-theme attribute that we set in app.html
+	let isDarkMode = $state(
+		typeof document !== "undefined" &&
+		document.documentElement.getAttribute("data-theme") === "dark"
+	);
 
 	function toggleTheme() {
-		// Toggle the isDarkMode state
 		isDarkMode = !isDarkMode;
-
-		// Apply the theme
 		const newTheme = isDarkMode ? "dark" : "light";
 		document.documentElement.setAttribute("data-theme", newTheme);
 		localStorage.setItem("theme", newTheme);
@@ -55,6 +42,3 @@
 		</button>
 	</div>
 </footer>
-
-<style>
-</style>

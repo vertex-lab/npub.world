@@ -4,6 +4,22 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<script>
+		(function () {
+			try {
+				const savedTheme = localStorage.getItem("theme");
+				if (savedTheme) {
+					document.documentElement.setAttribute("data-theme", savedTheme);
+				} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+					document.documentElement.setAttribute("data-theme", "dark");
+				} else {
+					document.documentElement.setAttribute("data-theme", "light");
+				}
+			} catch (_) { }
+		})();
+	</script>
+
 	%sveltekit.head%
 	<link rel="icon"
 		href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌎</text></svg>">

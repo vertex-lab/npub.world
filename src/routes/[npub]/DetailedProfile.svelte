@@ -28,10 +28,10 @@
             <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
             <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
         </div>
+    </div>
 
-        <div class="copy-link">
-            <CopyLink/>
-        </div>
+    <div class="copy-link">
+        <CopyLink/>
     </div>
 </div>
 
@@ -49,16 +49,15 @@
 
     .copy-link {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 0;
+        right: 0;
     }
 
     .profile-identity {
+        text-align: left;
         width: 100%;
-        margin: 0 auto;
-        margin-right: calc(2rem + 90px); /* account for copy link button */        
+        margin-right: calc(1rem + 90px); /* account for copy link button */        
         flex-grow: 1;
-        min-width: 0;
         overflow: hidden;
     }
 
@@ -66,23 +65,23 @@
         word-wrap: break-word;
         font-size: 1.5rem;
         font-weight: 600;
-        margin: 1rem auto 0;
-        margin-bottom: 0.5rem;
+        margin: 0.5rem 0 0 0;
     }
 
     .profile-nip05 {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--light-text);
-        margin: 0 0 12px 0;
         max-width: 100%;   
         white-space: nowrap;
         overflow: hidden;       
         text-overflow: ellipsis;
+        margin: 0.75rem 0;
     }
 
     .profile-stats {
         display: flex;
         gap: 1rem;
+        margin: 0 0 0.5rem 0;
     }
     
     /* Responsive styles */
@@ -97,22 +96,13 @@
 
         .profile-identity {
             margin: 0 auto;
-        }
-
-        .profile-name {
-            margin-top: 0.5rem;
-            max-width: 17ch;
+            text-align: center;
         }
 
         .profile-stats {
             flex-wrap: nowrap;
             justify-content: center;
             margin-bottom: 0.5rem;
-        }
-
-        .copy-link {
-            top: 0;
-            right: 0;
         }
     }
 </style>

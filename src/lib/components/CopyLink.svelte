@@ -1,20 +1,20 @@
 <script>
-    import { onEnter } from "$lib/events";
+  import { onEnter } from "$lib/events";
 
-    let copied = $state(false);
+  let copied = $state(false);
 
-    function copy() {
-        navigator.clipboard.writeText(window.location.href)
-        .then(() => {
-            copied = true;
-            setTimeout(() => copied = false, 2000);
-        })
-        .catch(err => console.error('Failed to copy text:', err));
-    }
+  function copy() {
+      navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+          copied = true;
+          setTimeout(() => copied = false, 2000);
+      })
+      .catch(err => console.error('Failed to copy text:', err));
+  }
 
-    $effect(() => { 
-        copied = false; 
-    });
+  $effect(() => { 
+      copied = false; 
+  });
 </script>
 
 <button
@@ -50,8 +50,10 @@
   .copy-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
+    justify-content: space-evenly;
+    height: 40px;
+    width: 90px;
+    
     border-radius: 8px;
     cursor: pointer;
     user-select: none;
@@ -72,23 +74,18 @@
   .icon {
     display: flex;
     align-items: center;
-    margin-left: 8px;
     width: 18px;
     height: 18px;
   }
 
   @media(max-width: 450px) {
     .copy-container {
-        padding: 10px;
+        width: 40px;
+        height: 40px;
     }
 
     .text {
         display: none;
     }
-
-    .icon {
-        margin-left: 0;
-    }
-
   }
 </style>

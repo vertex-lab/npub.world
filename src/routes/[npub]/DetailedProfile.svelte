@@ -14,10 +14,6 @@
 <div class="profile-header">
     <PressableProfilePicture picture={profile.picture} pictureURL={profile.pictureURL} />
 
-    <div class="copy-link">
-        <CopyLink/>
-    </div>
-
     <div class="profile-identity">
         <p class="profile-name">
             {profile.name}
@@ -31,6 +27,10 @@
         <div class="profile-stats">
             <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
             <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
+        </div>
+
+        <div class="copy-link">
+            <CopyLink/>
         </div>
     </div>
 </div>
@@ -56,6 +56,7 @@
     .profile-identity {
         width: 100%;
         margin: 0 auto;
+        margin-right: calc(2rem + 90px); /* account for copy link button */        
         flex-grow: 1;
         min-width: 0;
         overflow: hidden;
@@ -94,9 +95,8 @@
             padding-bottom: 0;
         }
 
-        .copy-link {
-            top: 0;
-            right: 0;
+        .profile-identity {
+            margin: 0 auto;
         }
 
         .profile-name {
@@ -108,6 +108,11 @@
             flex-wrap: nowrap;
             justify-content: center;
             margin-bottom: 0.5rem;
+        }
+
+        .copy-link {
+            top: 0;
+            right: 0;
         }
     }
 </style>

@@ -218,32 +218,8 @@
 
   /* Medium screens (tablet) */
   @media (min-width: 577px) and (max-width: 992px) {
-    .container {
-      padding: 1rem;
-    }
-
-    .logo-wrapper {
-      margin-right: 1rem;
-    }
-
-    .search-container {
-      max-width: calc(100% - 60px);
-    }
-
     .followers-grid {
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-  }
-
-  /* Large screens (desktop) */
-  @media (min-width: 993px) {
-    .header {
-      flex-direction: row;
-      justify-content: space-between;
-    }
-
-    .search-container {
-      max-width: calc(100% - 80px);
     }
   }
 </style>

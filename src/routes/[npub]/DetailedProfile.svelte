@@ -41,9 +41,7 @@
         position: relative;
         display: flex;
         align-items: flex-start;
-        margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
-        margin: 0 auto 1.5rem;
         border-bottom: 1px solid var(--border-color);
     }
 

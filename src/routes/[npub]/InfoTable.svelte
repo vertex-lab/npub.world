@@ -5,59 +5,66 @@
   const { profile } = $props();
 </script>
 
-<table>
-  <tbody>
-    {#if profile.npub}
-      <tr>
-        <td class="cell-left">Nostr Public Key:</td>
-        <td>
-          <CopyPill
-            text={profile.npub}
-            color="var(--blueAccentText)"
-            backgroundColor="var(--blueAccent)"/>
-          </td>
-      </tr>
-    {/if}
-
-    {#if profile.lud16}
-      <tr>
-        <td class="cell-left">Lightning Address:</td>
-        <td>
-          <CopyPill
-            text={profile.lud16}
-            color=var(--yellowAccentText)
-            backgroundColor=var(--yellowAccent)/>
-        </td>
-      </tr>
-    {/if}
-
-    {#if profile.about}
-      <tr style="vertical-align: top">
-        <td class="cell-left"><p>Bio:</p></td>
-        <td class="bio-value">{@html profile.about}</td>
-      </tr>
-    {/if}
-
-    {#if profile.website}
-      <tr>
-        <td class="cell-left"><p>Website:</p></td>
-
-        {#if isValidURL(profile.website)}
+<div class="table">
+  <table>
+    <tbody>
+      {#if profile.npub}
+        <tr>
+          <td class="cell-left">Nostr Public Key:</td>
           <td>
-            <a href={profile.website} target="_blank" rel="noopener noreferrer">{new URL(profile.website).host}</a>
-          </td>
-        {:else}
-          <!-- show as plain text if invalid -->
-          <td>{profile.website}</td>  
-        {/if}
-      </tr>
-    {/if}
+            <CopyPill
+              text={profile.npub}
+              color="var(--blueAccentText)"
+              backgroundColor="var(--blueAccent)"/>
+            </td>
+        </tr>
+      {/if}
 
-  </tbody>
-</table>
+      {#if profile.lud16}
+        <tr>
+          <td class="cell-left">Lightning Address:</td>
+          <td>
+            <CopyPill
+              text={profile.lud16}
+              color=var(--yellowAccentText)
+              backgroundColor=var(--yellowAccent)/>
+          </td>
+        </tr>
+      {/if}
+
+      {#if profile.about}
+        <tr style="vertical-align: top">
+          <td class="cell-left"><p>Bio:</p></td>
+          <td class="bio-value">{@html profile.about}</td>
+        </tr>
+      {/if}
+
+      {#if profile.website}
+        <tr>
+          <td class="cell-left"><p>Website:</p></td>
+
+          {#if isValidURL(profile.website)}
+            <td>
+              <a href={profile.website} target="_blank" rel="noopener noreferrer">{new URL(profile.website).host}</a>
+            </td>
+          {:else}
+            <!-- show as plain text if invalid -->
+            <td>{profile.website}</td>  
+          {/if}
+        </tr>
+      {/if}
+
+    </tbody>
+  </table>
+</div>
 
 <style>
   @import "../../../static/shared.css";
+
+  .table {
+    padding: 1.5rem 0 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
 
   table {
     width: 100%;
@@ -72,13 +79,12 @@
 
   .cell-left {
     white-space: nowrap;
-    width: 1%; /* Forces minimum needed width based on content */
-    padding-right: 1em;
+    padding-right: 1rem;
     height: 3.5rem;
+    color: var(--secondary-text);
   }
 
   .bio-value {
-    color: var(--secondary-text);
     line-height: 1.5;
     overflow: auto;
     max-width: 100%;

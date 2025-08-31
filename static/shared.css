@@ -68,7 +68,6 @@
 }
 
 /* disabling all scrollbars */
-
 *::-webkit-scrollbar {
 	display: none; /* Chrome, Safari, Opera */
 }

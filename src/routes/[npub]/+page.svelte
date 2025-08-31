@@ -89,8 +89,8 @@
         <InfoTable profile={data} />
       </div>
 
-      <div class="section-card">
-        <h2 class="section-title">Top Followers</h2>
+      <div class="followers-container">
+        <p style="color: var(--secondary-text);">Top Followers:</p>
         <div class="followers-grid">
           {#each data.topFollowers.slice(0, visibleFollowers) as profile}
             <PressableProfile {profile}/>
@@ -98,16 +98,14 @@
         </div>
       </div>
 
-      <div style="margin-top: 3rem;">
-        <div class="app-grid">
-          {#each apps as app}
-            <div class="app">
-              <a href={app.url + data.npub}
-              target="_blank"
-              rel="noopener noreferrer">{app.name}</a>
-            </div>
-          {/each}
-        </div>
+      <div class="app-grid">
+        {#each apps as app}
+          <div class="app">
+            <a href={app.url + data.npub}
+            target="_blank"
+            rel="noopener noreferrer">{app.name}</a>
+          </div>
+        {/each}
       </div>
 
     </div>
@@ -116,10 +114,6 @@
 
 <style>
   @import "../../../static/shared.css";
-
-  .section-card {
-    margin-top: 2rem;
-  }
 
   .header {
     display: flex;
@@ -153,14 +147,12 @@
       gap: 12px;
   }
 
-  .section-title {
-      font-size: 1.25rem;
-      font-weight: 500;
-      margin: 0 0 2rem 0;
-      color: var(--secondary-text);
+  .followers-container {
+    padding: 1rem 0;
   }
 
   .followers-grid {
+      padding-top: 1rem;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 8px;
@@ -186,6 +178,7 @@
       flex-wrap: wrap;
       gap: 16px;
       justify-content: flex-start;
+      padding-top: 2rem;
   }
 
   /* Responsive styles */

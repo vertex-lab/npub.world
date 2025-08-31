@@ -36,7 +36,7 @@
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   .logo-text {
@@ -57,17 +57,13 @@
     margin: 0 auto;
   }
 
-  /* Responsive styles */
-  /* Small screens (mobile) */
   @media (max-width: 576px) {
     .container {
-      padding: 1rem;
-      box-sizing: border-box;
+      padding: 1.5rem 1rem;
     }
 
     .search-container {
       width: 100%;
     }
   }
-
 </style>

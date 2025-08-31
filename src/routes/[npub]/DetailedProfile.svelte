@@ -91,7 +91,6 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding-bottom: 0;
         }
 
         .profile-identity {

@@ -152,7 +152,7 @@
   }
 
   .followers-grid {
-      padding-top: 1rem;
+      padding: 1rem 0;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 8px;
@@ -178,7 +178,7 @@
       flex-wrap: wrap;
       gap: 16px;
       justify-content: flex-start;
-      padding-top: 2rem;
+      padding-top: 1rem;
   }
 
   /* Responsive styles */

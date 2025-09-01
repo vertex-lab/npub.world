@@ -79,28 +79,10 @@
 
 body {
 	font-family: var(--primary-font);
+	color: var(--primary-text);
 	background-color: var(--background-color);
 	margin: 0;
 	padding: 0;
-	color: var(--primary-text);
-}
-
-footer {
-	padding-bottom: 2em;
-}
-
-footer p {
-	font-size: 0.8rem;
-	color: var(--secondary-text);
-	text-align: center;
-	margin: 0rem auto;
-	width: 100%;
-	box-sizing: border-box;
-	max-width: 80%;
-}
-
-footer p strong {
-	color: var(--primary-text);
 }
 
 .container {
@@ -133,32 +115,6 @@ input[type="text"]::placeholder {
 	border-radius: 12px;
 	box-shadow: var(--shadow-elevation-medium);
 	padding: 1rem;
-}
-
-.theme-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 1rem;
-}
-
-.theme-toggle {
-	background: none;
-	border: none;
-	cursor: pointer;
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: var(--card-background);
-	box-shadow: var(--shadow-elevation-low);
-	transition: all 0.2s;
-}
-
-.theme-toggle:hover {
-	background-color: var(--highlight-color);
 }
 
 .theme-logo {

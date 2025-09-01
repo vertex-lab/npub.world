@@ -4,6 +4,11 @@
 
 	let { children } = $props();
 
+	const shoutouts = [
+		{ label: "Powered by", href: "https://vertexlab.io", text: "Vertex" },
+		{ label: "Designed by", href: "/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq", text: "Vlad" },
+	]
+
 	// read the data-theme attribute that we set in app.html
 	let isDarkMode = $state(
 		typeof document !== "undefined" &&
@@ -23,11 +28,16 @@
 </main>
 
 <footer>
-	<p>
-		Powered by <a href="https://vertexlab.io">Vertex</a> 
-		&nbsp; • &nbsp;
-		Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vlad</a>
-	</p>
+	<div class="shoutouts">
+		{#each shoutouts as item, i}
+			<p>{item.label} <a href={item.href}>{item.text}</a></p>
+
+			{#if i < shoutouts.length - 1}
+				<p class="separator">•</p>
+			{/if}
+		{/each}
+	</div>
+
 	<div class="theme-container">
 		<button
 			class="theme-toggle"
@@ -42,3 +52,52 @@
 		</button>
 	</div>
 </footer>
+
+<style>
+	footer {
+		padding-bottom: 2rem;
+	}
+
+	.shoutouts {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 0.8rem;
+		color: var(--secondary-text);
+		text-align: center;
+		margin: 0rem auto;
+		width: 100%;
+		box-sizing: border-box;
+		max-width: 80%;
+	}
+
+	.separator {
+		margin: 0 0.5rem;
+	}
+
+	.theme-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 1rem;
+	}
+
+	.theme-toggle {
+		background: none;
+		border: none;
+		cursor: pointer;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--card-background);
+		box-shadow: var(--shadow-elevation-low);
+		transition: all 0.2s;
+	}
+
+	.theme-toggle:hover {
+		background-color: var(--highlight-color);
+	}
+</style>

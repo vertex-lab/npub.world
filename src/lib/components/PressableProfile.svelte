@@ -1,12 +1,12 @@
 <script>
+  import { truncateString } from "$lib/string.js"
   import ProfilePicture from "./ProfilePicture.svelte";
   import ReputationBadge from "./ReputationBadge.svelte";
-  import { truncateString } from "$lib/string.js"
 
-  let { profile, style, reputationBadge } = $props();
+  let { profile, reputationBadge, preload = "hover", style } = $props();
 </script>
 
-<a href={"/" + profile.npub } data-sveltekit-preload-data="off">
+<a href={"/" + profile.npub } data-sveltekit-preload-data={preload}>
   <div class="profile-item" style={style}>
     <ProfilePicture source={profile.picture}/>
     <div class="profile-info">

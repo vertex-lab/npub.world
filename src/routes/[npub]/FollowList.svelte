@@ -93,7 +93,7 @@
                 <p class="modal-message">No {label.toLowerCase()} found.</p>
             {:else}
                 {#each profiles as profile}
-                    <PressableProfile profile={profile}/>
+                    <PressableProfile profile={profile} preload="tap"/>
                 {/each}
 
                 {#if count > profiles.length}

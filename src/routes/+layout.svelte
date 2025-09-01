@@ -17,6 +17,8 @@
 
 	function toggleTheme() {
 		isDarkMode = !isDarkMode;
+
+		// store new theme
 		const newTheme = isDarkMode ? "dark" : "light";
 		document.documentElement.setAttribute("data-theme", newTheme);
 		localStorage.setItem("theme", newTheme);

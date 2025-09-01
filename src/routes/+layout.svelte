@@ -66,11 +66,8 @@
 		align-items: center;
 		font-size: 0.8rem;
 		color: var(--secondary-text);
-		text-align: center;
 		margin: 0rem auto;
-		width: 100%;
-		box-sizing: border-box;
-		max-width: 80%;
+		height: 1rem;
 	}
 
 	.separator {
@@ -86,7 +83,7 @@
 
 	.theme-toggle {
 		background: none;
-		border: none;
+		border: 1px solid var(--border-color);
 		cursor: pointer;
 		width: 40px;
 		height: 40px;

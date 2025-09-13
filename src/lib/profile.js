@@ -209,7 +209,7 @@ const loadImage = async (url, quality) => {
 }
 
 // A ring buffer that tracks the last bad urls to avoid repeated fetching
-const badURLs = new RingBuffer(100);
+const badURLs = new RingBuffer(20);
 
 const isPermanentFailure = (status) => {
   return status === 404 || status === 410 || status === 400 || status === 403;

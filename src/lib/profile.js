@@ -26,7 +26,7 @@ import RingBuffer from "./buffer";
 import * as nip19 from 'nostr-tools/nip19';
 import sharp from 'sharp';
 import { fetch } from 'undici';
-import { writeFile, readFile, mkdir } from 'node:fs/promises';
+import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
 import { createHash } from 'crypto';
 
@@ -184,7 +184,7 @@ export const pagerankPercentile = (percentage, nodes) => {
   return (1-exponent) * percentage ** (-exponent) * 1/nodes
 }
 
-const imagesPath = '/tmp/npub.world/pfp/'
+export const imagesPath = '/tmp/npub.world/pfp/'
 const lowResolution = '_100px'
 const highResolution = '_300px'
 const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
@@ -194,7 +194,6 @@ const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdAS
 const loadImage = async (url, quality) => {
   if (!url || typeof url !== 'string') return fallbackImage;
   if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
-  await mkdir(imagesPath, { recursive: true });
 
   try {
     const hash = createHash('sha256');

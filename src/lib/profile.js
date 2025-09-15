@@ -230,8 +230,7 @@ const fetchImage = async (url, quality) => {
       return fallbackImage;
     }
 
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.startsWith('image/')) {
+    if (!containsImage(response)) {
       badURLs.add(url);
       return fallbackImage;
     }
@@ -265,3 +264,19 @@ const fetchImage = async (url, quality) => {
     return fallbackImage;
   }
 }
+
+/**
+ * Determines if a fetch Response object likely contains an image.
+ * @param {Response} response - A fetch Response object.
+ * @returns {boolean} - True if it looks like an image, false otherwise.
+ */
+ function containsImage(response) {
+  return response 
+      && typeof response === 'object' 
+      && 'headers' in response 
+      && (
+          (response.headers.get('content-type') || '').startsWith('image/') ||
+          (response.url && response.url.match(/\.(jpg|jpeg|png|gif|webp|avif|tiff|bmp)$/i))
+      );
+};
+

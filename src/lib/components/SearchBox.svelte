@@ -51,14 +51,13 @@
   });
 
   function automaticSearch(event) {
-    if (!query.trim() || query.length < 3) return
+    if (!query || query.trim().length < 3) return
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => { search(event); }, 300);  // 300ms delay
   }
 
   async function search(event) {
     event?.preventDefault();
-    query = query.trim()
     if (!query) return
     
     isLoading = true;

@@ -20,7 +20,6 @@ A Nostr profile search engine and viewer by [Vertex](https://vertexlab.io).
 ## Tech Stack
 
 - **Frontend:** SvelteKit
-- **Backend:** Serverless endpoints (SvelteKit API routes)
 - **Nostr:** Uses `nostr-tools` for encoding/decoding and event signing
 - **Vertex:** For reputation requests and search
 
@@ -43,5 +42,5 @@ Make sure to have `node` and `pnpm` installed
 
 ## Credits
 
-- Built by [Vertex](https://vertexlab.io)
+- Powered by [Vertex](https://vertexlab.io)
 - Designed by [Vlad](https://npub.world/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq)

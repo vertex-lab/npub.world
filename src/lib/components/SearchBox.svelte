@@ -233,9 +233,15 @@
     border-radius: 7px;
     font-size: 1rem;
     box-sizing: border-box;
+    color: var(--primary-text);
+	  background-color: var(--card-background);
 
     border: none !important;
     outline: none !important;
+  }
+
+  input[type="text"]::placeholder {
+	  color: var(--light-text);
   }
 
   .search-form.active input[type="text"] {

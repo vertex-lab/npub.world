@@ -36,9 +36,12 @@
     },
   }
 
+  function textColor() { return theme.isDark ? color.dark.text : color.light.text };
+  function gridColor() { return theme.isDark ? color.dark.grid : color.light.grid };
+
   Chart.register(...registerables);
   Chart.defaults.font.family = "Ubuntu";
-  Chart.defaults.color = theme.isDark ? color.dark.text : color.light.text;
+  Chart.defaults.color = textColor();
 
   const data = {
     datasets: datasets.map(d => ({
@@ -70,7 +73,7 @@
         type: 'category',
 
         grid: {
-          color: theme.isDark ? color.dark.grid : color.light.grid,
+          color: gridColor(),
         }
       },
 
@@ -83,7 +86,7 @@
         },
 
         grid: {
-          color: theme.isDark ? color.dark.grid : color.light.grid,
+          color: gridColor(),
         }
       },
     }
@@ -95,12 +98,11 @@
 
   $effect(() => {
     if (chart) {
-      chart.options.plugins.legend.labels.color = theme.isDark ? color.dark.text : color.light.text;
-      chart.options.scales.x.ticks.color = theme.isDark ? color.dark.text : color.light.text;
-      chart.options.scales.y.ticks.color = theme.isDark ? color.dark.text : color.light.text;
-
-      chart.options.scales.x.grid.color = theme.isDark ? color.dark.grid : color.light.grid;
-      chart.options.scales.y.grid.color = theme.isDark ? color.dark.grid : color.light.grid;
+      chart.options.plugins.legend.labels.color = textColor();
+      chart.options.scales.x.ticks.color = textColor();
+      chart.options.scales.y.ticks.color = textColor();
+      chart.options.scales.x.grid.color = gridColor();
+      chart.options.scales.y.grid.color = gridColor();
       chart.update();
     }
   });

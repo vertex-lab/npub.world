@@ -53,7 +53,7 @@
 
 const eventStats = [
   {
-    label: "kind:0",
+    label: "kind 0",
     points: [
       { x: "17 Sep", y: "1000" },
       { x: "18 Sep", y: "1100" },
@@ -66,7 +66,7 @@ const eventStats = [
     ]
   },
   {
-    label: "kind:1",
+    label: "kind 1",
     points: [
       { x: "17 Sep", y: "15000" },
       { x: "18 Sep", y: "18500" },
@@ -79,7 +79,7 @@ const eventStats = [
     ]
   },
   {
-    label: "kind:3",
+    label: "kind 3",
     points: [
       { x: "17 Sep", y: "4000" },
       { x: "18 Sep", y: "4200" },
@@ -92,7 +92,7 @@ const eventStats = [
     ]
   },
   {
-    label: "kind:6",
+    label: "kind 6",
     points: [
       { x: "17 Sep", y: "55" },
       { x: "18 Sep", y: "52" },
@@ -105,7 +105,7 @@ const eventStats = [
     ]
   },
   {
-    label: "kind:7",
+    label: "kind 7",
     points: [
       { x: "17 Sep", y: "45" },
       { x: "18 Sep", y: "40" },

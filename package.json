@@ -27,6 +27,7 @@
 		]
 	},
 	"dependencies": {
+		"chart.js": "^4.5.0",
 		"marked": "^15.0.7",
 		"nostr-tools": "^2.10.4",
 		"sharp": "^0.33.5",

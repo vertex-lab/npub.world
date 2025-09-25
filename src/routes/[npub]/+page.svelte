@@ -65,18 +65,17 @@
   <title>{title} - npub.world</title>
 </svelte:head>
 
-<div class="container">
-  <header class="header">
-    <div class="logo-wrapper">
-      <a href="/" aria-label="Home">
-        <div class="theme-logo theme-logo-small"></div>
-      </a>
-    </div>
+<header class="header">
+  <div class="logo-wrapper">
+    <a href="/" aria-label="Home">
+      <div class="theme-logo theme-logo-small"></div>
+    </a>
+  </div>
 
-    <div class="search-container">
-      <SearchBox results={[]} bind:this={searchBoxRef}/>
-    </div>
-  </header>
+  <div class="search-container">
+    <SearchBox results={[]} bind:this={searchBoxRef}/>
+  </div>
+</header>
 
   <main>
     <div class="card">
@@ -110,7 +109,6 @@
 
     </div>
   </main>
-</div>
 
 <style>
   @import "../../../static/shared.css";
@@ -191,7 +189,7 @@
     .header {
         flex-direction: row;
         align-items: center;
-        margin-bottom: 1.0rem;
+        margin-bottom: 1rem;
         gap: 0.5rem;
     }
 

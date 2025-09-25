@@ -27,17 +27,24 @@
   const color = {
     light: {
       text: "#333",
+      background: "#fff",
       grid: "#0000001a",
     },
 
     dark: {
       text: "#e1e1e1",
       grid: "#ffffff1a",
+      background: "#1e1e1e",
     },
   }
 
   function textColor() { return theme.isDark ? color.dark.text : color.light.text };
   function gridColor() { return theme.isDark ? color.dark.grid : color.light.grid };
+
+  // tooltip have the opposite background and text colors
+  function tooltipTextColor() { return theme.isDark ? color.light.text : color.dark.text };
+  function tooltipBackgroundColor() { return theme.isDark ? color.light.background : color.dark.background };
+
 
   Chart.register(...registerables);
   Chart.defaults.font.family = "Ubuntu";
@@ -48,7 +55,7 @@
       label: d.label,
       data: d.points,
       fill: false,
-      tension: 0.1
+      tension: 0.1,
     })),
   };
 
@@ -65,6 +72,19 @@
           usePointStyle: true,
           pointStyle: "line",
         },
+      },
+
+      tooltip: {
+        titleColor: tooltipTextColor(),
+        bodyColor: tooltipTextColor(),
+        backgroundColor: tooltipBackgroundColor(),
+
+        usePointStyle: true,
+        callbacks: {
+          labelPointStyle: function(context) {
+            return { pointStyle: "line" }
+          }
+        }
       }
     },
 
@@ -99,6 +119,9 @@
   $effect(() => {
     if (chart) {
       chart.options.plugins.legend.labels.color = textColor();
+      chart.options.plugins.tooltip.titleColor = tooltipTextColor();
+      chart.options.plugins.tooltip.bodyColor = tooltipTextColor();
+      chart.options.plugins.tooltip.backgroundColor = tooltipBackgroundColor();
       chart.options.scales.x.ticks.color = textColor();
       chart.options.scales.y.ticks.color = textColor();
       chart.options.scales.x.grid.color = gridColor();

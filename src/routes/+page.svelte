@@ -1,4 +1,5 @@
 <script>
+  import Logo from "$lib/components/Logo.svelte";
   import LineChart from "$lib/components/LineChart.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
   import StatsCard from "$lib/components/StatsCard.svelte";
@@ -142,13 +143,7 @@ const eventStats = [
 
 <div class="centered">
   <header class="header">
-    <div class="logo-container">
-      <div class="theme-logo"></div>
-      <div class="logo-text">
-        <span>NPUB</span>
-        <span>.WORLD</span>
-      </div>
-    </div>
+    <Logo/>
 
     <div class="search-container">
       <SearchBox query={searchQuery} {data} bind:this={searchBoxRef}/>
@@ -162,8 +157,6 @@ const eventStats = [
 </div>
 
 <style>
-  @import "../../static/shared.css";
-
   .centered {
     margin: 0 auto;
     max-width: 700px;
@@ -171,26 +164,6 @@ const eventStats = [
 
   .header {
     margin: 0.5rem 1rem 2rem 1rem;
-  }
-
-  .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .logo-text span {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--primary-text);
-    line-height: 1.1;
   }
 
   .search-container {

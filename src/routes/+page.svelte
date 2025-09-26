@@ -154,7 +154,7 @@ const eventStats = [
   }
 
   .header {
-    margin: 0.5rem 1rem 2rem 0.5rem;
+    margin: 0.5rem 1rem 2rem 1rem;
   }
 
   .logo-container {
@@ -162,7 +162,7 @@ const eventStats = [
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .logo-text {

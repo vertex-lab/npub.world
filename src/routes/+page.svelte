@@ -1,6 +1,7 @@
 <script>
   import LineChart from "$lib/components/LineChart.svelte";
   import SearchBox from "$lib/components/SearchBox.svelte";
+  import StatsCard from "$lib/components/StatsCard.svelte";
   import { npubEncode } from "nostr-tools/nip19";
   import { onMount } from "svelte";
 
@@ -116,7 +117,20 @@ const eventStats = [
       { x: "23 Sep", y: "5" },
       { x: "24 Sep", y: "1" }
     ]
-  }
+  },
+  {
+    label: "kind 69420",
+    points: [
+      { x: "17 Sep", y: "5543" },
+      { x: "18 Sep", y: "5443" },
+      { x: "19 Sep", y: "4549" },
+      { x: "20 Sep", y: "4549" },
+      { x: "21 Sep", y: "6450" },
+      { x: "22 Sep", y: "7430" },
+      { x: "23 Sep", y: "9440" },
+      { x: "24 Sep", y: "21031" }
+    ]
+  },
 ];
 
   onMount( () => { searchBoxRef.focus() })
@@ -136,12 +150,14 @@ const eventStats = [
       </div>
     </div>
 
-    <SearchBox query={searchQuery} {data} bind:this={searchBoxRef}/>
+    <div class="search-container">
+      <SearchBox query={searchQuery} {data} bind:this={searchBoxRef}/>
+    </div>
   </header>
 
-  <div class="charts">
-    <LineChart datasets={pubkeyStats} title="Pubkeys"/>
-    <LineChart datasets={eventStats} title="Events"/>
+  <div class="stats-grid">
+    <StatsCard datasets={pubkeyStats} title="Pubkeys"></StatsCard>
+    <StatsCard datasets={eventStats} title="Events"></StatsCard>
   </div>
 </div>
 
@@ -150,7 +166,7 @@ const eventStats = [
 
   .centered {
     margin: 0 auto;
-    max-width: 600px;
+    max-width: 700px;
   }
 
   .header {
@@ -177,15 +193,15 @@ const eventStats = [
     line-height: 1.1;
   }
 
-  .charts {
-    position: relative;
+  .search-container {
     max-width: 600px;
     margin: 0 auto;
   }
 
-  /* @media (max-width: 576px) {
-    .search-container {
-      width: 100%;
-    }
-  } */
+  .stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
 </style>

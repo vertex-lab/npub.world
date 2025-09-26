@@ -36,7 +36,6 @@
 </div>
 
 <style>
-@import "../../../static/shared.css";
     .profile-header {
         position: relative;
         display: flex;

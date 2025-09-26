@@ -111,8 +111,6 @@
   </main>
 
 <style>
-  @import "../../../static/shared.css";
-
   .header {
     display: flex;
     justify-content: space-between;

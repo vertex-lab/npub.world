@@ -51,8 +51,6 @@
 {/if}
 
 <style>
-    @import "../../../static/shared.css";
-
     button {
         all: unset;
         cursor: pointer;

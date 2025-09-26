@@ -59,8 +59,6 @@
 </div>
 
 <style>
-  @import "../../../static/shared.css";
-
   .table {
     padding: 1.5rem 0 1rem;
     border-bottom: 1px solid var(--border-color);

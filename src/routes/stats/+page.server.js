@@ -33,7 +33,7 @@ export async function load({ params }) {
       ]
     },
     {
-      label: "creators",
+      label: "posters",
       points: [
         { x: "17 Sep", y: "27000" },
         { x: "18 Sep", y: "28000" },

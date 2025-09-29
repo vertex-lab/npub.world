@@ -33,7 +33,7 @@ export async function load({ params }) {
       ]
     },
     {
-      label: "creators",
+      label: "posters",
       points: [
         { x: "17 Sep", y: "27000" },
         { x: "18 Sep", y: "28000" },
@@ -50,7 +50,7 @@ export async function load({ params }) {
   
   const eventStats = [
     {
-      label: "kind 0",
+      label: "profiles",
       points: [
         { x: "17 Sep", y: "1000" },
         { x: "18 Sep", y: "1100" },
@@ -63,7 +63,7 @@ export async function load({ params }) {
       ]
     },
     {
-      label: "kind 1",
+      label: "posts",
       points: [
         { x: "17 Sep", y: "15000" },
         { x: "18 Sep", y: "18500" },
@@ -76,7 +76,7 @@ export async function load({ params }) {
       ]
     },
     {
-      label: "kind 3",
+      label: "follows",
       points: [
         { x: "17 Sep", y: "4000" },
         { x: "18 Sep", y: "4200" },

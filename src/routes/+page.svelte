@@ -24,7 +24,7 @@
   </header>
 
   <div class="stats-grid">
-    <StatsCard datasets={data.pubkeys} title="Pubkeys"/>
+    <StatsCard datasets={data.pubkeys} title="Users"/>
     <StatsCard datasets={data.events} title="Events"/>
   </div>
 

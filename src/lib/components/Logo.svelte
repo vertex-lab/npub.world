@@ -14,6 +14,7 @@
         align-items: center;
         gap: 1rem;
         justify-content: center;
+        margin-top: 0.5rem;
         margin-bottom: 2rem;
     }
 

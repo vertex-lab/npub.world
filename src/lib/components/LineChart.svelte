@@ -90,11 +90,7 @@
 
     scales: {
       x: {
-        type: 'category',
-
-        grid: {
-          color: gridColor(),
-        }
+        display: false,
       },
 
       y: {

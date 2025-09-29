@@ -24,8 +24,8 @@
   </header>
 
   <div class="stats-grid">
-    <StatsCard datasets={data.pubkeys} title="Pubkeys"></StatsCard>
-    <StatsCard datasets={data.events} title="Events"></StatsCard>
+    <StatsCard datasets={data.pubkeys} title="Pubkeys"/>
+    <StatsCard datasets={data.events} title="Events"/>
   </div>
 
   <a href="/stats" class="stats-link">
@@ -40,7 +40,7 @@
   }
 
   .header {
-    margin: 0.5rem 1rem 2rem 1rem;
+    margin: 0 1rem 2rem 1rem;
   }
 
   .search-container {

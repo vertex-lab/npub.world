@@ -99,4 +99,10 @@
         width: 1rem;
         margin-left: -1rem;
     }
+
+    @media (max-width: 576px) {
+        .explainer {
+            padding: 0;
+        }
+    }
 </style>

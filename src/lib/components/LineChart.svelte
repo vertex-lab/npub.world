@@ -28,12 +28,12 @@
     light: {
       text: "#333",
       background: "#fff",
-      grid: "#0000001a",
+      grid: "#00000026",
     },
 
     dark: {
       text: "#e1e1e1",
-      grid: "#ffffff1a",
+      grid: "#ffffff33",
       background: "#1e1e1e",
     },
   }
@@ -65,12 +65,33 @@
   });
 
   const options = {
-    aspectRatio: 1.5,
+    aspectRatio: 1.25,
     plugins: {
       legend: {
         labels: {
           usePointStyle: true,
           pointStyle: "line",
+
+          generateLabels: (chart) => {
+            return chart.data.datasets.map((dataset, i) => {
+              const isVisible = chart.isDatasetVisible(i);
+
+              return {
+                text: dataset.label,
+                fillStyle: dataset.borderColor || dataset.backgroundColor || "#000",
+                strokeStyle: dataset.borderColor || dataset.backgroundColor || "#000",
+                hidden: !isVisible,
+                lineCap: "butt",
+                lineDash: [],
+                lineDashOffset: 0,
+                lineWidth: 2,
+                pointStyle: "line",
+                datasetIndex: i,
+                fontColor: isVisible ? textColor() : gridColor(),
+                textDecoration: "none",
+              };
+            });
+          },
         },
       },
 
@@ -94,8 +115,8 @@
       },
 
       y: {
-        ticks : {
-          count: 5,
+        ticks: {
+          maxTicksLimit: 5,
           callback: function(value) {
             return formatter.format(value);
           },
@@ -118,9 +139,8 @@
       chart.options.plugins.tooltip.titleColor = tooltipTextColor();
       chart.options.plugins.tooltip.bodyColor = tooltipTextColor();
       chart.options.plugins.tooltip.backgroundColor = tooltipBackgroundColor();
-      chart.options.scales.x.ticks.color = textColor();
       chart.options.scales.y.ticks.color = textColor();
-      chart.options.scales.x.grid.color = gridColor();
+      chart.options.scales.y.border.color = gridColor();
       chart.options.scales.y.grid.color = gridColor();
       chart.update();
     }

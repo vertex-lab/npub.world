@@ -1,10 +1,12 @@
-<div class="logo-container">
-    <div class="theme-logo"></div>
-    <div class="logo-text">
-    <span>NPUB</span>
-    <span>.WORLD</span>
+<a href="/" style="text-decoration: none;" aria-label="Home">
+    <div class="logo-container">
+        <div class="theme-logo"></div>
+        <div class="logo-text">
+        <span>NPUB</span>
+        <span>.WORLD</span>
+        </div>
     </div>
-</div>
+</a>
 
 <style>
     .logo-container {

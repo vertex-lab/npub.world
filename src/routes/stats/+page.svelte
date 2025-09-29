@@ -25,9 +25,9 @@
         <div class="explainer">
             <ul class="table-explainer">
                 <li>active pubkeys are the ones that published any of the kinds 
-                    <code>0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023</code> in a given day.</li>
+                    <code>0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023</code> on a given day.</li>
                 <li>creator pubkeys are the ones that published any of the kinds 
-                    <code>1, 20, 21, 22, 30023</code> in a given day.</li>
+                    <code>1, 20, 21, 22, 30023</code> on a given day.</li>
                 <li>counts are computed using
                     <a href="https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/">
                         Redis HyperLogLog

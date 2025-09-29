@@ -146,7 +146,7 @@ const eventStats = [
     <Logo/>
 
     <div class="search-container">
-      <SearchBox query={searchQuery} {data} bind:this={searchBoxRef}/>
+      <SearchBox bind:this={searchBoxRef}/>
     </div>
   </header>
 

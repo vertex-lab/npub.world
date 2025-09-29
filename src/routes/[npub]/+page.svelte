@@ -73,7 +73,7 @@
   </div>
 
   <div class="search-container">
-    <SearchBox results={[]} bind:this={searchBoxRef}/>
+    <SearchBox bind:this={searchBoxRef}/>
   </div>
 </header>
 

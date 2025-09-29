@@ -27,6 +27,10 @@
     <StatsCard datasets={data.pubkeys} title="Pubkeys"></StatsCard>
     <StatsCard datasets={data.events} title="Events"></StatsCard>
   </div>
+
+  <a href="/stats" class="stats-link">
+    <p>View more statistics</p>
+  </a>
 </div>
 
 <style>
@@ -49,5 +53,11 @@
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
+  }
+
+  .stats-link {
+    font-size: 0.8rem;
+		color: var(--secondary-text);
+    text-align: center;
   }
 </style>

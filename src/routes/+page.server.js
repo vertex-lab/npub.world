@@ -88,45 +88,6 @@ export async function load({ params }) {
         { x: "24 Sep", y: "3872" }
       ]
     },
-    {
-      label: "kind 6",
-      points: [
-        { x: "17 Sep", y: "55" },
-        { x: "18 Sep", y: "52" },
-        { x: "19 Sep", y: "49" },
-        { x: "20 Sep", y: "49" },
-        { x: "21 Sep", y: "60" },
-        { x: "22 Sep", y: "70" },
-        { x: "23 Sep", y: "90" },
-        { x: "24 Sep", y: "111" }
-      ]
-    },
-    {
-      label: "kind 7",
-      points: [
-        { x: "17 Sep", y: "45" },
-        { x: "18 Sep", y: "40" },
-        { x: "19 Sep", y: "38" },
-        { x: "20 Sep", y: "37" },
-        { x: "21 Sep", y: "20" },
-        { x: "22 Sep", y: "10" },
-        { x: "23 Sep", y: "5" },
-        { x: "24 Sep", y: "1" }
-      ]
-    },
-    {
-      label: "kind 69420",
-      points: [
-        { x: "17 Sep", y: "5543" },
-        { x: "18 Sep", y: "5443" },
-        { x: "19 Sep", y: "4549" },
-        { x: "20 Sep", y: "4549" },
-        { x: "21 Sep", y: "6450" },
-        { x: "22 Sep", y: "7430" },
-        { x: "23 Sep", y: "9440" },
-        { x: "24 Sep", y: "21031" }
-      ]
-    },
   ];
 
   return {pubkeys: pubkeyStats, events: eventStats}

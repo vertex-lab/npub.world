@@ -66,6 +66,9 @@
       chart.options.plugins.tooltip.titleColor = utils.tooltipTextColor();
       chart.options.plugins.tooltip.bodyColor = utils.tooltipTextColor();
       chart.options.plugins.tooltip.backgroundColor = utils.tooltipBackgroundColor();
+      chart.options.scales.x.ticks.color = utils.textColor();
+      chart.options.scales.x.border.color = utils.gridColor();
+      chart.options.scales.x.grid.color = utils.gridColor();
       chart.options.scales.y.ticks.color = utils.textColor();
       chart.options.scales.y.border.color = utils.gridColor();
       chart.options.scales.y.grid.color = utils.gridColor();

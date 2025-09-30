@@ -12,14 +12,13 @@
   Chart.defaults.font.family = "Ubuntu";
   Chart.defaults.color = utils.textColor();
 
-  const data = {
+  const data = $derived({
     datasets: datasets.map(d => ({
       label: d.label,
       data: d.points,
       fill: false,
-      tension: 0.1,
     })),
-  };
+  });
 
   const options = {
     aspectRatio: 1.25,
@@ -55,6 +54,7 @@
 
   $effect(() => {
     if (chart) {
+      chart.data = data;
       chart.options.plugins.legend.labels.color = utils.textColor();
       chart.options.plugins.tooltip.titleColor = utils.tooltipTextColor();
       chart.options.plugins.tooltip.bodyColor = utils.tooltipTextColor();

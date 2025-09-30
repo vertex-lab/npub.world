@@ -16,6 +16,26 @@ import { theme } from "./theme.svelte"
 * @property {number} y - The y-axis value of the point.
 */
 
+/**
+ * Crop an array of datasets to the last N points.
+ * 
+ * @param {Dataset[]} datasets - Array of dataset objects.
+ * @param {number} maxPoints - Maximum number of points to keep per dataset.
+ * @returns {Dataset[]} - New array of datasets with cropped points.
+ */
+ export function cropDatasets(datasets, maxPoints) {
+  const result = new Array(datasets.length);
+
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    const points = dataset.points;
+    const croppedPoints = points.length > maxPoints ? points.slice(-maxPoints) : points;
+    result[i] = { ...dataset, points: croppedPoints };
+  }
+
+  return result;
+}
+
 // change these colors if the correspondent colors in shared.css change
 export const color = {
     light: {

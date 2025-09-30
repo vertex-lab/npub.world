@@ -4,8 +4,13 @@
     import SearchBox from "$lib/components/SearchBox.svelte";
     import StatsCard from "$lib/components/StatsCard.svelte";
     import { onMount } from "svelte";
+    import { cropDatasets } from "$lib/charts";
   
     let { data } = $props();
+
+    let timeframe = $state(90);
+    let pubkeysData = $derived(cropDatasets(data.pubkeys, timeframe));
+    let eventsData = $derived(cropDatasets(data.events, timeframe));    
 </script>
   
 <svelte:head>
@@ -15,13 +20,25 @@
 <div class="centered">
     <Logo/>
 
-    <div class="title-section">
+    <div class="top-section">
         <h1 class="title">Statistics</h1>
         <p class="subtitle">Nostr data you can rely on, without the spam</p>
+
+        <div class="bar">
+            <div class="timeframes">
+                <button onclick={() => timeframe = Infinity } class:selected={timeframe === Infinity} aria-label="All" long-title="All" short-title="All"></button>
+                <button onclick={() => timeframe = 365 } class:selected={timeframe === 365 } aria-label="1 year" long-title="1 year" short-title="1y"></button>
+                <button onclick={() => timeframe = 90 } class:selected={timeframe === 90 } aria-label="3 months" long-title="3 months" short-title="3m"></button>
+            </div>
+        
+            <div>
+                <button class="export" aria-label="Export to CSV" long-title="Export to CSV" short-title="Export"></button>
+            </div>
+        </div>
     </div>
 
     <div class="chart-with-explainer">
-        <LineChart datasets={data.pubkeys} title="Users"/>
+        <LineChart datasets={pubkeysData} title="Users"/>
         <div class="explainer">
             <ul class="table-explainer">
                 <li>active users are the ones that published any of the kinds 
@@ -38,7 +55,7 @@
     </div>
 
     <div class="chart-with-explainer">
-        <LineChart datasets={data.events} title="Events"/>
+        <LineChart datasets={eventsData} title="Events"/>
         <div class="explainer">
             <ul class="table-explainer">
                 <li>events from the same user on the same day are counted separately, even if replaceable or addressable.</li>
@@ -58,9 +75,53 @@
         max-width: 700px;
     }
 
-    .title-section {
+    .top-section {
         text-align: center;
-        padding: 1rem 0;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--card-background);
+        box-shadow: var(--shadow-elevation-low);
+    }
+  
+    .timeframes {
+        display: flex;
+        gap: 8px;
+    }
+  
+    button {        
+        cursor: pointer;
+        user-select: none;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        font-size: 0.9rem;
+
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--card-background);
+        color: var(--primary-text);
+    }
+  
+    button:hover {
+        background: var(--border-color);
+    }
+
+    .selected {
+        background: var(--border-color);
+    }
+
+    button::after {
+        content: attr(long-title);
     }
 
     .title {
@@ -72,7 +133,8 @@
 
     .subtitle {
         color: var(--secondary-text);
-        margin: 0.5rem auto;
+        margin-top: 0.5rem;
+        margin-bottom: 1.25rem;
     }
 
     .chart-with-explainer {
@@ -104,6 +166,10 @@
     @media (max-width: 576px) {
         .explainer {
             padding: 0;
+        }
+
+        button::after {
+            content: attr(short-title);
         }
     }
 </style>

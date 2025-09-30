@@ -5,6 +5,8 @@
   import * as utils from "$lib/charts.js";
 
   let { datasets, title } = $props();
+  let isDense = $derived(datasets?.[0]?.points.length > 100 ?? false);
+
   let chart;
   let canvas;
 
@@ -22,6 +24,12 @@
 
   const options = {
     aspectRatio: 1.25,
+    elements: {
+      point: {
+        radius: isDense ? 0 : 2,
+      },
+    },
+
     plugins: {
       legend: {
         labels: utils.labels,
@@ -32,7 +40,9 @@
 
     scales: {
       x: {
-        display: false,
+        ticks: {
+          maxTicksLimit: 5,
+        }
       },
 
       y: {
@@ -55,6 +65,8 @@
   $effect(() => {
     if (chart) {
       chart.data = data;
+      chart.options.elements.point.radius = isDense ? 0 : 2;
+
       chart.options.plugins.legend.labels.color = utils.textColor();
       chart.options.plugins.tooltip.titleColor = utils.tooltipTextColor();
       chart.options.plugins.tooltip.bodyColor = utils.tooltipTextColor();

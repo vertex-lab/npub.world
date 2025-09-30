@@ -9,10 +9,10 @@
 	--background-color: #f9f9f9;
 	--card-background: #fff;
 
-	--blueAccent: #eef3ff;
-	--blueAccentText: #4a63b8;
-	--yellowAccent: #fff8e1;
-	--yellowAccentText: #b45309;
+	--blue-accent: #eef3ff;
+	--blue-accent-text: #4a63b8;
+	--yellow-accent: #fff8e1;
+	--yellow-accent-text: #b45309;
 
 	--overlay-color: rgba(0, 0, 0, 0.7);
 	--shadow-color: 0deg 0% 61%;
@@ -61,10 +61,10 @@
   	--shadow-color: 0deg 0% 25%;
 	--shadow-color-overlay: 0deg 0% 20%;
 
-	--blueAccent: #1e293b;
-	--blueAccentText: #93c5fd;
-	--yellowAccent: #3a2e14;
-	--yellowAccentText: #e4ba15;
+	--blue-accent: #1e293b;
+	--blue-accent-text: #93c5fd;
+	--yellow-accent: #3a2e14;
+	--yellow-accent-text: #e4ba15;
 }
 
 /* disabling all scrollbars */

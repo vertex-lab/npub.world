@@ -14,8 +14,8 @@
           <td>
             <CopyPill
               text={profile.npub}
-              color="var(--blueAccentText)"
-              backgroundColor="var(--blueAccent)"/>
+              color="var(--blue-accent-text)"
+              backgroundColor="var(--blue-accent)"/>
             </td>
         </tr>
       {/if}
@@ -26,8 +26,8 @@
           <td>
             <CopyPill
               text={profile.lud16}
-              color=var(--yellowAccentText)
-              backgroundColor=var(--yellowAccent)/>
+              color=var(--yellow-accent-text)
+              backgroundColor=var(--yellow-accent)/>
           </td>
         </tr>
       {/if}

@@ -4,13 +4,32 @@
     import SearchBox from "$lib/components/SearchBox.svelte";
     import StatsCard from "$lib/components/StatsCard.svelte";
     import { onMount } from "svelte";
-    import { cropDatasets } from "$lib/charts";
+    import { cropDatasets, toJSON } from "$lib/charts";
   
     let { data } = $props();
 
     let timeframe = $state(90);
     let pubkeysData = $derived(cropDatasets(data.pubkeys, timeframe));
-    let eventsData = $derived(cropDatasets(data.events, timeframe));    
+    let eventsData = $derived(cropDatasets(data.events, timeframe));
+
+    function exportJSON(data) {
+        return function() {
+            const formatted = {
+                "pubkeys": toJSON(data.pubkeys),
+                "events": toJSON(data.events),
+            };
+
+            const json = JSON.stringify(formatted, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "npub_world_stats.json";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+  }
 </script>
   
 <svelte:head>
@@ -32,7 +51,7 @@
             </div>
         
             <div>
-                <button class="export" aria-label="Export to CSV" long-title="Export to CSV" short-title="Export"></button>
+                <button onclick={exportJSON(data)} class="export" aria-label="Export to JSON" long-title="Export to JSON" short-title="Export"></button>
             </div>
         </div>
     </div>

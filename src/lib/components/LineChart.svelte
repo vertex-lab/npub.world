@@ -24,11 +24,6 @@
 
   const options = {
     aspectRatio: 1.25,
-    elements: {
-      point: {
-        radius: isDense ? 0 : 2,
-      },
-    },
 
     plugins: {
       legend: {

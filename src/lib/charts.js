@@ -36,6 +36,17 @@ import { theme } from "./theme.svelte"
   return result;
 }
 
+export function toJSON(datasets) {
+  const formatted = {};
+  datasets.forEach(ds => {
+    const map = {};
+    ds.points.forEach(p => { map[p.x] = p.y;});
+    formatted[ds.label] = map;
+  });
+
+  return formatted;
+}
+
 // change these colors if the correspondent colors in shared.css change
 export const color = {
     light: {

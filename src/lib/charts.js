@@ -34,7 +34,7 @@ export function newDataset(label, points = []) {
     const dataset = datasets[i];
     const points = dataset.points;
     const croppedPoints = points.length > maxPoints ? points.slice(-maxPoints) : points;
-    result[i] = { ...dataset, points: croppedPoints };
+    result[i] = { label: dataset.label, points: structuredClone(croppedPoints) };
   }
 
   return result;

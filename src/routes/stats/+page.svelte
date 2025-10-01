@@ -4,18 +4,27 @@
     import SearchBox from "$lib/components/SearchBox.svelte";
     import StatsCard from "$lib/components/StatsCard.svelte";
     import { onMount } from "svelte";
-    import { cropDatasets, toJSON } from "$lib/charts";
+    import { cropDatasets, formatDate, toJSON } from "$lib/charts";
   
     let { data } = $props();
 
     let timeframe = $state(90);
-    let pubkeysData = $derived(cropDatasets(data.pubkeys, timeframe));
-    let eventsData = $derived(cropDatasets(data.events, timeframe));
+    let users = $derived( normalizeDatasets(data.users, timeframe) );
+    let events = $derived( normalizeDatasets(data.events, timeframe) );
+
+    // crops the datasets and format the dates (x-axis)
+    function normalizeDatasets(datasets, timeframe) {
+        const cropped = cropDatasets(datasets, timeframe);
+        return cropped.map(ds => {
+            ds.points.forEach(p => { p.x = formatDate(p.x) });
+            return ds;
+        });
+    }
 
     function exportJSON(data) {
         return function() {
             const formatted = {
-                "pubkeys": toJSON(data.pubkeys),
+                "users": toJSON(data.users),
                 "events": toJSON(data.events),
             };
 
@@ -57,7 +66,7 @@
     </div>
 
     <div class="chart-with-explainer">
-        <LineChart datasets={pubkeysData} title="Users"/>
+        <LineChart datasets={users} title="Users"/>
         <div class="explainer">
             <ul class="table-explainer">
                 <li>active users are the ones that published any of the kinds 
@@ -74,7 +83,7 @@
     </div>
 
     <div class="chart-with-explainer">
-        <LineChart datasets={eventsData} title="Events"/>
+        <LineChart datasets={events} title="Events"/>
         <div class="explainer">
             <ul class="table-explainer">
                 <li>events from the same user on the same day are counted separately, even if replaceable or addressable.</li>

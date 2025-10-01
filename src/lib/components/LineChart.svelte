@@ -15,7 +15,7 @@
   Chart.defaults.color = utils.textColor();
 
   const data = $derived({
-    datasets: datasets.map(d => ({
+    datasets: (datasets ?? []).map(d => ({
       label: d.label,
       data: d.points,
       fill: false,

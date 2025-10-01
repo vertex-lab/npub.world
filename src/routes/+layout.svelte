@@ -4,11 +4,6 @@
 	import { theme, toggleTheme } from "$lib/theme.svelte";
 
 	let { children } = $props();
-
-	const shoutouts = [
-		{ label: "Powered by", href: "https://vertexlab.io", text: "Vertex" },
-		{ label: "Designed by", href: "/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq", text: "Vlad" },
-	]
 </script>
 
 <main class="container">
@@ -17,13 +12,9 @@
 
 <footer>
 	<div class="shoutouts">
-		{#each shoutouts as item, i}
-			<p>{item.label} <a href={item.href}>{item.text}</a></p>
-
-			{#if i < shoutouts.length - 1}
-				<p class="separator">•</p>
-			{/if}
-		{/each}
+		<p>Powered by <a href="https://vertexlab.io">Vertex</a></p>
+		<p class="separator">•</p>
+		<p>Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vlad</a></p>
 	</div>
 
 	<div class="theme-container">

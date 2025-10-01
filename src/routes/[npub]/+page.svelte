@@ -180,10 +180,6 @@
   /* Responsive styles */
   /* Small screens (mobile) */
   @media (max-width: 576px) {
-    .container {
-        padding: 1rem 0rem;
-    }
-
     .header {
         flex-direction: row;
         align-items: center;

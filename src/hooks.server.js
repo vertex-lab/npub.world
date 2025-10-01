@@ -1,5 +1,5 @@
 import { relay } from "./lib/nostr.js";
-import { redis, fetchStats } from "./lib/stats.server";
+import { fetchStats } from "./lib/stats.server";
 import { imagesPath } from "./lib/profile.js"
 import { mkdir } from "node:fs/promises";
 
@@ -30,6 +30,5 @@ initializeServices();
 process.on("SIGTERM", async () => {
   console.log("Received SIGTERM");
   await relay.close();
-  await redis.close();
   process.exit(0);
 });

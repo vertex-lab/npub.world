@@ -3,56 +3,24 @@ import { error } from '@sveltejs/kit';
 import { query, dvm } from '$lib/nostr.js';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { getPubkeys, fetchMinimalProfiles } from '$lib/profile';
+import { newDataset, formatDate } from '$lib/charts';
+import { stats, kinds } from '$lib/stats.server';
 
-export async function load({ params }) {
-  return generateRandomStats(1000);
-}
+export async function load() {
+  const pubkeys = [ newDataset("total"), newDataset("active"), newDataset("posters") ];
+  const events = kinds.map(k => newDataset(`kind ${k}`));
 
-function generateRandomStats(days = 8) {
-  function getDateLabels(days) {
-    const today = new Date();
-    const labels = [];
+  for (const stat of stats) {
+    const date = formatDate(stat.date);
     
-    for (let i = days - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      
-      const day = String(d.getUTCDate()).padStart(2, '0');
-      const month = d.toLocaleString('en-US', { month: 'short' });
-      const year = d.getUTCFullYear();
-      
-      labels.push(`${day} ${month} ${year}`);
+    pubkeys[0].points.push({x: date, y: stat["total_pubkeys"] || 0 });
+    pubkeys[1].points.push({x: date, y: stat["active_pubkeys"] || 0 });
+    pubkeys[2].points.push({x: date, y: stat["creator_pubkeys"] || 0 });
+
+    for (const [i, kind] of kinds.entries()) {
+      events[i].points.push({ x: date, y: stat[`kind:${kind}`] || 0 });
     }
-    
-    return labels;
   }
 
-  // helper to generate a series of numbers with some random walk
-  function generatePoints(start, variance, labels) {
-    let value = start;
-    return labels.map(label => {
-      value += Math.floor(Math.random() * variance * 2 - variance); // random walk
-      if (value < 0) value = 0;
-      return { x: label, y: String(value) };
-    });
-  }
-
-  const labels = getDateLabels(days);
-
-  const pubkeyStats = [
-    { label: "total", points: generatePoints(350000, 3000, labels) },
-    { label: "active", points: generatePoints(40000, 3000, labels) },
-    { label: "posters", points: generatePoints(25000, 2000, labels) }
-  ];
-
-  const eventStats = [
-    { label: "kind 0", points: generatePoints(1000, 200, labels) },
-    { label: "kind 1", points: generatePoints(15000, 4000, labels) },
-    { label: "kind 3", points: generatePoints(4000, 800, labels) },
-    { label: "kind 6", points: generatePoints(50, 20, labels) },
-    { label: "kind 7", points: generatePoints(40, 15, labels) },
-    { label: "kind 69420", points: generatePoints(5000, 5000, labels) }
-  ];
-
-  return { pubkeys: pubkeyStats, events: eventStats };
+  return {pubkeys, events}
 }

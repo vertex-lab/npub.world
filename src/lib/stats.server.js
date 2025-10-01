@@ -1,10 +1,9 @@
 import { createClient } from "redis";
 
 export let stats = [];
+export const kinds = [0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023];
 
-const redis = createClient()
-.on("error", (err) => console.log("Redis failed to connect", err))
-.on("ready", () => console.log("Redis connected"))
+const redis = createClient();
 
 export const fetchStats = async () => {
     try {
@@ -23,7 +22,7 @@ export const fetchStats = async () => {
             const result = results[i];
     
             if (result && Object.keys(result).length > 0) {
-                stats[date] = result;
+                stats.push({ date: date, ...result });
             }
         }
 

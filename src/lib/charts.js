@@ -16,6 +16,10 @@ import { theme } from "./theme.svelte"
 * @property {number} y - The y-axis value of the point.
 */
 
+export function newDataset(label, points = []) {
+  return { label: label, points: points }
+}
+
 /**
  * Crop an array of datasets to the last N points.
  * 
@@ -111,3 +115,17 @@ export const tooltip = {
       }
     }
 };
+
+/**
+ * Convert a date string in YYYY-MM-DD format to "DD Mon YYYY".
+ *
+ * @param {string} dateStr - A date string in ISO format (e.g. "2025-09-30").
+ * @returns {string} - The formatted date string (e.g. "30 Sep 2025").
+ */
+ export function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  const month = d.toLocaleString('en-US', { month: 'short' });
+  const year = d.getUTCFullYear();
+  return `${day} ${month} ${year}`;
+}

@@ -17,9 +17,9 @@ function generateRandomStats(days = 8) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
       
-      const day = String(d.getDate()).padStart(2, '0'); // ensures 2 digits
-      const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
-      const year = d.getFullYear();
+      const day = String(d.getUTCDate()).padStart(2, '0');
+      const month = d.toLocaleString('en-US', { month: 'short' });
+      const year = d.getUTCFullYear();
       
       labels.push(`${day} ${month} ${year}`);
     }

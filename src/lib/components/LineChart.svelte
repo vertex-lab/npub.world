@@ -36,7 +36,14 @@
     scales: {
       x: {
         ticks: {
-          maxTicksLimit: 5,
+          maxTicksLimit: 6,
+          maxRotation: 0,
+          minRotation: 0,
+
+          callback: function(val, index) {
+            // hide every tick label in even positions
+            return index % 2 === 1 ? this.getLabelForValue(val) : '';
+          },
         }
       },
 

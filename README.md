@@ -8,12 +8,14 @@ A Nostr profile search engine and viewer by [Vertex](https://vertexlab.io).
 
 ## Features
 
-- **Search Nostr Profiles:**  
+- **Search Nostr Profiles**  
   Enter a name, Nostr public key, NIP-05, or other identifier to find profiles.
-- **Profile Viewer:**  
+- **Profile Viewer**  
   View detailed information about any Nostr profile, including bio, website, lightning address, and more.
-- **Reputation & Followers:**  
+- **Reputation & Followers**  
   See reputation status and top followers for each profile.
+- **Real-time Statistics**  
+  Analyse spam-free statistics about the Nostr network, including the total number of users and active users, and the number of posts.
 - **Responsive UI:**  
   Clean, mobile-friendly interface with dark/light mode toggle.
 
@@ -21,7 +23,7 @@ A Nostr profile search engine and viewer by [Vertex](https://vertexlab.io).
 
 - **Frontend:** SvelteKit
 - **Nostr:** Uses `nostr-tools` for encoding/decoding and event signing
-- **Vertex:** For reputation requests and search
+- **Vertex:** For reputation requests, search and statistics
 
 ## Development
 Make sure to have `node` and `pnpm` installed
@@ -32,7 +34,8 @@ Make sure to have `node` and `pnpm` installed
    ```
 
 2. **Configure Enviroment Variables**
-    - `SK`: Secret key for signing Nostr events (required for search and reputation queries).
+    - `SECRET_KEY`: Secret key for signing Nostr events (required for search and reputation queries)
+    - `REDIS_ADDRESS`: Address where Redis is running (required for statistics)
 
 2. **Run the dev server:**
    ```bash

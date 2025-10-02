@@ -42,7 +42,7 @@ export async function dvm(request) {
     request.content = ''; // prevents error "can't unmarshal unset fields"
   }
 
-  request = finalizeEvent(request, process.env.SK);
+  request = finalizeEvent(request, process.env.SECRET_KEY);
   await relay.publish(request);
 
   let response = await query({

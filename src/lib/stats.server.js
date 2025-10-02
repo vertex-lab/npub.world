@@ -7,7 +7,9 @@ export const engagementKinds = [ 6, 7, 16, 9321, 9735 ];
 export const profileKinds = [ 0, 3, 10000, 10002, 10063 ]; 
 export const kinds = [ ...contentKinds, ...engagementKinds,  ...profileKinds ];
 
-const redis = createClient();
+const redis = createClient({
+    url: "redis://" + process.env.REDIS_ADDRESS,
+});
 
 export const fetchStats = async () => {
     try {

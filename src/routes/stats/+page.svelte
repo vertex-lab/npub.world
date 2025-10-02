@@ -1,10 +1,8 @@
 <script>
-    import LineChart from "$lib/components/LineChart.svelte";
-    import Logo from "$lib/components/Logo.svelte";
-    import SearchBox from "$lib/components/SearchBox.svelte";
-    import StatsCard from "$lib/components/StatsCard.svelte";
     import { onMount } from "svelte";
     import { cropDatasets, formatDate, toJSON } from "$lib/charts";
+    
+    import Logo from "$lib/components/Logo.svelte";
     import ChartWithExplainer from "./ChartWithExplainer.svelte";
   
     let { data } = $props();

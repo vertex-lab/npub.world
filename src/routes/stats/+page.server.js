@@ -1,9 +1,4 @@
-import { error } from '@sveltejs/kit';
-
-import { query, dvm } from '$lib/nostr.js';
-import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
-import { getPubkeys, fetchMinimalProfiles } from '$lib/profile';
-import { newDataset, formatDate } from '$lib/charts';
+import { newDataset } from '$lib/charts';
 import { stats, contentKinds, engagementKinds, profileKinds } from '$lib/stats.server';
 
 export async function load() {

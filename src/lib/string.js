@@ -23,7 +23,10 @@ export const resolveNIP05 = async (nip05) => {
   domain = domain.toLowerCase();
 
   try {
-    const response = await fetch(`https://${domain}/.well-known/nostr.json?name=${encodeURIComponent(name)}`, { redirect: 'follow' });
+    const response = await fetch(
+      `https://${domain}/.well-known/nostr.json?name=${encodeURIComponent(name)}`,
+       { redirect: 'follow' },
+    );
 
     if (!response.ok) {
       throw new Error(`failed to fetch record: HTTP ${response.status}`);

@@ -33,8 +33,13 @@
       },
 
     scales: {
-      x: { display: false },
-      y: { display: false },
+      x: { 
+        display: false,
+      },
+      y: { 
+        display: false,
+        type: "logarithmic",
+      },
     },
   };
   

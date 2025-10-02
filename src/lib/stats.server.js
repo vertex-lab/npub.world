@@ -1,7 +1,11 @@
 import { createClient } from "redis";
 
 export let stats = [];
-export const kinds = [0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023];
+
+export const contentKinds = [ 1, 20, 21, 22, 1111, 30023 ];
+export const engagementKinds = [ 6, 7, 16, 9321, 9735 ];
+export const profileKinds = [ 0, 3, 10000, 10002, 10063 ]; 
+export const kinds = [ ...contentKinds, ...engagementKinds,  ...profileKinds ];
 
 const redis = createClient();
 

@@ -5,12 +5,15 @@
     import StatsCard from "$lib/components/StatsCard.svelte";
     import { onMount } from "svelte";
     import { cropDatasets, formatDate, toJSON } from "$lib/charts";
+    import ChartWithExplainer from "./ChartWithExplainer.svelte";
   
     let { data } = $props();
 
     let timeframe = $state(90);
     let users = $derived( normalizeDatasets(data.users, timeframe) );
-    let events = $derived( normalizeDatasets(data.events, timeframe) );
+    let contentEvents = $derived( normalizeDatasets(data.contentEvents, timeframe) );
+    let engagementEvents = $derived( normalizeDatasets(data.engagementEvents, timeframe) );
+    let profileEvents = $derived( normalizeDatasets(data.profileEvents, timeframe) );
 
     // crops the datasets and format the dates (x-axis)
     function normalizeDatasets(datasets, timeframe) {
@@ -25,7 +28,9 @@
         return function() {
             const formatted = {
                 "users": toJSON(data.users),
-                "events": toJSON(data.events),
+                "content": toJSON(data.contentEvents),
+                "engagement": toJSON(data.engagementEvents),
+                "profile": toJSON(data.profileEvents),
             };
 
             const json = JSON.stringify(formatted, null, 2);
@@ -42,7 +47,7 @@
 </script>
   
 <svelte:head>
-<title>npub.world stats</title>
+<title>statistics - npub.world</title>
 </svelte:head>
   
 <div class="centered">
@@ -65,36 +70,38 @@
         </div>
     </div>
 
-    <div class="chart-with-explainer">
-        <LineChart datasets={users} title="Users"/>
-        <div class="explainer">
-            <ul class="table-explainer">
-                <li>active users are the ones that published any of the kinds 
-                    <code>0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023</code> on a given day.</li>
-                <li>posters are users that published any of the kinds 
-                    <code>1, 20, 21, 22, 30023</code> on a given day.</li>
-                <li>counts are computed using
-                    <a href="https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/">
-                        Redis HyperLogLog
-                    </a>,
-                    a probabilistic data structure for counting unique elements with less than 1% error.</li>
-            </ul>
-        </div>
-    </div>
+    <ChartWithExplainer
+        title="Users"
+        datasets={users}
+        explainers={[
+            'active users are the ones that published any of the kinds <code>0, 1, 3, 6, 7, 16, 20, 21, 22, 1111, 9321, 9735, 10000, 10002, 10063, 30023</code> on a given day.',
+            'posters are users that published any of the kinds <code>1, 20, 21, 22, 1111, 30023</code> on a given day.',
+        ]}
+    />
 
-    <div class="chart-with-explainer">
-        <LineChart datasets={events} title="Events"/>
-        <div class="explainer">
-            <ul class="table-explainer">
-                <li>events from the same user on the same day are counted separately, even if replaceable or addressable.</li>
-                <li>counts are computed using 
-                    <a href="https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/">
-                        Redis HyperLogLog
-                    </a>,
-                    a probabilistic data structure for counting unique elements with less than 1% error.</li>
-            </ul>
-        </div>
-    </div>
+    <ChartWithExplainer
+        title="Content"
+        datasets={contentEvents}
+        explainers={[
+            'events from the same user on the same day are counted separately, even if replaceable or addressable.',
+        ]}
+    />
+
+    <ChartWithExplainer
+        title="Engagement"
+        datasets={engagementEvents}
+        explainers={[
+            'events from the same user on the same day are counted separately, even if replaceable or addressable.',
+        ]}
+    />
+
+    <ChartWithExplainer
+        title="Profile"
+        datasets={profileEvents}
+        explainers={[
+            'events from the same user on the same day are counted separately, even if replaceable or addressable.',
+        ]}
+    />
 </div>
   
 <style>
@@ -165,37 +172,7 @@
         margin-bottom: 1.25rem;
     }
 
-    .chart-with-explainer {
-        margin-bottom: 2rem;
-    }
-
-    .explainer {
-        font-size: 0.8rem;
-        color: var(--secondary-text);
-        padding: 0 2rem;
-    }
-
-    .explainer ul {
-        margin: 0;
-        list-style-type: none;
-    }
-
-    .explainer li {
-        margin-bottom: 0.75rem;
-    }
-
-    .explainer li::before {
-        content: "*";
-        display: inline-flex;
-        width: 1rem;
-        margin-left: -1rem;
-    }
-
     @media (max-width: 576px) {
-        .explainer {
-            padding: 0;
-        }
-
         button::after {
             content: attr(short-title);
         }

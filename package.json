@@ -29,6 +29,7 @@
 	"dependencies": {
 		"chart.js": "^4.5.0",
 		"marked": "^15.0.7",
+		"node-cron": "^4.2.1",
 		"nostr-tools": "^2.10.4",
 		"redis": "^5.8.2",
 		"sharp": "^0.33.5",

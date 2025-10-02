@@ -12,11 +12,14 @@ const redis = createClient();
 export const fetchStats = async () => {
     try {
         await redis.connect();
-        const pipeline = redis.multi();
 
-        const dates = statsDates();
+        const start = startDate();
+        const dates = statsDates(start);
+        if (!dates || dates.length === 0) return
+
+        const pipeline = redis.multi();
         for (const date of dates) {
-            const key = statsPrefix + date;
+            const key = "stats:" + date;
             pipeline.hGetAll(key);
         }
     
@@ -30,7 +33,10 @@ export const fetchStats = async () => {
             }
         }
 
-        console.log("Successfully fetched the stats")
+        const message = dates.length > 1
+        ? `Successfully fetched the stats from ${dates[0]} to ${dates[dates.length - 1]}`
+        : `Successfully fetched the stats for ${dates[0]}`;
+        console.log(message);
     
     } catch(err) {
         console.log("Failed to fetch the stats: ", err);
@@ -40,20 +46,37 @@ export const fetchStats = async () => {
     }
 };
 
-const startDate = "2025-09-16";
-const statsPrefix = "stats:";
+const firstRecording = "2025-09-16";
 
-export const statsDates = () => {
-    const keys = [];
+const startDate = () => {
+    if (!stats || stats.length === 0) {
+        return firstRecording;
+    }
+
+    const last = new Date(stats[stats.length - 1].date);
+    last.setDate(last.getDate() + 1); // move to the next day
+    return last;
+};
+
+/**
+ * Generates an array of date strings (YYYY-MM-DD) from the given start date
+ * up to yesterday (exclusive of today). These strings are used as Redis keys
+ * to fetch stats for each day.
+ * 
+ * @param {Date} start - The starting date for which to generate stats keys.
+ * @returns {string[]} - An array of date strings in YYYY-MM-DD format.
+ */
+export const statsDates = (start) => {
+    const dates = [];
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
   
-    for (let d = new Date(startDate); d < today; d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(start); d < today; d.setDate(d.getDate() + 1)) {
       const year = d.getUTCFullYear();
       const month = String(d.getUTCMonth() + 1).padStart(2, "0");
       const day = String(d.getUTCDate()).padStart(2, "0");
-      keys.push(`${year}-${month}-${day}`);
+      dates.push(`${year}-${month}-${day}`);
     }
     
-    return keys;
+    return dates;
 };

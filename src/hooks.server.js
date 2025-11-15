@@ -12,13 +12,23 @@ export const handle = async ({ event, resolve }) => {
 
 let statsCron;
 
+const RIGHT_AFTER_MIDNIGHT = "1 0 * * *"  // 00:01 UTC every day
+const EVERY_SECOND = "* * * * * *"  // for testing only
+
 const initializeServices = async () => {
   try {
     await relay.connect();
     console.log("Relay connected");
 
     await fetchStats();
-    statsCron = cron.schedule("1 0 * * *",fetchStats,{ timezone: "UTC"});   // 00:01 UTC every day
+    statsCron = cron.schedule(
+      RIGHT_AFTER_MIDNIGHT,
+      fetchStats,
+      { 
+        timezone: "UTC",
+        recoverMissedExecutions: true
+      },
+    );
 
     await mkdir(imagesPath, { recursive: true });
     console.log("Ensured directory %s exists", imagesPath);

@@ -3,28 +3,6 @@ import { error } from '@sveltejs/kit';
 import { query, dvm } from '$lib/nostr.js';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { getPubkeys, fetchMinimalProfiles } from '$lib/profile';
-import { newDataset, formatDate } from '$lib/charts';
-import { stats } from '$lib/stats.server';
-
-export async function load({ params }) {
-  const lastStats = stats.length > 10 ? stats.slice(-10) : stats;
-  const users = [ newDataset("total"), newDataset("active"), newDataset("posters") ];
-  const events = [ newDataset("profiles"), newDataset("posts"), newDataset("follows") ];
-
-  for (const stat of lastStats) {
-    const date = formatDate(stat.date);
-
-    users[0].points.push({x: date, y: stat["total_pubkeys"] || 0 });
-    users[1].points.push({x: date, y: stat["active_pubkeys"] || 0 });
-    users[2].points.push({x: date, y: stat["creator_pubkeys"] || 0 });
-
-    events[0].points.push({x: date, y: stat["kind:0"] || 0 });
-    events[1].points.push({x: date, y: stat["kind:1"] || 0 });
-    events[2].points.push({x: date, y: stat["kind:3"] || 0 });
-  }
-
-  return {users, events}
-}
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.

@@ -12,17 +12,15 @@
 				const savedTheme = localStorage.getItem("theme");
 				if (savedTheme) {
 					document.documentElement.setAttribute("data-theme", savedTheme);
-				} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-					document.documentElement.setAttribute("data-theme", "dark");
 				} else {
-					document.documentElement.setAttribute("data-theme", "light");
+					document.documentElement.setAttribute("data-theme", "dark");
 				}
 			} catch (_) { }
 		})();
 	</script>
 
 	%sveltekit.head%
-	
+
 	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
 	<link rel="shortcut icon" href="/favicon/favicon.ico" />

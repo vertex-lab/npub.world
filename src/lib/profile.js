@@ -11,13 +11,15 @@
   * @property {string} [website]
   * @property {number} [follows]
   * @property {number} [followers]
-  * 
+  *
   * @typedef {Object} ReputationInfo
   * @property {string} pubkey
   * @property {number} rank
   * @property {number} nodes
   * @property {number} [follows]
   * @property {number} [followers]
+  * @property {string} [leakedSecret]
+  * @property {number} [leakedAt]
 */
 
 import { normalizeMentions, normalizeURL } from "$lib/string.js";
@@ -71,7 +73,7 @@ export const minimalProfile = async (profileEvent) => {
     console.error(`Failed to parse profile event ${profileEvent.id}: ${err.message || err.toString()}`);
     return null;
   }
-  
+
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
     name: info.display_name || info.displayName || info.name,
@@ -100,7 +102,9 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
 
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
-    reputation: reputationStatus(reputationInfo.rank, reputationInfo.nodes),
+    reputation: reputationStatus(reputationInfo),
+    follows: reputationInfo.follows,
+    followers: reputationInfo.followers,
 
     name: info.display_name || info.displayName || info.name,
     picture: await loadImage(info.picture, highResolution),
@@ -109,9 +113,6 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     nip05: info.nip05?.toString().toLowerCase(),
     website: normalizeURL(info.website),
     lud16: info.lud16,
-
-    follows: reputationInfo.follows,
-    followers: reputationInfo.followers,
   };
 }
 
@@ -122,7 +123,7 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
  */
 export const reputationInfos = (reputationEvent) => {
   const nodesTag = reputationEvent.tags.find(tag => tag.length > 1 && tag[0] === 'nodes');
-  const nodes = Number(nodesTag?.[1] || 0);  
+  const nodes = Number(nodesTag?.[1] || 0);
 
   let data = [];
   try {
@@ -138,6 +139,8 @@ export const reputationInfos = (reputationEvent) => {
       nodes: nodes,
       follows: entry.follows,
       followers: entry.followers,
+      leakedSecret: entry.leaked_secret,
+      leakedAt: entry.leaked_at,
     }));
 }
 
@@ -158,25 +161,35 @@ export const getPubkeys = (reputationEvent) => {
   return data.map(entry => entry.pubkey)
 }
 
-// Returns a qualitative reputation status ("low", "mid", "high")
-// based on a node's PageRank `rank` and total `nodes` in the network.
-export const reputationStatus = (rank, nodes) => {
-  if (!rank || rank === 0 ) return "low"
-  if (!nodes || nodes === 0 ) return "low"
+/**
+ * Returns the reputation status of a user based on their rank and node count.
+ *
+ * @param {ReputationInfo} reputationInfo
+ */
+export const reputationStatus = (info) => {
+  if (!info) {
+    return "low"
+  }
+  if (info.leakedSecret) {
+    return "leaked"
+  }
+  if (!info.rank || !info.nodes) {
+    return "low"
+  }
 
-  const midThreshold = pagerankPercentile(0.01, nodes)      // top 1%
-  const highThreshold = pagerankPercentile(0.0001, nodes)   // top 0.01%
+  const midThreshold = pagerankPercentile(0.01, info.nodes)      // top 1%
+  const highThreshold = pagerankPercentile(0.0001, info.nodes)   // top 0.01%
 
-  if (rank > highThreshold) {
+  if (info.rank > highThreshold) {
     return "high"
   }
-  if (rank > midThreshold) {
+  if (info.rank > midThreshold) {
     return "mid"
   }
   return "low"
 }
 
-// pagerankPercentile returns the pagerank value of the top 'percentage' 
+// pagerankPercentile returns the pagerank value of the top 'percentage'
 // of a network consisting of 'nodes'.
 // More info here: https://vertexlab.io/blog/pagerank_as_filter/
 export const pagerankPercentile = (percentage, nodes) => {
@@ -190,7 +203,7 @@ const highResolution = '_300px'
 const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
 // Attempt to load from disk the picture by its url-hash and quality.
-// If not found, tries to fetch by its url. 
+// If not found, tries to fetch by its url.
 const loadImage = async (url, quality) => {
   if (!url || typeof url !== 'string') return fallbackImage;
   if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
@@ -271,12 +284,11 @@ const fetchImage = async (url, quality) => {
  * @returns {boolean} - True if it looks like an image, false otherwise.
  */
  function containsImage(response) {
-  return response 
-      && typeof response === 'object' 
-      && 'headers' in response 
+  return response
+      && typeof response === 'object'
+      && 'headers' in response
       && (
           (response.headers.get('content-type') || '').startsWith('image/') ||
           (response.url && response.url.match(/\.(jpg|jpeg|png|gif|webp|avif|tiff|bmp)$/i))
       );
 };
-

@@ -21,15 +21,15 @@ export async function load({ params }) {
     const pubkeys = reputations.map((e) => e.pubkey);
 
     let profileEvents = await query({
-      kinds: [0], 
-      authors: pubkeys, 
+      kinds: [0],
+      authors: pubkeys,
       limit: pubkeys.length
     });
 
     profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
     const profile = await detailedProfile(
-      profileEvents.get(pubkey), 
+      profileEvents.get(pubkey),
       reputations[0]
     );
 
@@ -105,7 +105,7 @@ async function resolve(input) {
  */
 function parse(params) {
   const npub = params.get('npub') ?? '';
-  
+
   let pubkey;
   try {
     const { type, data } = nip19.decode(npub);
@@ -157,8 +157,8 @@ export const actions = {
       if (error) return { error }
 
       let followList = await query({
-        kinds: [3], 
-        authors: [pubkey], 
+        kinds: [3],
+        authors: [pubkey],
         limit: 1,
       });
 
@@ -184,7 +184,7 @@ export const actions = {
 
       const response = await dvm(rankProfiles);
       const rankedPubkeys = getPubkeys(response);
-      
+
       return await fetchMinimalProfiles(rankedPubkeys);
 
     } catch(err) {

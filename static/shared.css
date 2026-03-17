@@ -1,125 +1,160 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
+/* ubuntu-300 - latin_latin-ext */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 300;
+    src: url("../fonts/ubuntu-v21-latin_latin-ext-300.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* ubuntu-regular - latin_latin-ext */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/ubuntu-v21-latin_latin-ext-regular.woff2")
+        format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* ubuntu-500 - latin_latin-ext */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 500;
+    src: url("../fonts/ubuntu-v21-latin_latin-ext-500.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* ubuntu-700 - latin_latin-ext */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Ubuntu";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/ubuntu-v21-latin_latin-ext-700.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
 
 :root {
-	--primary-text: #333;
-	--secondary-text: #666;
-	--light-text: #888;
-	--highlight-color: #f0f7ff;
+    --primary-text: #333;
+    --secondary-text: #666;
+    --light-text: #888;
+    --highlight-color: #f0f7ff;
 
-	--border-color: #ddd;
-	--background-color: #f9f9f9;
-	--card-background: #fff;
+    --border-color: #ddd;
+    --background-color: #f9f9f9;
+    --card-background: #fff;
 
-	--blue-accent: #eef3ff;
-	--blue-accent-text: #4a63b8;
-	--yellow-accent: #fff8e1;
-	--yellow-accent-text: #b45309;
+    --blue-accent: #eef3ff;
+    --blue-accent-text: #4a63b8;
+    --yellow-accent: #fff8e1;
+    --yellow-accent-text: #b45309;
 
-	--overlay-color: rgba(0, 0, 0, 0.7);
-	--shadow-color: 0deg 0% 61%;
-	--shadow-color-overlay: 0deg 0% 15%;
-	
-	--shadow-elevation-low:
-		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.41),
-		0.3px 0.6px 0.7px -1.5px hsl(var(--shadow-color) / 0.37),
-		0.7px 1.4px 1.6px -3px hsl(var(--shadow-color) / 0.32);
-	--shadow-elevation-medium:
-		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.43),
-		0.5px 1.1px 1.3px -1px hsl(var(--shadow-color) / 0.4),
-		1.3px 2.8px 3.2px -2px hsl(var(--shadow-color) / 0.36),
-		3.3px 7.2px 8.3px -3px hsl(var(--shadow-color) / 0.32);
-	--shadow-elevation-high:
-		0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.415),
-		0.65px 1.45px 1.7px -0.5px hsl(var(--shadow-color) / 0.395),
-		1.4px 3.1px 3.5px -1px hsl(var(--shadow-color) / 0.365),
-		2.8px 6.5px 7.5px -1.7px hsl(var(--shadow-color) / 0.345),
-		5px 11px 12.7px -2.1px hsl(var(--shadow-color) / 0.33),
-		8px 17.5px 20px -2.5px hsl(var(--shadow-color) / 0.31);
-	--shadow-elevation-modal: 
-		0.2px 0.4px 0.5px hsl(var(--shadow-color-overlay) / 0.4),
-		0.8px 1.8px 2.1px -0.4px hsl(var(--shadow-color-overlay) / 0.39),
-		1.5px 3.4px 3.9px -0.9px hsl(var(--shadow-color-overlay) / 0.37),
-		2.6px 5.8px 6.7px -1.3px hsl(var(--shadow-color-overlay) / 0.35),
-		4.4px 9.6px 11.1px -1.7px hsl(var(--shadow-color-overlay) / 0.34),
-		7.1px 15.5px 17.9px -2.1px hsl(var(--shadow-color-overlay) / 0.32),
-		11px 24.1px 27.8px -2.6px hsl(var(--shadow-color-overlay) / 0.3),
-		16.4px 36px 41.5px -3px hsl(var(--shadow-color-overlay) / 0.28);
+    --overlay-color: rgba(0, 0, 0, 0.7);
+    --shadow-color: 0deg 0% 61%;
+    --shadow-color-overlay: 0deg 0% 15%;
 
-	--primary-font: Ubuntu, sans-serif;
+    --shadow-elevation-low:
+        0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.41),
+        0.3px 0.6px 0.7px -1.5px hsl(var(--shadow-color) / 0.37),
+        0.7px 1.4px 1.6px -3px hsl(var(--shadow-color) / 0.32);
+    --shadow-elevation-medium:
+        0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.43),
+        0.5px 1.1px 1.3px -1px hsl(var(--shadow-color) / 0.4),
+        1.3px 2.8px 3.2px -2px hsl(var(--shadow-color) / 0.36),
+        3.3px 7.2px 8.3px -3px hsl(var(--shadow-color) / 0.32);
+    --shadow-elevation-high:
+        0.2px 0.4px 0.5px hsl(var(--shadow-color) / 0.415),
+        0.65px 1.45px 1.7px -0.5px hsl(var(--shadow-color) / 0.395),
+        1.4px 3.1px 3.5px -1px hsl(var(--shadow-color) / 0.365),
+        2.8px 6.5px 7.5px -1.7px hsl(var(--shadow-color) / 0.345),
+        5px 11px 12.7px -2.1px hsl(var(--shadow-color) / 0.33),
+        8px 17.5px 20px -2.5px hsl(var(--shadow-color) / 0.31);
+    --shadow-elevation-modal:
+        0.2px 0.4px 0.5px hsl(var(--shadow-color-overlay) / 0.4),
+        0.8px 1.8px 2.1px -0.4px hsl(var(--shadow-color-overlay) / 0.39),
+        1.5px 3.4px 3.9px -0.9px hsl(var(--shadow-color-overlay) / 0.37),
+        2.6px 5.8px 6.7px -1.3px hsl(var(--shadow-color-overlay) / 0.35),
+        4.4px 9.6px 11.1px -1.7px hsl(var(--shadow-color-overlay) / 0.34),
+        7.1px 15.5px 17.9px -2.1px hsl(var(--shadow-color-overlay) / 0.32),
+        11px 24.1px 27.8px -2.6px hsl(var(--shadow-color-overlay) / 0.3),
+        16.4px 36px 41.5px -3px hsl(var(--shadow-color-overlay) / 0.28);
+
+    --primary-font: Ubuntu, sans-serif;
 }
 
 [data-theme="dark"] {
-	--primary-text: #e1e1e1;
-	--secondary-text: #b0b0b0;
-	--light-text: #999;
-	--highlight-color: #2a3344;
+    --primary-text: #e1e1e1;
+    --secondary-text: #b0b0b0;
+    --light-text: #999;
+    --highlight-color: #2a3344;
 
-	--border-color: #444;
-	--background-color: #121212;
-	--card-background: #1e1e1e;
+    --border-color: #444;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
 
-	--overlay-color: rgba(0, 0, 0, 0.7);
-  	--shadow-color: 0deg 0% 25%;
-	--shadow-color-overlay: 0deg 0% 20%;
+    --overlay-color: rgba(0, 0, 0, 0.7);
+    --shadow-color: 0deg 0% 25%;
+    --shadow-color-overlay: 0deg 0% 20%;
 
-	--blue-accent: #1e293b;
-	--blue-accent-text: #93c5fd;
-	--yellow-accent: #3a2e14;
-	--yellow-accent-text: #e4ba15;
+    --blue-accent: #1e293b;
+    --blue-accent-text: #93c5fd;
+    --yellow-accent: #3a2e14;
+    --yellow-accent-text: #e4ba15;
 }
 
 /* disabling all scrollbars */
 *::-webkit-scrollbar {
-	display: none; /* Chrome, Safari, Opera */
+    display: none; /* Chrome, Safari, Opera */
 }
 
 * {
-	scrollbar-width: none;      /* Firefox */
-	-ms-overflow-style: none;   /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 body {
-	font-family: var(--primary-font);
-	color: var(--primary-text);
-	background-color: var(--background-color);
-	margin: 0;
-	padding: 0;
+    font-family: var(--primary-font);
+    color: var(--primary-text);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-	max-width: 900px;
-	margin: 0 auto;
-	padding: 2rem 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
 }
 
 .card {
-	background-color: var(--card-background);
-	border: 1px solid var(--border-color);
-	border-radius: 12px;
-	box-shadow: var(--shadow-elevation-medium);
-	padding: 1rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-elevation-medium);
+    padding: 1rem;
 }
 
 .theme-logo {
-	width: 70px;
-	height: 70px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-image: url('/logo.png')
+    width: 70px;
+    height: 70px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("/logo.png");
 }
 
 [data-theme="dark"] .theme-logo {
-	background-image: url('/logo-dark.png');
+    background-image: url("/logo-dark.png");
 }
 
 /* Links in dark mode */
 [data-theme="dark"] a {
-	color: #6da4ff;
+    color: #6da4ff;
 }
 
 @media (max-width: 576px) {
-	.container {
-		padding: 1.5rem 0.5rem;
-	}
+    .container {
+        padding: 1.5rem 0.5rem;
+    }
 }

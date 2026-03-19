@@ -1,7 +1,12 @@
 /**
+  * @typedef {Object} MinimalProfile
+  * @property {string} npub
+  * @property {string} [name]
+  * @property {string} [nip05]
+  * @property {string} [picture]
+  *
   * @typedef {Object} Profile
   * @property {string} npub
-  * @property {string} [reputation]
   * @property {string} [name]
   * @property {string} [picture]
   * @property {string} [pictureURL]
@@ -9,8 +14,10 @@
   * @property {string} [nip05]
   * @property {string} [lud16]
   * @property {string} [website]
-  * @property {number} [follows]
-  * @property {number} [followers]
+  * @property {number} follows
+  * @property {number} followers
+  * @property {"low" | "medium" | "high"} popularity
+  * @property {Leak} [leak]
   *
   * @typedef {Object} ReputationInfo
   * @property {number} nodes
@@ -65,7 +72,7 @@ export const fetchMinimalProfiles = async (pubkeys) => {
  * Builds a minimal profile object from a kind:0 profile event.
  *
  * @param {Object} profileEvent
- * @returns {Promise<Profile|null>}
+ * @returns {Promise<MinimalProfile|null>}
  */
 export const minimalProfile = async (profileEvent) => {
   if (!profileEvent) return null;
@@ -106,10 +113,6 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
 
   return {
     npub: nip19.npubEncode(profileEvent.pubkey),
-    reputation: reputationStatus(reputationInfo),
-    follows: reputationInfo.follows,
-    followers: reputationInfo.followers,
-
     name: info.display_name || info.displayName || info.name,
     picture: await loadImage(info.picture, highResolution),
     pictureURL: info.picture,
@@ -117,6 +120,11 @@ export const detailedProfile = async (profileEvent, reputationInfo) => {
     nip05: info.nip05?.toString().toLowerCase(),
     website: normalizeURL(info.website),
     lud16: info.lud16,
+
+    follows: reputationInfo.follows,
+    followers: reputationInfo.followers,
+    popularity: popularity(reputationInfo.rank, reputationInfo.nodes),
+    leak: reputationInfo.leak,
   };
 }
 
@@ -166,22 +174,18 @@ export const getPubkeys = (reputationEvent) => {
 
 /**
  * Returns the reputation status of a user based on their rank and node count.
- *
- * @param {ReputationInfo} info
- * @returns { "suspected_leaked" | "leaked" | "low" | "mid" | "high" }
+ * @param {number} rank - The user's rank.
+ * @param {number} nodes - The total number of nodes in the network.
+ * @returns { "low" | "mid" | "high" }
  */
-export const reputationStatus = (info) => {
-  if (!info) return "low"
+export const popularity = (rank, nodes) => {
+  if (!rank || !nodes) return "low"
 
-  if (info.leak?.status === "confirmed") return "leaked"
-  if (info.leak?.status === "suspected") return "suspected_leaked"
+  const top1 = pagerankPercentile(0.01, nodes)      // top 1%
+  const top01 = pagerankPercentile(0.0001, nodes)   // top 0.01%
 
-  if (!info.rank || !info.nodes) return "low"
-  const midThreshold = pagerankPercentile(0.01, info.nodes)      // top 1%
-  const highThreshold = pagerankPercentile(0.0001, info.nodes)   // top 0.01%
-
-  if (info.rank > highThreshold) return "high"
-  if (info.rank > midThreshold) return "mid"
+  if (rank > top01) return "high"
+  if (rank > top1) return "mid"
   return "low"
 }
 

@@ -47,8 +47,15 @@
 
     --blue-accent: #eef3ff;
     --blue-accent-text: #4a63b8;
+
     --yellow-accent: #fff8e1;
     --yellow-accent-text: #b45309;
+
+    --warning-accent: rgba(255, 140, 0, 0.12);
+    --warning-accent-text: #7a3900;
+
+    --danger-accent: rgba(255, 68, 68, 0.12);
+    --danger-accent-text: #7a0000;
 
     --overlay-color: rgba(0, 0, 0, 0.7);
     --shadow-color: 0deg 0% 61%;
@@ -101,6 +108,12 @@
     --blue-accent-text: #93c5fd;
     --yellow-accent: #3a2e14;
     --yellow-accent-text: #e4ba15;
+
+    --warning-accent: rgba(255, 140, 0, 0.1);
+    --warning-accent-text: #ffb347;
+
+    --danger-accent: rgba(255, 68, 68, 0.1);
+    --danger-accent-text: #ff6b6b;
 }
 
 /* disabling all scrollbars */

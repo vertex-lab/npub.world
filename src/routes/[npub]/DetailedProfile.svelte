@@ -5,6 +5,8 @@
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import CopyLink from "$lib/components/CopyLink.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
+    import TrustPill from "$lib/components/TrustPill.svelte";
+    import LeakBanner from "$lib/components/LeakBanner.svelte";
     import FollowList from "./FollowList.svelte";
     import PressableProfilePicture from "$lib/components/PressableProfilePicture.svelte";
 
@@ -12,36 +14,50 @@
 </script>
 
 <div class="profile-header">
-    <PressableProfilePicture picture={profile.picture} pictureURL={profile.pictureURL} />
+    <div class="profile-top">
+        <PressableProfilePicture picture={profile.picture} pictureURL={profile.pictureURL} />
 
-    <div class="profile-identity">
-        <p class="profile-name">
-            {profile.name}
-            <ReputationBadge reputation={profile.reputation} size={22}/>
-        </p>
+        <div class="profile-identity">
+            <p class="profile-name">
+                {profile.name}
+                {#if !profile.leak}
+                    <ReputationBadge reputation={profile.popularity} size={22}/>
+                {/if}
+            </p>
 
-        <p class="profile-nip05">
-            {profile.nip05}
-        </p>
+            <p class="profile-nip05">
+                {profile.nip05}
+            </p>
 
-        <div class="profile-stats">
-            <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
-            <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
+            <div class="profile-stats">
+                <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
+                <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
+            </div>
+        </div>
+
+        <div class="copy-link">
+            <CopyLink/>
         </div>
     </div>
 
-    <div class="copy-link">
-        <CopyLink/>
-    </div>
+    {#if profile.leak}
+        <LeakBanner leak={profile.leak} />
+    {/if}
 </div>
 
 <style>
     .profile-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-top {
         position: relative;
         display: flex;
         align-items: flex-start;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--border-color);
     }
 
     .copy-link {
@@ -53,7 +69,7 @@
     .profile-identity {
         text-align: left;
         width: 100%;
-        margin-right: calc(1rem + 90px); /* account for copy link button */        
+        margin-right: calc(1rem + 90px); /* account for copy link button */
         flex-grow: 1;
         overflow: hidden;
     }
@@ -68,9 +84,9 @@
     .profile-nip05 {
         font-size: 0.9rem;
         color: var(--light-text);
-        max-width: 100%;   
+        max-width: 100%;
         white-space: nowrap;
-        overflow: hidden;       
+        overflow: hidden;
         text-overflow: ellipsis;
         margin: 0.75rem 0;
     }
@@ -80,11 +96,11 @@
         gap: 1rem;
         margin: 0 0 0.5rem 0;
     }
-    
+
     /* Responsive styles */
     /* Small screens (mobile) */
     @media (max-width: 576px) {
-        .profile-header {
+        .profile-top {
             flex-direction: column;
             align-items: center;
             text-align: center;

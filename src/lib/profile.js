@@ -13,13 +13,17 @@
   * @property {number} [followers]
   *
   * @typedef {Object} ReputationInfo
+  * @property {number} nodes
   * @property {string} pubkey
   * @property {number} rank
-  * @property {number} nodes
   * @property {number} [follows]
   * @property {number} [followers]
-  * @property {string} [leakedSecret]
-  * @property {number} [leakedAt]
+  * @property {Leak} [leak]
+
+  * @typedef {Object} Leak
+  * @property {"confirmed" | "suspected"} status
+  * @property {string} [proof]
+  * @property {number} [detected_at]
 */
 
 import { normalizeMentions, normalizeURL } from "$lib/string.js";
@@ -134,13 +138,12 @@ export const reputationInfos = (reputationEvent) => {
   }
 
   return data.map(entry => ({
+      nodes: nodes,
       pubkey: entry.pubkey,
       rank: entry.rank,
-      nodes: nodes,
       follows: entry.follows,
       followers: entry.followers,
-      leakedSecret: entry.leaked_secret,
-      leakedAt: entry.leaked_at,
+      leak: entry.leak,
     }));
 }
 
@@ -164,28 +167,21 @@ export const getPubkeys = (reputationEvent) => {
 /**
  * Returns the reputation status of a user based on their rank and node count.
  *
- * @param {ReputationInfo} reputationInfo
+ * @param {ReputationInfo} info
+ * @returns { "suspected_leaked" | "leaked" | "low" | "mid" | "high" }
  */
 export const reputationStatus = (info) => {
-  if (!info) {
-    return "low"
-  }
-  if (info.leakedSecret) {
-    return "leaked"
-  }
-  if (!info.rank || !info.nodes) {
-    return "low"
-  }
+  if (!info) return "low"
 
+  if (info.leak?.status === "confirmed") return "leaked"
+  if (info.leak?.status === "suspected") return "suspected_leaked"
+
+  if (!info.rank || !info.nodes) return "low"
   const midThreshold = pagerankPercentile(0.01, info.nodes)      // top 1%
   const highThreshold = pagerankPercentile(0.0001, info.nodes)   // top 0.01%
 
-  if (info.rank > highThreshold) {
-    return "high"
-  }
-  if (info.rank > midThreshold) {
-    return "mid"
-  }
+  if (info.rank > highThreshold) return "high"
+  if (info.rank > midThreshold) return "mid"
   return "low"
 }
 

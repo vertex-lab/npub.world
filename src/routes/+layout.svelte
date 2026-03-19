@@ -4,9 +4,18 @@
 	import { theme, toggleTheme } from "$lib/theme.svelte";
 
 	let { children } = $props();
+
+	let scrollY = $state(0);
+	const navOpacity = $derived(Math.max(0, 1 - scrollY / 80));
+
+	onMount(() => {
+		const onScroll = () => scrollY = window.scrollY;
+		window.addEventListener("scroll", onScroll, { passive: true });
+		return () => window.removeEventListener("scroll", onScroll);
+	});
 </script>
 
-<nav class="topnav">
+<nav class="topnav" style="opacity: {navOpacity}; pointer-events: {navOpacity < 0.1 ? 'none' : 'auto'}">
 	<div class="topnav-inner">
 		<div class="nav-links">
 			<a href="/" class:active={$page.url.pathname === '/'}>Home</a>
@@ -44,6 +53,7 @@
 		position: sticky;
 		top: 0;
 		z-index: 100;
+		transition: opacity 0.1s ease;
 	}
 
 	.topnav-inner {

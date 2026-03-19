@@ -51,8 +51,8 @@
     --yellow-accent: #fff8e1;
     --yellow-accent-text: #b45309;
 
-    --warning-accent: rgba(255, 140, 0, 0.12);
-    --warning-accent-text: #7a3900;
+    --warning-accent: rgba(255, 100, 0, 0.12);
+    --warning-accent-text: #7a2200;
 
     --danger-accent: rgba(255, 68, 68, 0.12);
     --danger-accent-text: #7a0000;
@@ -109,8 +109,8 @@
     --yellow-accent: #3a2e14;
     --yellow-accent-text: #e4ba15;
 
-    --warning-accent: rgba(255, 140, 0, 0.1);
-    --warning-accent-text: #ffb347;
+    --warning-accent: rgba(255, 100, 0, 0.1);
+    --warning-accent-text: #ff7733;
 
     --danger-accent: rgba(255, 68, 68, 0.1);
     --danger-accent-text: #ff6b6b;

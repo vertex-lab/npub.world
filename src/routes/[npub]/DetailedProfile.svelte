@@ -5,7 +5,6 @@
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import CopyLink from "$lib/components/CopyLink.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
-    import TrustPill from "$lib/components/TrustPill.svelte";
     import LeakBanner from "$lib/components/LeakBanner.svelte";
     import FollowList from "./FollowList.svelte";
     import PressableProfilePicture from "$lib/components/PressableProfilePicture.svelte";

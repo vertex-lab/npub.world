@@ -70,6 +70,8 @@
     border-left: 2px solid var(--leak-accent-text);
     background-color: var(--leak-accent);
     color: var(--leak-accent-text);
+    width: fit-content;
+    max-width: 500px;
   }
 
   .banner--warning {

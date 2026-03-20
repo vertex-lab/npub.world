@@ -165,7 +165,6 @@ body {
 [data-theme="dark"] a {
     color: #6da4ff;
 }
-
 @media (max-width: 576px) {
     .container {
         padding: 1.5rem 0.5rem;

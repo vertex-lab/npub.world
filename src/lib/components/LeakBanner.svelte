@@ -67,21 +67,21 @@
     gap: 0.75rem;
     padding: 10px 14px;
     border-radius: 8px;
-    border-left: 2px solid var(--leak-accent-text);
-    background-color: var(--leak-accent);
-    color: var(--leak-accent-text);
+    border-left: 2px solid;
     width: fit-content;
     max-width: 500px;
   }
 
   .banner--warning {
-    --leak-accent:      var(--warning-accent);
-    --leak-accent-text: var(--warning-accent-text);
+    border-color: var(--warning-accent-text);
+    background-color: var(--warning-accent);
+    color: var(--warning-accent-text);
   }
 
   .banner--danger {
-    --leak-accent:      var(--danger-accent);
-    --leak-accent-text: var(--danger-accent-text);
+    border-color: var(--danger-accent-text);
+    background-color: var(--danger-accent);
+    color: var(--danger-accent-text);
   }
 
   .icon {

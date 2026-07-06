@@ -22,7 +22,7 @@ function cacheKey(providerURL, method, r) {
 class Ranker {
   #client      = null;
   #providerURL = null;
-  #cache    = new LRUCache({ max: 500, ttl: DEFAULT_TTL });
+  #cache    = new LRUCache({ max: 10_000, ttl: DEFAULT_TTL });
 
   async init(providerURL = DEFAULT_PROVIDER_URL, { timeout = DEFAULT_TIMEOUT } = {}) {
     this.#client      = await Client.create(providerURL, { timeout });
@@ -33,12 +33,19 @@ class Ranker {
   async #cachedCall(method, r, signal) {
     const key = cacheKey(this.#providerURL, method, r);
     const cached = this.#cache.get(key);
-    if (cached) {
-      return cached;
-    }
+    if (cached) return cached;
 
     const response = await this.#client[method](r, { signal });
-    const ttl = response.ttl ? response.ttl * 1000 : DEFAULT_TTL;
+
+    let ttl = DEFAULT_TTL
+    if (method === 'compromisedPubkeys') {
+      // compromises are permanent and can never be undone, so cache forever
+      ttl = 0
+    } else if (response.ttl) {
+      // convert seconds to milliseconds
+      ttl = response.ttl * 1000;
+    }
+
     this.#cache.set(key, response, { ttl });
     return response;
   }

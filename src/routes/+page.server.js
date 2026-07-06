@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
 
-import { query, dvm } from '$lib/nostr.js';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
-import { getPubkeys, fetchMinimalProfiles } from '$lib/profile';
+import { fetchMinimalProfiles } from '$lib/profile';
+import { openRanking } from '$lib/open-ranking.js';
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.
@@ -31,16 +31,8 @@ export const actions = {
       const { q, limit, error } = parse(params);
       if (error) return { error };
 
-      const searchProfiles = {
-        kind: 5315,
-        tags: [
-          ['param', 'search', q],
-          ['param', 'limit', limit.toString()]
-        ]
-      };
-
-      const response = await dvm(searchProfiles);
-      const results = getPubkeys(response);   
+      const response = await openRanking.searchPubkeys({ query: q, limit: limit });
+      const results = response.results.map(r => r.pubkey);
       return await fetchMinimalProfiles(results);
 
     } catch (err) {

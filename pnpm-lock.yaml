@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  open-ranking: link:../../open-ranking/js-sdk
+
 importers:
 
   .:
@@ -20,6 +23,9 @@ importers:
       nostr-tools:
         specifier: ^2.10.4
         version: 2.10.4
+      open-ranking:
+        specifier: link:../../open-ranking/js-sdk
+        version: link:../../open-ranking/js-sdk
       redis:
         specifier: ^5.8.2
         version: 5.8.2

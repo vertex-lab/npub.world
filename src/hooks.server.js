@@ -1,6 +1,6 @@
 import { relay } from "./lib/nostr.js";
 import { fetchStats } from "./lib/stats.server";
-import { imagesPath } from "./lib/profile.js"
+import { imagesPath } from "./lib/image.js"
 import { mkdir } from "node:fs/promises";
 import cron from "node-cron";
 

@@ -2,7 +2,8 @@ import { query, parseProfile, parsePubkeys } from "$lib/nostr.js";
 import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
-import { fetchMinimalProfiles, loadImage, lowResolution, highResolution } from "$lib/profile";
+import { fetchMinimalProfiles } from "$lib/profile";
+import { loadImage, lowResolution, highResolution } from "$lib/image.js";
 import { openRanking } from "$lib/open-ranking.js";
 import { marked } from 'marked';
 

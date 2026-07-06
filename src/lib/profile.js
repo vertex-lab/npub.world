@@ -35,13 +35,9 @@
 
 import { normalizeMentions, normalizeURL } from "$lib/string.js";
 import { query } from "$lib/nostr.js";
-import RingBuffer from "./buffer";
 import * as nip19 from 'nostr-tools/nip19';
-import sharp from 'sharp';
-import { fetch } from 'undici';
-import { writeFile, readFile } from 'node:fs/promises';
 import { marked } from 'marked';
-import { createHash } from 'crypto';
+import { loadImage, lowResolution } from '$lib/image.js';
 
 /**
  * Fetches the profile events for a list of public keys and maps them
@@ -94,85 +90,6 @@ export const minimalProfile = async (profileEvent) => {
 }
 
 /**
- * Builds a detailed profile object from a kind:0 profile event and its reputation info.
- *
- * @param {Object} profileEvent
- * @param {ReputationInfo} reputationInfo
- * @returns {Promise<Profile|null>}
- */
-export const detailedProfile = async (profileEvent, reputationInfo) => {
-  if (!profileEvent || !reputationInfo) return null;
-
-    let info;
-    try {
-      info = JSON.parse(profileEvent.content);
-    } catch (err) {
-      console.error(`Failed to parse profile event with ID ${profileEvent.id}:`, err);
-      return null;
-    }
-
-  return {
-    npub: nip19.npubEncode(profileEvent.pubkey),
-    name: info.display_name || info.displayName || info.name,
-    picture: await loadImage(info.picture, highResolution),
-    pictureURL: info.picture,
-    about: info.about && marked(await normalizeMentions(info.about)),
-    nip05: info.nip05?.toString().toLowerCase(),
-    website: normalizeURL(info.website),
-    lud16: info.lud16,
-
-    follows: reputationInfo.follows,
-    followers: reputationInfo.followers,
-    popularity: popularity(reputationInfo.rank, reputationInfo.nodes),
-    leak: reputationInfo.leak,
-  };
-}
-
-/**
- * Extracts and returns an array of ReputationInfo from a reputation event.
- * @param {Object} nostrEvent
- * @returns {ReputationInfo[]}
- */
-export const reputationInfos = (reputationEvent) => {
-  const nodesTag = reputationEvent.tags.find(tag => tag.length > 1 && tag[0] === 'nodes');
-  const nodes = Number(nodesTag?.[1] || 0);
-
-  let data = [];
-  try {
-    data = JSON.parse(reputationEvent.content);
-  } catch (err) {
-        console.error(`Failed to parse reputation event with ID ${reputationEvent.id}:`, err);
-    return [];
-  }
-
-  return data.map(entry => ({
-      nodes: nodes,
-      pubkey: entry.pubkey,
-      rank: entry.rank,
-      follows: entry.follows,
-      followers: entry.followers,
-      leak: entry.leak,
-    }));
-}
-
-/**
- * Extracts and returns an array of pubkeys from a reputation event.
- * @param {Object} nostrEvent
- * @returns {string[]}
- */
-export const getPubkeys = (reputationEvent) => {
-  let data = [];
-  try {
-    data = JSON.parse(reputationEvent.content);
-  } catch (err) {
-        console.error(`Failed to parse reputation event with ID ${reputationEvent.id}:`, err);
-    return [];
-  }
-
-  return data.map(entry => entry.pubkey)
-}
-
-/**
  * Returns the reputation status of a user based on their rank and node count.
  * @param {number} rank - The user's rank.
  * @param {number} nodes - The total number of nodes in the network.
@@ -197,98 +114,4 @@ export const pagerankPercentile = (percentage, nodes) => {
   return (1-exponent) * percentage ** (-exponent) * 1/nodes
 }
 
-export const imagesPath = '/tmp/npub.world/pfp/'
-export const lowResolution = '_100px'
-export const highResolution = '_300px'
-const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
 
-// Attempt to load from disk the picture by its url-hash and quality.
-// If not found, tries to fetch by its url.
-export const loadImage = async (url, quality) => {
-  if (!url || typeof url !== 'string') return fallbackImage;
-  if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
-
-  try {
-    const hash = createHash('sha256');
-    hash.update(url, 'utf8');
-    const pictureHash = hash.digest('hex');
-    const image = await readFile(imagesPath + pictureHash + quality +'.webp');
-    return `data:image/webp;base64,${image.toString('base64')}`;
-
-  } catch (e) {
-    // Otherwise fetch and write to disk
-    return await fetchImage(url, quality);
-  }
-}
-
-// A ring buffer that tracks the last bad urls to avoid repeated fetching
-const badURLs = new RingBuffer(20);
-
-const isPermanentFailure = (status) => {
-  return status === 404 || status === 410 || status === 400 || status === 403;
-};
-
-// Attempt to fetch picture by its URL and write low and high quality versions
-// of the image to disk.
-// Returns base64 encoded image of the specified quality.
-const fetchImage = async (url, quality) => {
-  if (!url || typeof url !== 'string') return fallbackImage;
-  if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
-  if (badURLs.contains(url)) return fallbackImage;
-
-  try {
-    const response = await fetch(url, { redirect: 'follow' });
-    if (response.status !== 200) {
-      if (isPermanentFailure(response.status)) badURLs.add(url);
-      return fallbackImage;
-    }
-
-    if (!containsImage(response)) {
-      badURLs.add(url);
-      return fallbackImage;
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const [ lowRes, highRes ] = await Promise.all([
-      sharp(buffer).resize({ width: 100, height: 100 }).webp({ quality: 60 }).toBuffer(),
-      sharp(buffer).resize({ width: 300, height: 300 }).webp({ quality: 80 }).toBuffer()
-    ]);
-
-    const hash = createHash('sha256');
-    hash.update(url, 'utf8');
-    const pictureHash = hash.digest('hex');
-
-    // Write in background
-    writeFile((imagesPath + pictureHash + lowResolution +'.webp'), lowRes);
-    writeFile((imagesPath + pictureHash + highResolution +'.webp'), highRes);
-
-    switch (quality) {
-      case lowResolution:
-        return `data:image/webp;base64,${lowRes.toString('base64')}`
-
-      case highResolution:
-        return `data:image/webp;base64,${highRes.toString('base64')}`
-    }
-
-  } catch (err) {
-    badURLs.add(url);
-    return fallbackImage;
-  }
-}
-
-/**
- * Determines if a fetch Response object likely contains an image.
- * @param {Response} response - A fetch Response object.
- * @returns {boolean} - True if it looks like an image, false otherwise.
- */
- function containsImage(response) {
-  return response
-      && typeof response === 'object'
-      && 'headers' in response
-      && (
-          (response.headers.get('content-type') || '').startsWith('image/') ||
-          (response.url && response.url.match(/\.(jpg|jpeg|png|gif|webp|avif|tiff|bmp)$/i))
-      );
-};

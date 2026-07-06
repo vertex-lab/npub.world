@@ -1,7 +1,6 @@
 import { relay } from "./lib/nostr.js";
 import { fetchStats } from "./lib/stats.server";
-import { imagesPath } from "./lib/image.js"
-import { mkdir } from "node:fs/promises";
+import { imager } from "./lib/image.js";
 import cron from "node-cron";
 
 // Handle requests
@@ -30,8 +29,7 @@ const initializeServices = async () => {
       },
     );
 
-    await mkdir(imagesPath, { recursive: true });
-    console.log("Ensured directory %s exists", imagesPath);
+    await imager.init();
 
   } catch (error) {
     console.error("Error initializing services:", error);

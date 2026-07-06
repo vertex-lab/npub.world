@@ -28,6 +28,7 @@
 	},
 	"dependencies": {
 		"chart.js": "^4.5.0",
+		"lru-cache": "^11.5.1",
 		"marked": "^15.0.7",
 		"node-cron": "^4.2.1",
 		"nostr-tools": "^2.10.4",

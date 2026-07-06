@@ -3,7 +3,7 @@ import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REG
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
 
-import { loadImage, lowResolution, highResolution } from "$lib/image.js";
+import { imager, lowResolution, highResolution } from "$lib/image.js";
 import { openRanking } from "$lib/open-ranking.js";
 import { marked } from 'marked';
 
@@ -35,8 +35,8 @@ export async function load({ params }) {
         return {
           npub: p.npub,
           name: p.name,
-          picture: await loadImage(p.pictureURL, lowResolution),
-          pictureURL: p.picture,
+          picture: await imager.load(p.pictureURL, lowResolution),
+                    pictureURL: p.picture,
           nip05: p.nip05,
         };
       })
@@ -51,7 +51,7 @@ export async function load({ params }) {
     return {
       npub:       info.npub,
       name:       info.name,
-      picture:    await loadImage(info.pictureURL, highResolution),
+      picture:    await imager.load(info.pictureURL, highResolution),
       pictureURL: info.pictureURL,
       about:      info.about && marked(await normalizeMentions(info.about)),
       nip05:      info.nip05,
@@ -159,8 +159,8 @@ async function fetchProfiles(pubkeys) {
     return {
       npub: p.npub,
       name: p.name,
-      picture: await loadImage(p.pictureURL, lowResolution),
-      nip05: p.nip05,
+      picture: await imager.load(p.pictureURL, lowResolution),
+            nip05: p.nip05,
     };
   }))).filter(Boolean);
 }

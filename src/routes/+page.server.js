@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { query, parseProfile } from '$lib/nostr.js';
-import { loadImage, lowResolution } from '$lib/image.js';
+import { imager, lowResolution } from '$lib/image.js';
 import { openRanking } from '$lib/open-ranking.js';
 
 /**
@@ -50,7 +50,7 @@ export const actions = {
         return {
           npub: p.npub,
           name: p.name,
-          picture: await loadImage(p.pictureURL, lowResolution),
+          picture: await imager.load(p.pictureURL, lowResolution),
           nip05: p.nip05,
         };
       }))).filter(Boolean);

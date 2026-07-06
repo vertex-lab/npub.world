@@ -30,7 +30,7 @@ function containsImage(response) {
 class Imager {
   constructor() {
     // Tracks URLs that recently failed, to avoid repeated fetching
-    this.badURLs = new LRUCache({ max: 500, ttl: 1000 * 60 * 10 });
+    this.badURLs = new LRUCache({ max: 10_000, ttl: 1000 * 60 * 10 });
   }
 
   async init() {

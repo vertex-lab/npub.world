@@ -1,6 +1,7 @@
 import { relay } from "./lib/nostr.js";
 import { fetchStats } from "./lib/stats.server";
 import { imager } from "./lib/image.js";
+import { ranker } from "./lib/open-ranking.js";
 import cron from "node-cron";
 
 // Handle requests
@@ -30,6 +31,7 @@ const initializeServices = async () => {
     );
 
     await imager.init();
+    await ranker.init();
 
   } catch (error) {
     console.error("Error initializing services:", error);

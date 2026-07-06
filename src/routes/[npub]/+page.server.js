@@ -4,7 +4,7 @@ import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
 
 import { imager, lowResolution, highResolution } from "$lib/image.js";
-import { openRanking } from "$lib/open-ranking.js";
+import { ranker } from '$lib/open-ranking.js';
 import { marked } from 'marked';
 
 export async function load({ params }) {
@@ -12,8 +12,8 @@ export async function load({ params }) {
 
   try {
     const [stats, followers] = await Promise.all([
-      openRanking.statsPubkey({ pubkey }),
-      openRanking.followers({ pubkey, limit: 10 }),
+      ranker.statsPubkey({ pubkey }),
+      ranker.followers({ pubkey, limit: 10 }),
     ]);
 
     const followersPubkeys = followers.results.map(r => r.pubkey);
@@ -44,7 +44,7 @@ export async function load({ params }) {
 
     let compromise = null;
     if (stats.rank == 0) {
-      const result = await openRanking.compromisedPubkeys({ pubkeys: [pubkey] });
+      const result = await ranker.compromisedPubkeys({ pubkeys: [pubkey] });
       compromise = result[pubkey] ?? null;
     }
 
@@ -172,7 +172,7 @@ export const actions = {
       const { pubkey, limit, error } = parse(params);
       if (error) return { error }
 
-      const response = await openRanking.followers({ pubkey, limit });
+      const response = await ranker.followers({ pubkey, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
@@ -200,7 +200,7 @@ export const actions = {
         pubkeys = pubkeys.slice(0, 1000);
       }
 
-      const response = await openRanking.rankPubkeys({ pubkeys, limit });
+      const response = await ranker.rankPubkeys({ pubkeys, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {

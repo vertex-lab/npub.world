@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { query, parseProfile } from '$lib/nostr.js';
 import { imager, lowResolution } from '$lib/image.js';
-import { openRanking } from '$lib/open-ranking.js';
+import { ranker } from '$lib/open-ranking.js';
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.
@@ -32,7 +32,7 @@ export const actions = {
       const { q, limit, error } = parse(params);
       if (error) return { error };
 
-      const response = await openRanking.searchPubkeys({ query: q, limit });
+      const response = await ranker.searchPubkeys({ query: q, limit });
       const pubkeys = response.results.map(r => r.pubkey);
       if (!pubkeys.length) return [];
 

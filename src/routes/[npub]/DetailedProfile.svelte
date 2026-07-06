@@ -5,7 +5,7 @@
     import ProfilePicture from "$lib/components/ProfilePicture.svelte";
     import CopyLink from "$lib/components/CopyLink.svelte";
     import ReputationBadge from "$lib/components/ReputationBadge.svelte";
-    import LeakBanner from "$lib/components/LeakBanner.svelte";
+    import CompromisedBanner from "$lib/components/CompromisedBanner.svelte";
     import FollowList from "./FollowList.svelte";
     import PressableProfilePicture from "$lib/components/PressableProfilePicture.svelte";
 
@@ -19,7 +19,7 @@
         <div class="profile-identity">
             <p class="profile-name">
                 {profile.name}
-                {#if !profile.leak}
+                {#if !profile.compromised}
                     <ReputationBadge reputation={profile.popularity} size={22}/>
                 {/if}
             </p>
@@ -29,8 +29,8 @@
             </p>
 
             <div class="profile-stats">
-                <FollowList label="Following" count={profile.follows} npub={profile.npub} action="?/follows"/>
-                <FollowList label="Followers" count={profile.followers} npub={profile.npub} action="?/followers"/>
+                <FollowList label="Following" count={profile.stats.follows} npub={profile.npub} action="?/follows"/>
+                <FollowList label="Followers" count={profile.stats.followers} npub={profile.npub} action="?/followers"/>
             </div>
         </div>
 
@@ -39,8 +39,8 @@
         </div>
     </div>
 
-    {#if profile.leak}
-        <LeakBanner leak={profile.leak} />
+    {#if profile.compromise}
+        <CompromisedBanner compromise={profile.compromise} />
     {/if}
 </div>
 

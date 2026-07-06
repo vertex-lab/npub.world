@@ -1,4 +1,5 @@
 import { Relay, finalizeEvent } from 'nostr-tools';
+import * as nip19 from 'nostr-tools/nip19';
 
 export const relay = new Relay('wss://relay.vertexlab.io');
 
@@ -18,6 +19,30 @@ export const query = (filter) => {
       }
     });
   });
+}
+
+/**
+ * Parses the content of a kind:0 profile event into a structured object.
+ * Returns null if the event is missing or its content is invalid JSON.
+ * @param {object} event - A kind:0 Nostr event
+ * @returns {{ name: string, pictureURL: string, about: string, nip05: string, lud16: string, website: string } | null}
+ */
+export function parseProfile(event) {
+  if (!event) return null;
+  try {
+    const c = JSON.parse(event.content);
+    return {
+      npub:       nip19.npubEncode(event.pubkey),
+      name:       c.display_name || c.displayName || c.name,
+      pictureURL: c.picture,
+      about:      c.about,
+      nip05:      c.nip05?.toString().toLowerCase(),
+      lud16:      c.lud16,
+      website:    c.website,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**

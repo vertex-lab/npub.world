@@ -51,7 +51,7 @@
     }
   })
 
-  $effect(async () => { 
+  $effect(async () => {
     title = data.name ?? data.npub;
 
     if (!isMobile) {
@@ -91,7 +91,7 @@
       <div class="followers-container">
         <p style="color: var(--secondary-text);">Top Followers:</p>
         <div class="followers-grid">
-          {#each data.topFollowers.slice(0, visibleFollowers) as profile}
+          {#each data.followerProfiles.slice(0, visibleFollowers) as profile}
             <PressableProfile {profile}/>
           {/each}
         </div>

@@ -1,50 +1,66 @@
-import { relay, query, dvm } from "$lib/nostr.js";
-import { resolveNIP05, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
+import { query, parseProfile } from "$lib/nostr.js";
+import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
-import { reputationInfos, minimalProfile, detailedProfile, getPubkeys, fetchMinimalProfiles } from "$lib/profile";
+import { fetchMinimalProfiles, loadImage, lowResolution, highResolution } from "$lib/profile";
+import { openRanking } from "$lib/open-ranking.js";
+import { marked } from 'marked';
 
 export async function load({ params }) {
   const pubkey = await resolve(params.npub);
 
   try {
-    const verifyReputation = {
-      kind: 5312,
-      tags: [
-        ["param", "target", pubkey],
-        ["param", "limit", "10"],
-      ],
-    };
+    const [stats, followers] = await Promise.all([
+      openRanking.statsPubkey({ pubkey }),
+      openRanking.followers({ pubkey, limit: 10 }),
+    ]);
 
-    const response = await dvm(verifyReputation);
-    const reputations = reputationInfos(response);
-    const pubkeys = reputations.map((e) => e.pubkey);
+    const followersPubkeys = followers.results.map(r => r.pubkey);
 
     let profileEvents = await query({
       kinds: [0],
-      authors: pubkeys,
-      limit: pubkeys.length
+      authors: [pubkey, ...followersPubkeys],
+      limit: 1 + followersPubkeys.length,
     });
-
     profileEvents = new Map(profileEvents.map(evt => [evt.pubkey, evt]));
 
-    const profile = await detailedProfile(
-      profileEvents.get(pubkey),
-      reputations[0]
-    );
+    const info = parseProfile(profileEvents.get(pubkey));
+    if (!info) throw error(404, 'Profile not found');
 
-    if (!profile) {
-      throw error(404, 'Profile not found');
+    const followerProfiles = (await Promise.all(
+      followersPubkeys.map(async pk => {
+        const p = parseProfile(profileEvents.get(pk));
+        if (!p) return null;
+        return {
+          npub: p.npub,
+          name: p.name,
+          picture: await loadImage(p.pictureURL, lowResolution),
+          pictureURL: p.picture,
+          nip05: p.nip05,
+        };
+      })
+    )).filter(Boolean);
+
+    let compromise = null;
+    if (stats.rank == 0) {
+      const result = await openRanking.compromisedPubkeys({ pubkeys: [pubkey] });
+      compromise = result[pubkey] ?? null;
     }
 
-    const topFollowers = await Promise.all(
-      pubkeys
-        .slice(1)
-        .map(pk => { return minimalProfile(profileEvents.get(pk)); })
-    );
+    return {
+      npub:       info.npub,
+      name:       info.name,
+      picture:    await loadImage(info.pictureURL, highResolution),
+      pictureURL: info.pictureURL,
+      about:      info.about && marked(await normalizeMentions(info.about)),
+      nip05:      info.nip05,
+      lud16:      info.lud16,
+      website:    normalizeURL(info.website),
 
-    profile.topFollowers = topFollowers.filter(Boolean);
-    return profile;
+      stats,
+      followerProfiles,
+      compromise,
+    };
 
   } catch(err) {
     if (err.status) throw err;
@@ -131,18 +147,8 @@ export const actions = {
       const { pubkey, limit, error } = parse(params);
       if (error) return { error }
 
-      const verifyReputation = {
-      kind: 5312,
-      tags: [
-        ["param", "target", pubkey],
-        ["param", "limit", limit.toString()],
-        ],
-      };
-
-      const response = await dvm(verifyReputation);
-      const pubkeys = getPubkeys(response).slice(1);
-
-      return await fetchMinimalProfiles(pubkeys);
+      const response = await openRanking.followers({ pubkey, limit });
+      return await fetchMinimalProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
       console.error('Internal followers action error:', err);
@@ -164,7 +170,7 @@ export const actions = {
 
       const pubkeys = [];
       for (const tag of followList[0]?.tags || []) {
-        if (pubkeys.length >= 1000) break; // prevent dvm error "too many tags"
+        if (pubkeys.length >= 1000) break; // prevent dvm error "too many pubkeys"
 
         if (tag.length >= 2 && tag[0] === "p") {
           pubkeys.push(tag[1]);
@@ -173,19 +179,8 @@ export const actions = {
 
       if (pubkeys.length === 0) return [];
 
-      const rankProfiles = {
-        kind: 5314,
-        tags: [["param", "limit", limit.toString()]],
-      };
-
-      for (const pk of pubkeys) {
-        rankProfiles.tags.push(["param", "target", pk]);
-      }
-
-      const response = await dvm(rankProfiles);
-      const rankedPubkeys = getPubkeys(response);
-
-      return await fetchMinimalProfiles(rankedPubkeys);
+      const response = await openRanking.rankPubkeys({ pubkeys, limit });
+      return await fetchMinimalProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
       console.error('Internal follows action error:', err);

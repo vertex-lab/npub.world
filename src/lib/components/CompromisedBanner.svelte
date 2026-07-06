@@ -1,6 +1,6 @@
 <script>
-  /** @type {{ leak: import("$lib/profile.js").Leak }} */
-  let { leak } = $props();
+  /** @type {{ compromise: import('open-ranking').CompromiseResult }} */
+  let { compromise } = $props();
 
   function unixToDate(unix) {
     if (!unix) return null;
@@ -11,8 +11,8 @@
     });
   }
 
-  function newConfig(leak) {
-    switch (leak.status) {
+  function newConfig(compromise) {
+    switch (compromise.status) {
       case "suspected":
         return {
           title: "Suspected Key Leak",
@@ -21,7 +21,7 @@
         };
 
       case "confirmed":
-        const detectionDate = leak?.detected_at ? ` on ${unixToDate(leak.detected_at)}` : "";
+        const detectionDate = compromise.detected_at ? ` on ${unixToDate(compromise.detected_at)}` : "";
         return {
           title: "Key Leaked",
           subtitle: `The nsec of this profile has been leaked${detectionDate}. Do not trust.`,
@@ -33,7 +33,7 @@
     }
   }
 
-  const config = $derived(newConfig(leak));
+  const config = $derived(newConfig(compromise));
 </script>
 
 {#if config}

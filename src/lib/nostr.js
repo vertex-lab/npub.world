@@ -1,5 +1,6 @@
 import { Relay, finalizeEvent } from 'nostr-tools';
 import * as nip19 from 'nostr-tools/nip19';
+import { HEXKEY_REGEXP } from '$lib/string.js';
 
 export const relay = new Relay('wss://relay.vertexlab.io');
 
@@ -23,12 +24,13 @@ export const query = (filter) => {
 
 /**
  * Parses the content of a kind:0 profile event into a structured object.
- * Returns null if the event is missing or its content is invalid JSON.
+ * Returns null if the event is missing/wrong kind or its content is invalid JSON.
  * @param {object} event - A kind:0 Nostr event
  * @returns {{ name: string, pictureURL: string, about: string, nip05: string, lud16: string, website: string } | null}
  */
 export function parseProfile(event) {
   if (!event) return null;
+  if (event.kind !== 0) return null;
   try {
     const c = JSON.parse(event.content);
     return {
@@ -43,6 +45,29 @@ export function parseProfile(event) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Parses the "p" tags of a a kind:3 follow list event into a structured object.
+ * Returns null if the event is missing/wrong kind.
+ * @param {object} event - A kind:3 Nostr event
+ * @returns {string[]} - Array of pubkeys
+ */
+export function parsePubkeys(event) {
+  if (!event) return null;
+  if (event.kind !== 3) return null;
+
+  const pubkeys = [];
+  for (const tag of event?.tags || []) {
+    if (tag.length < 2 || tag[0] !== "p") {
+      continue;
+    }
+
+    if (HEXKEY_REGEXP.test(tag[1])) {
+      pubkeys.push(tag[1]);
+    }
+  }
+  return pubkeys
 }
 
 /**

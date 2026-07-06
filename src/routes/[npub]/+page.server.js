@@ -1,4 +1,4 @@
-import { query, parseProfile } from "$lib/nostr.js";
+import { query, parseProfile, parsePubkeys } from "$lib/nostr.js";
 import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
@@ -168,16 +168,12 @@ export const actions = {
         limit: 1,
       });
 
-      const pubkeys = [];
-      for (const tag of followList[0]?.tags || []) {
-        if (pubkeys.length >= 1000) break; // prevent dvm error "too many pubkeys"
-
-        if (tag.length >= 2 && tag[0] === "p") {
-          pubkeys.push(tag[1]);
-        }
-      }
-
+      const pubkeys = parsePubkeys(followList[0]);
       if (pubkeys.length === 0) return [];
+      if (pubkeys.length > 1000) {
+        // limit to 1000 pubkeys to avoid "too many pubkeys" error
+        pubkeys = pubkeys.slice(0, 1000);
+      }
 
       const response = await openRanking.rankPubkeys({ pubkeys, limit });
       return await fetchMinimalProfiles(response.results.map(r => r.pubkey));

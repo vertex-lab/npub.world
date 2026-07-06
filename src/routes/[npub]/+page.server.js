@@ -2,7 +2,7 @@ import { query, parseProfile, parsePubkeys } from "$lib/nostr.js";
 import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
-import { fetchMinimalProfiles } from "$lib/profile";
+
 import { loadImage, lowResolution, highResolution } from "$lib/image.js";
 import { openRanking } from "$lib/open-ranking.js";
 import { marked } from 'marked';
@@ -141,6 +141,30 @@ function parse(params) {
   return { pubkey, limit };
 }
 
+
+
+async function fetchProfiles(pubkeys) {
+  if (!pubkeys.length) return [];
+  let events = await query(
+    {
+      kinds: [0],
+      authors: pubkeys,
+      limit: pubkeys.length,
+    });
+  events = new Map(events.map(e => [e.pubkey, e]));
+
+  return (await Promise.all(pubkeys.map(async pk => {
+    const p = parseProfile(events.get(pk));
+    if (!p) return null;
+    return {
+      npub: p.npub,
+      name: p.name,
+      picture: await loadImage(p.pictureURL, lowResolution),
+      nip05: p.nip05,
+    };
+  }))).filter(Boolean);
+}
+
 export const actions = {
   followers: async ({ request }) => {
     try {
@@ -149,7 +173,7 @@ export const actions = {
       if (error) return { error }
 
       const response = await openRanking.followers({ pubkey, limit });
-      return await fetchMinimalProfiles(response.results.map(r => r.pubkey));
+      return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
       console.error('Internal followers action error:', err);
@@ -169,7 +193,7 @@ export const actions = {
         limit: 1,
       });
 
-      const pubkeys = parsePubkeys(followList[0]);
+      let pubkeys = parsePubkeys(followList[0]);
       if (pubkeys.length === 0) return [];
       if (pubkeys.length > 1000) {
         // limit to 1000 pubkeys to avoid "too many pubkeys" error
@@ -177,7 +201,7 @@ export const actions = {
       }
 
       const response = await openRanking.rankPubkeys({ pubkeys, limit });
-      return await fetchMinimalProfiles(response.results.map(r => r.pubkey));
+      return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
       console.error('Internal follows action error:', err);

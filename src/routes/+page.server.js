@@ -1,7 +1,8 @@
 import { error } from '@sveltejs/kit';
 
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
-import { fetchMinimalProfiles } from '$lib/profile';
+import { query, parseProfile } from '$lib/nostr.js';
+import { loadImage, lowResolution } from '$lib/image.js';
 import { openRanking } from '$lib/open-ranking.js';
 
 /**
@@ -31,9 +32,28 @@ export const actions = {
       const { q, limit, error } = parse(params);
       if (error) return { error };
 
-      const response = await openRanking.searchPubkeys({ query: q, limit: limit });
-      const results = response.results.map(r => r.pubkey);
-      return await fetchMinimalProfiles(results);
+      const response = await openRanking.searchPubkeys({ query: q, limit });
+      const pubkeys = response.results.map(r => r.pubkey);
+      if (!pubkeys.length) return [];
+
+      let events = await query(
+        {
+          kinds: [0],
+          authors: pubkeys,
+          limit: pubkeys.length,
+        });
+      events = new Map(events.map(e => [e.pubkey, e]));
+
+      return (await Promise.all(pubkeys.map(async pk => {
+        const p = parseProfile(events.get(pk));
+        if (!p) return null;
+        return {
+          npub: p.npub,
+          name: p.name,
+          picture: await loadImage(p.pictureURL, lowResolution),
+          nip05: p.nip05,
+        };
+      }))).filter(Boolean);
 
     } catch (err) {
       console.error('Internal search error:', err);

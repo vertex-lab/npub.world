@@ -60,7 +60,11 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
-    padding: 0 1rem;
+    width: 1100px;
+    max-width: calc(100vw - 2rem);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .error {
@@ -75,7 +79,13 @@
     }
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 540px) {
     .grid {
       grid-template-columns: repeat(1, 1fr);
     }

@@ -78,7 +78,7 @@
         word-wrap: break-word;
         font-size: 1.5rem;
         font-weight: 600;
-        margin: 0.5rem 0 0 0;
+        margin: 0.8rem 0 0 0;
     }
 
     .profile-nip05 {

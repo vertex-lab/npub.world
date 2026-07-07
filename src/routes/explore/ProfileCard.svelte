@@ -47,7 +47,7 @@
   }
 
   .pfp-wrapper :global(.profile-avatar) {
-    --size: 100px;
+    --size: 110px;
   }
 
   .info {

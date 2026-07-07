@@ -56,7 +56,7 @@
         cursor: pointer;
     }
 
-    :global(.pfp) { --size : 100px !important; }
+    :global(.pfp) { --size : 110px !important; }
 
     .picture-overlay {
         position: fixed;

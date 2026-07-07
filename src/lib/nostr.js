@@ -1,6 +1,6 @@
 import { Relay, finalizeEvent } from 'nostr-tools';
 import * as nip19 from 'nostr-tools/nip19';
-import { HEXKEY_REGEXP } from '$lib/string.js';
+import { HEXKEY_REGEXP, NPUB_REGEXP } from '$lib/string.js';
 
 export const relay = new Relay('wss://relay.vertexlab.io');
 
@@ -63,56 +63,66 @@ export function parsePubkeys(event) {
       continue;
     }
 
-    if (HEXKEY_REGEXP.test(tag[1])) {
-      pubkeys.push(tag[1]);
-    }
+    const pk = parsePubkey(tag[1]);
+    if (pk) pubkeys.push(pk);
   }
   return pubkeys
 }
 
-/**
- * Publishes a signed request and returns the first response.
- * @param {object} request - Prepared Nostr event to send
- * @returns {Promise<object>} - First response event
- */
-export async function dvm(request) {
-  if (!request || typeof request !== 'object') {
-    throw new Error('Invalid request object');
+// parsePubkey parses a pubkey or npub string into a normalized hex key.
+// It returns null if the input is not a valid pubkey or npub.
+function parsePubkey(input) {
+  input = (input || '').trim();
+
+  if (HEXKEY_REGEXP.test(input)) {
+    return input;
   }
-
-  if (!request.kind) {
-    throw new Error('Invalid request kind');
+  if (NPUB_REGEXP.test(input)) {
+    const decoded = nip19.decode(input);
+    if (decoded.type === 'npub') return decoded.data;
   }
-
-  if (!request.created_at) {
-    request.created_at = Math.floor(Date.now() / 1000);
-  }
-
-  if (!request.content) {
-    request.content = ''; // prevents error "can't unmarshal unset fields"
-  }
-
-  request = finalizeEvent(request, process.env.SECRET_KEY);
-  await relay.publish(request);
-
-  let response = await query({
-    kinds: [request.kind + 1000, 7000],
-    '#e': [request.id],
-  });
-
-  if (!response || response.length !== 1) {
-    throw new Error(`dvm: unexpected number of responses: ${response?.length || 0}`);
-  }
-  response = response[0]
-
-  switch (response.kind) {
-    case request.kind + 1000:
-      return response
-
-    case 7000:
-      const msg = response.tags.find(t => t[0] === 'status')?.[2] || 'unknown error';
-      throw new Error('dvm: ' + msg);
-
-    default:
-      throw new Error(`dvm: unexpected event kind: ${response.kind}`);}
+  return null;
 }
+
+// Resolve a NIP-05 identifier to a npub using the well-known endpoint.
+// Throws an error if the NIP-05 is invalid or cannot be resolved.
+export const resolveNIP05 = async (nip05) => {
+  if (!nip05 || typeof nip05 !== 'string') {
+    throw new Error('Invalid NIP-05: must be a non-empty string');
+  }
+
+  let [name, domain] = nip05.split('@');
+  if (!name || !domain) {
+    throw new Error(`Invalid NIP-05 format: "${nip05}" (expected name@domain)`);
+  }
+
+  name = name.toLowerCase();
+  domain = domain.toLowerCase();
+
+  try {
+    const response = await fetch(
+      `https://${domain}/.well-known/nostr.json?name=${encodeURIComponent(name)}`,
+       { redirect: 'follow' },
+    );
+
+    if (!response.ok) {
+      throw new Error(`failed to fetch record: HTTP ${response.status}`);
+    }
+
+    const json = await response.json();
+    const pubkey = json?.names?.[name];
+
+    if (!pubkey) {
+      throw new Error(`missing record for "${name}"`);
+    }
+
+    if (typeof pubkey !== 'string' || !HEXKEY_REGEXP.test(pubkey)) {
+      throw new Error(`invalid pubkey for "${name}"`);
+    }
+
+    return nip19.npubEncode(pubkey);
+
+  } catch (err) {
+    throw new Error(`Failed to resolve NIP-05: ${String(err)}`);
+  }
+};

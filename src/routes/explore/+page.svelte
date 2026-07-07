@@ -1,116 +1,83 @@
 <script>
-  import { enhance } from '$app/forms';
+  import Logo from '$lib/components/Logo.svelte';
+  import ProfileCard from './ProfileCard.svelte';
 
-  let { form } = $props();
-  let loading = $state(false);
+  let { data, form } = $props();
+
+  let profiles = $derived(form?.profiles ?? data.profiles);
 </script>
 
 <svelte:head>
   <title>Explore – npub.world</title>
 </svelte:head>
 
-<div class="explore">
-  <h1>Explore</h1>
-  <p class="subtitle">Enter an npub or hex pubkey to get recommendations.</p>
+<div class="centered">
+  <Logo />
 
-  <form
-    method="POST"
-    action="?/recommend"
-    use:enhance={() => {
-      loading = true;
-      return ({ update }) => {
-        loading = false;
-        update();
-      };
-    }}
-  >
-    <div class="input-row">
-      <input
-        type="text"
-        name="pubkey"
-        placeholder="npub1… or hex pubkey"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? 'Loading…' : 'Recommend'}
-      </button>
+  <div class="top-section">
+    <h1 class="title">Explore</h1>
+    <p class="subtitle">Discover Nostr through a new pair of eyes</p>
+  </div>
+
+  {#if profiles?.length}
+    <div class="grid">
+      {#each profiles as profile}
+        <ProfileCard {profile} />
+      {/each}
     </div>
+  {/if}
 
-    {#if form?.error}
-      <p class="error">{form.error}</p>
-    {/if}
-
-    {#if form?.ok}
-      <p class="success">Done! Check the server logs for the result.</p>
-    {/if}
-  </form>
+  {#if form?.error}
+    <p class="error">{form.error}</p>
+  {/if}
 </div>
 
 <style>
-  .explore {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+  .centered {
+    margin: 0 auto;
+    max-width: 1100px;
   }
 
-  h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
+  .top-section {
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin: 0 auto;
   }
 
   .subtitle {
     color: var(--secondary-text);
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
   }
 
-  .input-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  input {
-    flex: 1;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--input-bg, var(--bg));
-    color: var(--primary-text);
-    font-family: monospace;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: var(--accent, #7b5ea7);
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 6px;
-    background: var(--accent, #7b5ea7);
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
-  button:disabled {
-    opacity: 0.6;
-    cursor: default;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
   }
 
   .error {
-    margin-top: 0.75rem;
+    margin: 0.75rem 1rem 0;
     color: var(--error, #e05);
     font-size: 0.875rem;
   }
 
-  .success {
-    margin-top: 0.75rem;
-    color: var(--success, #2a9d5c);
-    font-size: 0.875rem;
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

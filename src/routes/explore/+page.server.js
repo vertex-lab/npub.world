@@ -1,6 +1,35 @@
 import { parsePubkey } from '$lib/nostr.js';
-import { HEXKEY_REGEXP, NPUB_REGEXP } from '$lib/string.js';
+import { query, parseProfile } from '$lib/nostr.js';
+import { imager, highResolution } from '$lib/image.js';
 import { ranker } from '$lib/open-ranking.js';
+
+async function fetchProfiles(pubkeys) {
+  const events = await query({ kinds: [0], authors: pubkeys, limit: pubkeys.length });
+  const byPubkey = new Map(events.map(e => [e.pubkey, e]));
+
+  return (await Promise.all(pubkeys.map(async pk => {
+    const p = parseProfile(byPubkey.get(pk));
+    if (!p) return null;
+    return {
+      npub: p.npub,
+      name: p.name,
+      picture: await imager.load(p.pictureURL, highResolution),
+      pictureURL: p.pictureURL,
+      nip05: p.nip05,
+      about: p.about,
+    };
+  }))).filter(Boolean);
+}
+
+export async function load() {
+  const response = await ranker.recommendPubkeys({
+      // default algorithm, no pov
+      limit: 50,
+    });
+  const pubkeys = response.results.map(r => r.pubkey);
+  const profiles = await fetchProfiles(pubkeys);
+  return { profiles };
+}
 
 export const actions = {
   recommend: async ({ request }) => {
@@ -13,16 +42,16 @@ export const actions = {
         return { error: 'Please enter a valid npub or hex pubkey' };
       }
 
-      const r = {
+      const response = await ranker.recommendPubkeys({
         algorithm: 'personalized-pagerank',
         pov: pubkey,
         limit: 50,
-      };
+      });
 
-      const response = await ranker.recommendPubkeys(r);
-      console.log('recommendPubkeys result:', JSON.stringify(response, null, 2));
+      const pubkeys = response.results.map(r => r.pubkey);
+      const profiles = await fetchProfiles(pubkeys);
+      return { profiles };
 
-      return { ok: true };
     } catch (err) {
       console.error('Explore error:', err);
       return { error: err.message || err.toString() };

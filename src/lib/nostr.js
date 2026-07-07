@@ -71,7 +71,7 @@ export function parsePubkeys(event) {
 
 // parsePubkey parses a pubkey or npub string into a normalized hex key.
 // It returns null if the input is not a valid pubkey or npub.
-function parsePubkey(input) {
+export function parsePubkey(input) {
   input = (input || '').trim();
 
   if (HEXKEY_REGEXP.test(input)) {

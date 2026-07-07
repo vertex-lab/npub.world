@@ -69,6 +69,7 @@
         text-align: left;
         width: 100%;
         margin-right: calc(1rem + 90px); /* account for copy link button */
+        margin-left: 0.8rem;
         flex-grow: 1;
         overflow: hidden;
     }

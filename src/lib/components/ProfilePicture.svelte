@@ -10,7 +10,6 @@
   .profile-avatar {
     --size: 40px;
     overflow: hidden;
-    margin-right: 0.8rem;
     border-radius: 50%;
     width: var(--size);
     height: var(--size);

@@ -45,6 +45,7 @@ a {
 }
 
 .profile-info {
+  margin-left: 0.8rem;
   overflow: hidden;
 }
 

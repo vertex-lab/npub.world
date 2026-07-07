@@ -51,8 +51,11 @@
   }
 
   .info {
+    flex: 1;
     width: 100%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
   }
 
   .name {
@@ -77,7 +80,7 @@
   .about {
     font-size: 0.7rem;
     color: var(--secondary-text);
-    margin: 0;
+    margin: auto 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;

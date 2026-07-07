@@ -16,7 +16,7 @@
 
   <div class="top-section">
     <h1 class="title">Explore</h1>
-    <p class="subtitle">Discover Nostr through a new pair of eyes</p>
+    <p class="subtitle">Discover Nostr through a new pair of eyes. Yours.</p>
   </div>
 
   {#if profiles?.length}
@@ -77,7 +77,7 @@
 
   @media (max-width: 560px) {
     .grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
     }
   }
 </style>

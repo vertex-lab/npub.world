@@ -4,15 +4,13 @@
   let { profile } = $props();
 </script>
 
-<div class="card">
-  <a class="card-link" href="/{profile.npub}" tabindex="-1" aria-hidden="true"></a>
-
+<a class="card" href="/{profile.npub}">
   <div class="pfp-wrapper">
     <ProfilePicture source={profile.picture} />
   </div>
 
   <div class="info">
-    <a class="name" href="/{profile.npub}">{profile.name ?? 'Unknown'}</a>
+    <span class="name">{profile.name ?? 'Unknown'}</span>
     {#if profile.nip05}
         <p class="nip05">{profile.nip05}</p>
     {/if}
@@ -20,10 +18,12 @@
         <p class="about">{profile.about}</p>
     {/if}
   </div>
-</div>
+</a>
 
 <style>
   .card {
+    text-decoration: none;
+    color: inherit;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -42,16 +42,7 @@
     transform: translateY(-2px);
   }
 
-  /* invisible full-card link sitting behind everything */
-  .card-link {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
   .pfp-wrapper {
-    position: relative;
-    z-index: 1;
     margin-bottom: 0.75rem;
   }
 
@@ -60,8 +51,6 @@
   }
 
   .info {
-    position: relative;
-    z-index: 1;
     width: 100%;
     text-align: center;
   }
@@ -71,13 +60,11 @@
     font-weight: 500;
     font-size: 1rem;
     color: var(--primary-text);
-    text-decoration: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 0.15rem;
   }
-
   .nip05 {
     font-size: 0.75rem;
     color: var(--secondary-text);
@@ -97,5 +84,11 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-align: center;
+  }
+
+  @media (max-width: 576px) {
+      .pfp-wrapper :global(.profile-avatar) {
+        --size: 150px;
+      }
   }
 </style>

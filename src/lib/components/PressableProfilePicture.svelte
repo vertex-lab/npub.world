@@ -13,15 +13,15 @@
     function openPicture() { showPicture = true; }
     function closePicture() { showPicture = false; }
 
-    onMount(() => { 
+    onMount(() => {
         if (browser) {
             document.addEventListener('keydown', onEsc(closePicture))
         }
     });
 
-    onDestroy(() => { 
+    onDestroy(() => {
         if (browser) {
-            document.removeEventListener('keydown', onEsc(closePicture)) 
+            document.removeEventListener('keydown', onEsc(closePicture))
         }
     });
 </script>
@@ -38,7 +38,7 @@
         onkeydown={onEnter(closePicture)}
         aria-label="Close image"
     >
-        <div class="picture-container" 
+        <div class="picture-container"
             role="cell"
             onclick={(e) => e.stopPropagation()}
             tabindex="0"
@@ -101,6 +101,6 @@
             width: 100vw;
         }
 
-        :global(.pfp) { --size : 130px !important; }
+        :global(.pfp) { --size : 150px !important; }
     }
 </style>

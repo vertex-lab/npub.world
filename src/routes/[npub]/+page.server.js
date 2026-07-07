@@ -1,5 +1,5 @@
-import { query, parseProfile, parsePubkeys } from "$lib/nostr.js";
-import { resolveNIP05, normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
+import { query, parseProfile, parsePubkeys, resolveNIP05 } from "$lib/nostr.js";
+import { normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
 

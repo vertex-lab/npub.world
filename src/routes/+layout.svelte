@@ -18,7 +18,8 @@
 <nav class="topnav" style="opacity: {navOpacity}; pointer-events: {navOpacity < 0.1 ? 'none' : 'auto'}">
 	<div class="topnav-inner">
 		<div class="nav-links">
-			<a href="/" class:active={$page.url.pathname === '/'}>Home</a>
+			<a href="/" class:active={$page.url.pathname === '/'}>Search</a>
+			<a href="/explore" class:active={$page.url.pathname === '/explore'}>Explore</a>
 			<a href="/stats" class:active={$page.url.pathname === '/stats'}>Stats</a>
 			<a href="https://github.com/vertex-lab/npub.world" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="GitHub">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

@@ -68,7 +68,7 @@
     margin: 10px;
     font-size: 1.25rem;
     font-weight: 500;
-    color: var(--secondary-text);
+    color: var(--primary-text);
   }
 
   .close-button {

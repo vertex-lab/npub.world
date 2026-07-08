@@ -1,7 +1,7 @@
 <script>
   import { deserialize } from '$app/forms';
   import Logo from '$lib/components/Logo.svelte';
-  import Modal from '$lib/components/Modal.svelte';
+  import AlgoModal from '$lib/components/AlgoModal.svelte';
   import ProfileCard from './ProfileCard.svelte';
 
   let { data, form } = $props();
@@ -65,20 +65,12 @@
 </div>
 
 {#if showModal}
-  <Modal title="Algorithm" onclose={closeModal}>
-    {#each data.algorithms as algo}
-      <button
-        class="algo-option"
-        class:selected={selectedAlgo?.id === algo.id}
-        onclick={() => selectAlgo(algo)}
-      >
-        <span class="algo-name">{algo.name}</span>
-        {#if algo.description}
-          <span class="algo-desc">{algo.description}</span>
-        {/if}
-      </button>
-    {/each}
-  </Modal>
+  <AlgoModal
+    algorithms={data.algorithms}
+    selected={selectedAlgo}
+    onselect={selectAlgo}
+    onclose={closeModal}
+  />
 {/if}
 
 <style>
@@ -148,35 +140,6 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
-  }
-
-  .algo-option {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .algo-option:hover,
-  .algo-option.selected {
-    background: var(--border-color);
-  }
-
-  .algo-name {
-    font-size: 1rem;
-    color: var(--primary-text);
-  }
-
-  .algo-desc {
-    font-size: 0.75rem;
-    color: var(--secondary-text);
-    margin-top: 2px;
   }
 
   @media (max-width: 900px) {

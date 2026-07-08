@@ -9,6 +9,7 @@
   onDestroy(() => { if (browser) document.removeEventListener('keydown', onEsc(onclose)); });
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   class="modal-overlay"
   role="button"

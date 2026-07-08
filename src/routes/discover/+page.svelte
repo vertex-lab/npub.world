@@ -41,7 +41,7 @@
 
   <div class="top-section">
     <h1 class="title">Discover</h1>
-    <p class="subtitle">Discover Nostr through a new pair of eyes. Yours.</p>
+    <p class="subtitle">Discover the people that make Nostr so special.</p>
   </div>
 
   {#if profiles?.length}
@@ -90,7 +90,7 @@
   .top-section {
     text-align: center;
     padding-top: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
   }
 
   .title {

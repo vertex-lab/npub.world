@@ -1,9 +1,7 @@
 <script>
   import { deserialize } from '$app/forms';
-  import { browser } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
-  import { onEsc } from '$lib/events';
   import Logo from '$lib/components/Logo.svelte';
+  import Modal from '$lib/components/Modal.svelte';
   import ProfileCard from './ProfileCard.svelte';
 
   let { data, form } = $props();
@@ -31,8 +29,7 @@
     loading = false;
   }
 
-  onMount(() => { if (browser) document.addEventListener('keydown', onEsc(closeModal)); });
-  onDestroy(() => { if (browser) document.removeEventListener('keydown', onEsc(closeModal)); });
+
 </script>
 
 <svelte:head>
@@ -68,34 +65,20 @@
 </div>
 
 {#if showModal}
-  <div
-    class="modal-overlay"
-    role="button"
-    tabindex="0"
-    onclick={closeModal}
-    onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? closeModal() : null}
-    aria-label="Close modal"
-  >
-    <div class="modal" role="document" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
-      <div class="modal-header">
-        <p class="modal-title">Algorithm</p>
-        <button class="close-button" onclick={closeModal} aria-label="Close">✕</button>
-      </div>
-
-      {#each data.algorithms as algo}
-        <button
-          class="algo-option"
-          class:selected={selectedAlgo?.id === algo.id}
-          onclick={() => selectAlgo(algo)}
-        >
-          <span class="algo-name">{algo.name}</span>
-          {#if algo.description}
-            <span class="algo-desc">{algo.description}</span>
-          {/if}
-        </button>
-      {/each}
-    </div>
-  </div>
+  <Modal title="Algorithm" onclose={closeModal}>
+    {#each data.algorithms as algo}
+      <button
+        class="algo-option"
+        class:selected={selectedAlgo?.id === algo.id}
+        onclick={() => selectAlgo(algo)}
+      >
+        <span class="algo-name">{algo.name}</span>
+        {#if algo.description}
+          <span class="algo-desc">{algo.description}</span>
+        {/if}
+      </button>
+    {/each}
+  </Modal>
 {/if}
 
 <style>
@@ -165,50 +148,6 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--overlay-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-
-  .modal {
-    background: var(--card-background);
-    box-shadow: var(--shadow-elevation-modal);
-    padding: 1rem;
-    border-radius: 12px;
-    width: 80%;
-    max-width: 400px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  .modal-title {
-    margin: 10px;
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: var(--secondary-text);
-  }
-
-  .close-button {
-    background: none;
-    border: none;
-    color: var(--primary-text);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0;
   }
 
   .algo-option {

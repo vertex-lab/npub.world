@@ -22,32 +22,32 @@ async function fetchProfiles(pubkeys) {
 }
 
 export async function load() {
-  const response = await ranker.recommendPubkeys({
-      // default algorithm, no pov
-      limit: 50,
-    });
+  const algorithms = ranker.capabilities()?.['/recommend/pubkeys'] ?? [];
+  const response = await ranker.recommendPubkeys({ limit: 50 });
   const pubkeys = response.results.map(r => r.pubkey);
   const profiles = await fetchProfiles(pubkeys);
-  return { profiles };
+  return { profiles, algorithms };
 }
 
 export const actions = {
   recommend: async ({ request }) => {
     try {
       const data = await request.formData();
+      const algorithm = data.get('algorithm') || '';
       const input = data.get('pubkey') || '';
 
-      const pubkey = parsePubkey(input);
-      if (!pubkey) {
-        return { error: 'Please enter a valid npub or hex pubkey' };
+      const r = { limit: 50 };
+      if (algorithm) {
+        r.algorithm = algorithm;
       }
 
-      const response = await ranker.recommendPubkeys({
-        algorithm: 'personalized-pagerank',
-        pov: pubkey,
-        limit: 50,
-      });
+      if (input) {
+        const pubkey = parsePubkey(input);
+        if (!pubkey) return { error: 'Please enter a valid npub or hex pubkey' };
+        r.pov = pubkey;
+      }
 
+      const response = await ranker.recommendPubkeys(r);
       const pubkeys = response.results.map(r => r.pubkey);
       const profiles = await fetchProfiles(pubkeys);
       return { profiles };

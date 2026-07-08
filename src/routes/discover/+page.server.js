@@ -22,7 +22,7 @@ async function fetchProfiles(pubkeys) {
 }
 
 export async function load() {
-  const algorithms = ranker.capabilities()?.['/recommend/pubkeys'] ?? [];
+  const algorithms = ranker.capabilities?.['/recommend/pubkeys'] ?? [];
   const response = await ranker.recommendPubkeys({ limit: 50 });
   const pubkeys = response.results.map(r => r.pubkey);
   const profiles = await fetchProfiles(pubkeys);

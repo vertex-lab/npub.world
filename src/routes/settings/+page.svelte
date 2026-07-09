@@ -15,6 +15,7 @@
       await invalidateAll();
     } catch (e) {
       loginError = e.message;
+      setTimeout(() => loginError = '', 3000);
     } finally {
       loginLoading = false;
     }
@@ -42,6 +43,10 @@
   }
 </script>
 
+{#if loginError}
+  <div class="toast">{loginError}</div>
+{/if}
+
 <svelte:head>
   <title>Settings – npub.world</title>
 </svelte:head>
@@ -53,13 +58,30 @@
     <ProfileHeader profile={data.user ?? { name: 'Not logged in', nip05: 'Log in to personalize your experience', picture: null, pictureURL: null }}>
       {#snippet action()}
         {#if data.user}
-          <button class="action-btn" onclick={() => { logout(); invalidateAll(); }}>Log out</button>
+          <button class="action-btn" onclick={() => { logout(); invalidateAll(); }}>
+            <span class="btn-text">Log out</span>
+            <span class="btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m19 16-3 3"/>
+                <path d="M2 21a8 8 0 0 1 12.664-6.5"/>
+                <path d="M22 19h-6l3 3"/>
+                <circle cx="10" cy="8" r="5"/>
+              </svg>
+            </span>
+          </button>
         {:else}
           <button class="action-btn" onclick={handleLogin} disabled={loginLoading}>
-            {loginLoading ? 'Wait…' : 'Log in'}
+            <span class="btn-text">{loginLoading ? 'Wait…' : 'Log in'}</span>
+            <span class="btn-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 21a8 8 0 0 1 13.292-6"/>
+                <circle cx="10" cy="8" r="5"/>
+                <path d="M19 16v6"/>
+                <path d="M22 19h-6"/>
+              </svg>
+            </span>
           </button>
         {/if}
-        {#if loginError}<p class="login-error">{loginError}</p>{/if}
       {/snippet}
     </ProfileHeader>
 
@@ -124,6 +146,19 @@
 </div>
 
 <style>
+  .toast {
+    position: fixed;
+    top: 33%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    color: var(--error);
+    font-size: 0.9rem;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
   .centered {
     max-width: 900px;
     margin: 0 auto;
@@ -163,14 +198,20 @@
     cursor: default;
   }
 
+  .btn-icon {
+    display: none;
+    align-items: center;
+  }
+
   @media (max-width: 450px) {
     .action-btn {
       width: 40px;
-      font-size: 0;
     }
-    .action-btn::after {
-      content: '→';
-      font-size: 1rem;
+    .btn-text {
+      display: none;
+    }
+    .btn-icon {
+      display: flex;
     }
   }
 

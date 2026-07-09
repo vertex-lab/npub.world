@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import { settings, toggleTheme } from "$lib/settings.svelte";
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	let scrollY = $state(0);
 	const navOpacity = $derived(Math.max(0, 1 - scrollY / 80));
@@ -27,10 +27,15 @@
 				</svg>
 			</a>
 			<a href="/settings" class="icon-link" class:active={$page.url.pathname === '/settings'} aria-label="Settings">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="8" r="4"/>
-					<path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-				</svg>
+				{#if data.user?.picture}
+					<img class="nav-pfp" src={data.user.picture} alt={data.user.name} />
+				{:else}
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M17.925 20.056a6 6 0 0 0-11.851.001"/>
+						<circle cx="12" cy="11" r="4"/>
+						<circle cx="12" cy="12" r="10"/>
+					</svg>
+				{/if}
 			</a>
 		</div>
 	</div>
@@ -93,6 +98,13 @@
 
 	.icon-link:hover {
 		color: var(--primary-text);
+	}
+
+	.nav-pfp {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		object-fit: cover;
 	}
 
 	footer {

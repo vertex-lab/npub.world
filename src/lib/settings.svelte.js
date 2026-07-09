@@ -6,7 +6,7 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 const DEFAULTS = {
   provider:   '',     // '' = use the default provider
-  theme:      'dark',
+  theme:      'carbon',
   algorithms: {
     '/search/pubkeys':    '',
     '/recommend/pubkeys': '',
@@ -38,11 +38,8 @@ export const settings = $state(load());
 export function setTheme(theme) {
   settings.theme = theme;
   document.documentElement.setAttribute('data-theme', theme);
+  console.log('setTheme', theme);
   save();
-}
-
-export function toggleTheme() {
-  setTheme(settings.theme === 'dark' ? 'light' : 'dark');
 }
 
 export function setProvider(url) {

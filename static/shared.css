@@ -92,7 +92,7 @@
     --primary-font: Ubuntu, sans-serif;
 }
 
-[data-theme="dark"] {
+[data-theme="carbon"] {
     --primary-text: #e1e1e1;
     --secondary-text: #b0b0b0;
     --light-text: #999;
@@ -161,12 +161,12 @@ body {
     background-image: url("/logo.png");
 }
 
-[data-theme="dark"] .theme-logo {
+[data-theme="carbon"] .theme-logo {
     background-image: url("/logo-dark.png");
 }
 
-/* Links in dark mode */
-[data-theme="dark"] a {
+/* Links in carbon mode */
+[data-theme="carbon"] a {
     color: #6da4ff;
 }
 @media (max-width: 576px) {

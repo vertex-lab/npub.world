@@ -4,7 +4,7 @@
 
   let { source, class: className } = $props();
 
-  let src = $derived(source || (settings.theme === 'dark' ? fallbackUserDark : fallbackUserLight));
+  let src = $derived(source || (settings.theme === 'carbon' ? fallbackUserDark : fallbackUserLight));
 </script>
 
 <div class={`${className} profile-avatar`}>

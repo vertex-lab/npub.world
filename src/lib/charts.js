@@ -53,25 +53,25 @@ export function toJSON(datasets) {
 
 // change these colors if the correspondent colors in shared.css change
 export const color = {
-    light: {
+    snow: {
         text: "#333",
         background: "#fff",
         grid: "#00000026",
     },
 
-    dark: {
+    carbon: {
         text: "#e1e1e1",
         grid: "#ffffff33",
         background: "#1e1e1e",
     },
 }
 
-export function textColor() { return settings.theme === 'dark' ? color.dark.text : color.light.text };
-export function gridColor() { return settings.theme === 'dark' ? color.dark.grid : color.light.grid };
+export function textColor() { return settings.theme === 'carbon' ? color.carbon.text : color.snow.text };
+export function gridColor() { return settings.theme === 'carbon' ? color.carbon.grid : color.snow.grid };
 
   // tooltip have the opposite background and text colors
-export function tooltipTextColor() { return settings.theme === 'dark' ? color.light.text : color.dark.text };
-export function tooltipBackgroundColor() { return settings.theme === 'dark' ? color.light.background : color.dark.background };
+export function tooltipTextColor() { return settings.theme === 'carbon' ? color.snow.text : color.carbon.text };
+export function tooltipBackgroundColor() { return settings.theme === 'carbon' ? color.snow.background : color.carbon.background };
 
 export const formatter = new Intl.NumberFormat("en", {
     notation: "compact",

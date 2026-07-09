@@ -47,7 +47,7 @@
 
 <footer>
 	<div class="shoutouts">
-		<p>Powered by <a href="https://vertexlab.io">Vertex</a></p>
+		<p>Built by <a href="/npub176p7sup477k5738qhxx0hk2n0cty2k5je5uvalzvkvwmw4tltmeqw7vgup">Pip</a></p>
 		<p class="separator">•</p>
 		<p>Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vlad</a></p>
 	</div>

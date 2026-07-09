@@ -6,6 +6,16 @@ import cron from "node-cron";
 
 // Handle requests
 export const handle = async ({ event, resolve }) => {
+  try {
+    const raw = event.cookies.get('npub_world_nwt');
+    if (raw) {
+      const nwt = JSON.parse(decodeURIComponent(raw));
+      event.locals.pubkey = nwt?.pubkey ?? null;
+    }
+  } catch {
+    event.locals.pubkey = null;
+  }
+
   const response = await resolve(event);
   return response;
 };

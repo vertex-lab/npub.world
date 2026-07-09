@@ -21,13 +21,16 @@ async function fetchProfiles(pubkeys) {
   }))).filter(Boolean);
 }
 
-export async function load({ cookies }) {
+export async function load({ cookies, locals }) {
   let stored = {};
   try { stored = JSON.parse(decodeURIComponent(cookies.get('npub_world_settings') ?? '{}')); } catch {}
 
   const algorithm = stored?.algorithms?.['/recommend/pubkeys'] ?? '';
   const r = { limit: 100 };
   if (algorithm) r.algorithm = algorithm;
+
+  const algoMeta = ranker.capabilities?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
+  if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
   const response = await ranker.recommendPubkeys(r);
   const pubkeys = response.results.map(r => r.pubkey);
@@ -36,21 +39,24 @@ export async function load({ cookies }) {
 }
 
 export const actions = {
-  recommend: async ({ request }) => {
+  recommend: async ({ request, locals }) => {
     try {
       const data = await request.formData();
       const algorithm = data.get('algorithm') || '';
       const input = data.get('pubkey') || '';
 
       const r = { limit: 100 };
-      if (algorithm) {
-        r.algorithm = algorithm;
-      }
+      if (algorithm) r.algorithm = algorithm;
 
-      if (input) {
-        const pubkey = parsePubkey(input);
-        if (!pubkey) return { error: 'Please enter a valid npub or hex pubkey' };
-        r.pov = pubkey;
+      const algoMeta = ranker.capabilities?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
+      if (algoMeta?.pov) {
+        if (input) {
+          const pubkey = parsePubkey(input);
+          if (!pubkey) return { error: 'Please enter a valid npub or hex pubkey' };
+          r.pov = pubkey;
+        } else if (locals.pubkey) {
+          r.pov = locals.pubkey;
+        }
       }
 
       const response = await ranker.recommendPubkeys(r);

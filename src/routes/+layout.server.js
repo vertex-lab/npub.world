@@ -2,15 +2,13 @@ import { ranker } from '$lib/open-ranking.js';
 import { query, parseProfile } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
 
-export async function load({ cookies }) {
+export async function load({ locals }) {
   const capabilities = ranker.capabilities ?? {};
 
   let user = null;
   try {
-    const raw = cookies.get('npub_world_nwt');
-    if (raw) {
-      const nwt = JSON.parse(decodeURIComponent(raw));
-      const pubkey = nwt?.pubkey;
+    const pubkey = locals.pubkey;
+    if (pubkey) {
 
       if (pubkey) {
         const events = await query({ kinds: [0], authors: [pubkey], limit: 1 });

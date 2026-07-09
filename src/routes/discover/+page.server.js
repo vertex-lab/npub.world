@@ -1,7 +1,13 @@
-import { parsePubkey } from '$lib/nostr.js';
-import { query, parseProfile } from '$lib/nostr.js';
+import { parsePubkey, query, parseProfile, parsePubkeys } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
 import { ranker } from '$lib/open-ranking.js';
+
+async function fetchMutedPubkeys(pubkey) {
+  if (!pubkey) return new Set();
+  const events = await query({ kinds: [10000], authors: [pubkey], limit: 1 });
+  const muted = parsePubkeys(events[0]);
+  return new Set(muted);
+}
 
 async function fetchProfiles(pubkeys) {
   const events = await query({ kinds: [0], authors: pubkeys, limit: pubkeys.length });
@@ -32,8 +38,12 @@ export async function load({ cookies, locals }) {
   const algoMeta = ranker.capabilities?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
   if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
-  const response = await ranker.recommendPubkeys(r);
-  const pubkeys = response.results.map(r => r.pubkey);
+  const [response, muted] = await Promise.all([
+    ranker.recommendPubkeys(r),
+    fetchMutedPubkeys(locals.pubkey),
+  ]);
+
+  const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
   const profiles = await fetchProfiles(pubkeys);
   return { profiles };
 }
@@ -59,8 +69,12 @@ export const actions = {
         }
       }
 
-      const response = await ranker.recommendPubkeys(r);
-      const pubkeys = response.results.map(r => r.pubkey);
+      const [response, muted] = await Promise.all([
+        ranker.recommendPubkeys(r),
+        fetchMutedPubkeys(locals.pubkey),
+      ]);
+
+      const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
       const profiles = await fetchProfiles(pubkeys);
       return { profiles };
 

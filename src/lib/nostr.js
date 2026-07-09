@@ -48,14 +48,12 @@ export function parseProfile(event) {
 }
 
 /**
- * Parses the "p" tags of a a kind:3 follow list event into a structured object.
- * Returns null if the event is missing/wrong kind.
+ * Parses the valid pubkeys found in "p" tags.
  * @param {object} event - A kind:3 Nostr event
  * @returns {string[]} - Array of pubkeys
  */
 export function parsePubkeys(event) {
-  if (!event) return null;
-  if (event.kind !== 3) return null;
+  if (!event) return [];
 
   const pubkeys = [];
   for (const tag of event?.tags || []) {

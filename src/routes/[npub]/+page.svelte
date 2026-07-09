@@ -73,7 +73,7 @@
   </div>
 
   <div class="search-container">
-    <SearchBox bind:this={searchBoxRef}/>
+    <SearchBox bind:this={searchBoxRef} algorithms={data.searchAlgorithms}/>
   </div>
 </header>
 

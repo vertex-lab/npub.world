@@ -22,7 +22,8 @@ function parse(params) {
   }
 
   limit = Math.min(limit, 100); // max is 100
-  return { q, limit };
+  const algorithm = (params.get('algorithm') || '').trim();
+  return { q, limit, algorithm };
 }
 
 export async function load() {
@@ -34,10 +35,16 @@ export const actions = {
   search: async ({ request }) => {
     try {
       const params = await request.formData();
-      const { q, limit, error } = parse(params);
+      const { q, limit, algorithm, error } = parse(params);
       if (error) return { error };
 
-      const response = await ranker.searchPubkeys({ query: q, limit });
+      const r = {
+        query: q,
+        limit: limit,
+        algorithm: algorithm,
+      };
+
+      const response = await ranker.searchPubkeys(r);
       const pubkeys = response.results.map(r => r.pubkey);
       if (!pubkeys.length) return [];
 

@@ -1,6 +1,24 @@
 <script>
+  import { invalidateAll } from '$app/navigation';
   import { settings, setProvider, setAlgo, toggleTheme } from '$lib/settings.svelte.js';
+  import { auth, login, logout } from '$lib/auth.svelte.js';
   import PressableProfilePicture from '$lib/components/PressableProfilePicture.svelte';
+
+  let loginError = $state('');
+  let loginLoading = $state(false);
+
+  async function handleLogin() {
+    loginError = '';
+    loginLoading = true;
+    try {
+      await login();
+      await invalidateAll();
+    } catch (e) {
+      loginError = e.message;
+    } finally {
+      loginLoading = false;
+    }
+  }
 
   let { data } = $props();
 
@@ -32,17 +50,32 @@
   <div class="card">
 
     <!-- Profile section -->
-    <div class="profile-section">
-      <div class="avatar-wrapper">
-        <PressableProfilePicture picture={null} pictureURL={null} />
+    <div class="profile-header">
+      <div class="profile-top">
+        <PressableProfilePicture picture={data.user?.picture ?? null} pictureURL={data.user?.pictureURL ?? null} />
+
+        <div class="profile-identity">
+          {#if data.user}
+            <p class="profile-name">{data.user.name ?? data.user.npub}</p>
+            {#if data.user.nip05}<p class="profile-nip05">{data.user.nip05}</p>{/if}
+          {:else}
+            <p class="profile-name">Not logged in</p>
+            <p class="profile-nip05">Log in to personalize your experience</p>
+            {#if loginError}<p class="login-error">{loginError}</p>{/if}
+          {/if}
+        </div>
+
+        <div class="auth-button">
+          {#if data.user}
+            <button class="action-btn" onclick={() => { logout(); invalidateAll(); }}>Log out</button>
+          {:else}
+            <button class="action-btn" onclick={handleLogin} disabled={loginLoading}>
+              {loginLoading ? 'Wait…' : 'Log in'}
+            </button>
+          {/if}
+        </div>
       </div>
-
-      <button class="login-button" disabled>
-        Log in to personalize your experience
-      </button>
     </div>
-
-    <div class="separator"></div>
 
     <!-- Settings table -->
     <div class="settings-table">
@@ -106,49 +139,117 @@
 
 <style>
   .centered {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
 
   .card {
-    background: var(--card-background);
+    background-color: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    box-shadow: var(--shadow-elevation-low);
-    padding: 1.5rem;
+    box-shadow: var(--shadow-elevation-medium);
+    padding: 1rem;
   }
 
-  /* Profile section */
-  .profile-section {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+  /* Profile section — mirrors DetailedProfile */
+  .profile-header {
     padding-bottom: 1.5rem;
-  }
-
-  .avatar-wrapper {
-    flex-shrink: 0;
-  }
-
-  .avatar-wrapper :global(.profile-avatar) {
-    --size: 150px;
-  }
-
-  .login-button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--card-background);
-    color: var(--secondary-text);
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-
-  .separator {
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
+  }
+
+  .profile-top {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .profile-identity {
+    text-align: left;
+    width: 100%;
+    margin-left: 0.8rem;
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .profile-name {
+    word-wrap: break-word;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0.8rem 0 0 0;
+  }
+
+  .profile-nip05 {
+    font-size: 0.9rem;
+    color: var(--light-text);
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0.75rem 0;
+  }
+
+  .login-error {
+    font-size: 0.8rem;
+    color: var(--error);
+    margin: 0.25rem 0 0;
+  }
+
+  @media (max-width: 576px) {
+    .profile-top {
+      flex-direction: column;
+      align-items: center;
+    }
+    .profile-identity {
+      margin: 0 auto;
+      text-align: center;
+    }
+  }
+
+  .auth-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 90px;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    color: var(--primary-text);
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+  }
+
+  .action-btn:hover {
+    background: var(--border-color);
+  }
+
+  .action-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  @media (max-width: 450px) {
+    .action-btn {
+      width: 40px;
+      font-size: 0;
+    }
+    .action-btn::after {
+      content: '→';
+      font-size: 1rem;
+    }
   }
 
   /* Settings table */
@@ -203,11 +304,5 @@
     border-color: var(--secondary-text);
   }
 
-  @media (max-width: 576px) {
-    .profile-section {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-  }
+
 </style>

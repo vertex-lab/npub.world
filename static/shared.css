@@ -57,6 +57,8 @@
     --danger-accent: rgba(255, 68, 68, 0.12);
     --danger-accent-text: #7a0000;
 
+    --error: #e00055;
+
     --overlay-color: rgba(0, 0, 0, 0.7);
     --shadow-color: 0deg 0% 61%;
     --shadow-color-overlay: 0deg 0% 15%;
@@ -114,6 +116,8 @@
 
     --danger-accent: rgba(255, 68, 68, 0.1);
     --danger-accent-text: #ff6b6b;
+
+    --error: #ff4477;
 }
 
 /* disabling all scrollbars */

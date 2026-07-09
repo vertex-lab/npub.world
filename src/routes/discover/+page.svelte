@@ -8,8 +8,9 @@
   let { data, form } = $props();
 
   let profiles = $state(form?.profiles ?? data.profiles);
+  let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
   let selectedAlgo = $derived(
-    data.algorithms.find(a => a.id === settings.algorithms['/recommend/pubkeys']) ?? data.algorithms[0] ?? null
+    discoverAlgos.find(a => a.id === settings.algorithms['/recommend/pubkeys']) ?? discoverAlgos[0] ?? null
   );
   let showModal = $state(false);
   let loading = $state(false);
@@ -69,7 +70,7 @@
 
 {#if showModal}
   <AlgoModal
-    algorithms={data.algorithms}
+    algorithms={discoverAlgos}
     selected={selectedAlgo}
     onselect={selectAlgo}
     onclose={closeModal}

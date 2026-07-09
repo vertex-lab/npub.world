@@ -26,10 +26,7 @@ function parse(params) {
   return { q, limit, algorithm };
 }
 
-export async function load() {
-  const algorithms = ranker.capabilities?.['/search/pubkeys'] ?? [];
-  return { algorithms };
-}
+
 
 export const actions = {
   search: async ({ request }) => {

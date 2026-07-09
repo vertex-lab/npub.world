@@ -9,7 +9,7 @@ import { marked } from 'marked';
 
 export async function load({ params }) {
   const pubkey = await resolve(params.npub);
-  const searchAlgorithms = ranker.capabilities?.['/search/pubkeys'] ?? [];
+
 
   try {
     const [stats, followers] = await Promise.all([
@@ -62,7 +62,6 @@ export async function load({ params }) {
       stats,
       followerProfiles,
       compromise,
-      searchAlgorithms,
     };
 
   } catch(err) {

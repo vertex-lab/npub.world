@@ -1,4 +1,4 @@
-import { theme } from "./theme.svelte"
+import { settings } from "./settings.svelte.js"
 
 /**
 * A single dataset for a chart.
@@ -66,12 +66,12 @@ export const color = {
     },
 }
 
-export function textColor() { return theme.isDark ? color.dark.text : color.light.text };
-export function gridColor() { return theme.isDark ? color.dark.grid : color.light.grid };
+export function textColor() { return settings.theme === 'dark' ? color.dark.text : color.light.text };
+export function gridColor() { return settings.theme === 'dark' ? color.dark.grid : color.light.grid };
 
   // tooltip have the opposite background and text colors
-export function tooltipTextColor() { return theme.isDark ? color.light.text : color.dark.text };
-export function tooltipBackgroundColor() { return theme.isDark ? color.light.background : color.dark.background };
+export function tooltipTextColor() { return settings.theme === 'dark' ? color.light.text : color.dark.text };
+export function tooltipBackgroundColor() { return settings.theme === 'dark' ? color.light.background : color.dark.background };
 
 export const formatter = new Intl.NumberFormat("en", {
     notation: "compact",

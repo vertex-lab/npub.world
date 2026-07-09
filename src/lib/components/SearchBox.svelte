@@ -262,7 +262,8 @@
 
   input[type="text"] {
     flex: 1;
-    padding: 15px 15px 15px 40px;
+    min-width: 0;
+    padding: 15px 35px 15px 40px;
     border-radius: 7px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -320,14 +321,18 @@
   }
 
   .sparkle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
-    padding: 0 12px;
+    padding: 0;
     cursor: pointer;
     color: var(--secondary-text);
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    z-index: 1;
     transition: color 0.15s;
   }
 

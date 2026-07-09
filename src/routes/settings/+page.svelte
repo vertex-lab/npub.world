@@ -2,7 +2,7 @@
   import { invalidateAll } from '$app/navigation';
   import { settings, setProvider, setAlgo, toggleTheme } from '$lib/settings.svelte.js';
   import { auth, login, logout } from '$lib/auth.svelte.js';
-  import PressableProfilePicture from '$lib/components/PressableProfilePicture.svelte';
+  import ProfileHeader from '$lib/components/ProfileHeader.svelte';
 
   let loginError = $state('');
   let loginLoading = $state(false);
@@ -50,32 +50,18 @@
   <div class="card">
 
     <!-- Profile section -->
-    <div class="profile-header">
-      <div class="profile-top">
-        <PressableProfilePicture picture={data.user?.picture ?? null} pictureURL={data.user?.pictureURL ?? null} />
-
-        <div class="profile-identity">
-          {#if data.user}
-            <p class="profile-name">{data.user.name ?? data.user.npub}</p>
-            {#if data.user.nip05}<p class="profile-nip05">{data.user.nip05}</p>{/if}
-          {:else}
-            <p class="profile-name">Not logged in</p>
-            <p class="profile-nip05">Log in to personalize your experience</p>
-            {#if loginError}<p class="login-error">{loginError}</p>{/if}
-          {/if}
-        </div>
-
-        <div class="auth-button">
-          {#if data.user}
-            <button class="action-btn" onclick={() => { logout(); invalidateAll(); }}>Log out</button>
-          {:else}
-            <button class="action-btn" onclick={handleLogin} disabled={loginLoading}>
-              {loginLoading ? 'Wait…' : 'Log in'}
-            </button>
-          {/if}
-        </div>
-      </div>
-    </div>
+    <ProfileHeader profile={data.user ?? { name: 'Not logged in', nip05: 'Log in to personalize your experience', picture: null, pictureURL: null }}>
+      {#snippet action()}
+        {#if data.user}
+          <button class="action-btn" onclick={() => { logout(); invalidateAll(); }}>Log out</button>
+        {:else}
+          <button class="action-btn" onclick={handleLogin} disabled={loginLoading}>
+            {loginLoading ? 'Wait…' : 'Log in'}
+          </button>
+        {/if}
+        {#if loginError}<p class="login-error">{loginError}</p>{/if}
+      {/snippet}
+    </ProfileHeader>
 
     <!-- Settings table -->
     <div class="settings-table">
@@ -150,70 +136,6 @@
     border-radius: 12px;
     box-shadow: var(--shadow-elevation-medium);
     padding: 1rem;
-  }
-
-  /* Profile section — mirrors DetailedProfile */
-  .profile-header {
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-  }
-
-  .profile-top {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-  }
-
-  .profile-identity {
-    text-align: left;
-    width: 100%;
-    margin-left: 0.8rem;
-    flex-grow: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .profile-name {
-    word-wrap: break-word;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0.8rem 0 0 0;
-  }
-
-  .profile-nip05 {
-    font-size: 0.9rem;
-    color: var(--light-text);
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0.75rem 0;
-  }
-
-  .login-error {
-    font-size: 0.8rem;
-    color: var(--error);
-    margin: 0.25rem 0 0;
-  }
-
-  @media (max-width: 576px) {
-    .profile-top {
-      flex-direction: column;
-      align-items: center;
-    }
-    .profile-identity {
-      margin: 0 auto;
-      text-align: center;
-    }
-  }
-
-  .auth-button {
-    position: absolute;
-    top: 0;
-    right: 0;
   }
 
   .action-btn {

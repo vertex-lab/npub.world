@@ -1,6 +1,8 @@
 import { browser } from '$app/environment';
 
 const STORAGE_KEY = 'npub.world.settings';
+const COOKIE_KEY  = 'npub_world_settings';
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 const DEFAULTS = {
   provider:   '',     // '' = use the default provider
@@ -22,11 +24,13 @@ function load() {
 
 function save() {
   if (!browser) return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  const value = JSON.stringify({
     provider:   settings.provider,
     theme:      settings.theme,
     algorithms: settings.algorithms,
-  }));
+  });
+  localStorage.setItem(STORAGE_KEY, value);
+  document.cookie = `${COOKIE_KEY}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
 }
 
 export const settings = $state(load());

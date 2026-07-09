@@ -21,8 +21,15 @@ async function fetchProfiles(pubkeys) {
   }))).filter(Boolean);
 }
 
-export async function load() {
-  const response = await ranker.recommendPubkeys({ limit: 50 });
+export async function load({ cookies }) {
+  let stored = {};
+  try { stored = JSON.parse(decodeURIComponent(cookies.get('npub_world_settings') ?? '{}')); } catch {}
+
+  const algorithm = stored?.algorithms?.['/recommend/pubkeys'] ?? '';
+  const r = { limit: 50 };
+  if (algorithm) r.algorithm = algorithm;
+
+  const response = await ranker.recommendPubkeys(r);
   const pubkeys = response.results.map(r => r.pubkey);
   const profiles = await fetchProfiles(pubkeys);
   return { profiles };

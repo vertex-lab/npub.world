@@ -3,11 +3,14 @@
   import Logo from '$lib/components/Logo.svelte';
   import AlgoModal from '$lib/components/AlgoModal.svelte';
   import ProfileCard from './ProfileCard.svelte';
+  import { settings, setAlgo } from '$lib/settings.svelte.js';
 
   let { data, form } = $props();
 
   let profiles = $state(form?.profiles ?? data.profiles);
-  let selectedAlgo = $state(data.algorithms[0] ?? null);
+  let selectedAlgo = $derived(
+    data.algorithms.find(a => a.id === settings.algorithms['/recommend/pubkeys']) ?? data.algorithms[0] ?? null
+  );
   let showModal = $state(false);
   let loading = $state(false);
 
@@ -15,7 +18,7 @@
   function closeModal() { showModal = false; }
 
   async function selectAlgo(algo) {
-    selectedAlgo = algo;
+    setAlgo('/recommend/pubkeys', algo.id);
     closeModal();
     loading = true;
 

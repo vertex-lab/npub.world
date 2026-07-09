@@ -3,6 +3,7 @@
   import SearchBox from "$lib/components/SearchBox.svelte";
   import { onMount } from "svelte";
 
+  let { data } = $props();
   let searchBoxRef;
 
   onMount( () => { searchBoxRef.focus() })
@@ -17,7 +18,7 @@
     <Logo/>
 
     <div class="search-container">
-      <SearchBox bind:this={searchBoxRef}/>
+      <SearchBox bind:this={searchBoxRef} algorithms={data.algorithms}/>
     </div>
   </header>
 </div>

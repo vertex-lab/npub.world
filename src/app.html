@@ -9,12 +9,8 @@
 	<script>
 		(function () {
 			try {
-				const savedTheme = localStorage.getItem("theme");
-				if (savedTheme) {
-					document.documentElement.setAttribute("data-theme", savedTheme);
-				} else {
-					document.documentElement.setAttribute("data-theme", "dark");
-				}
+				const s = JSON.parse(localStorage.getItem("npub.world.settings"));
+					document.documentElement.setAttribute("data-theme", s?.theme || "dark");
 			} catch (_) { }
 		})();
 	</script>

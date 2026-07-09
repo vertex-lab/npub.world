@@ -8,6 +8,14 @@
   import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from "$lib/string.js";
   import { onEsc, onOutsideClick } from "$lib/events.js";
   import PressableProfile from "./PressableProfile.svelte";
+  import AlgoModal from "./AlgoModal.svelte";
+  import { settings, setAlgo } from "$lib/settings.svelte.js";
+
+  let { algorithms = [] } = $props();
+  let selectedAlgorithm = $derived(
+    algorithms.find(a => a.id === settings.algorithms['/search/pubkeys']) ?? algorithms[0] ?? null
+  );
+  let showModal = $state(false);
 
   let query = $state("");
   let results = $state([]);  // the list of search results, or the error
@@ -74,6 +82,7 @@
     const params = new FormData();
     params.set('q', query);
     params.set('limit', 15);
+    if (selectedAlgorithm) params.set('algorithm', selectedAlgorithm.id);
 
     let response = await fetch('/?/search', {
       method: 'POST',
@@ -170,6 +179,19 @@
       onkeydown={moveWithArrows}
       onclick={showResult}
     />
+
+    {#if algorithms.length > 0}
+      <button
+        type="button"
+        class="sparkle"
+        onclick={(e) => { e.stopPropagation(); showModal = true; }}
+        aria-label="Select algorithm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
+        </svg>
+      </button>
+    {/if}
   </form>
 
   {#if isResultVisible && results && results.error}
@@ -192,6 +214,15 @@
   {/if}
 </div>
 
+{#if showModal}
+  <AlgoModal
+    {algorithms}
+    selected={selectedAlgorithm}
+    onselect={(algo) => { setAlgo('/search/pubkeys', algo.id); showModal = false; }}
+    onclose={() => showModal = false}
+  />
+{/if}
+
 <style>
   .search-container {
     position: relative;
@@ -200,6 +231,8 @@
   }
 
   .search-form {
+    display: flex;
+    align-items: center;
     width: 100%;
     box-sizing: border-box;
     border: 1px solid var(--border-color);
@@ -228,7 +261,7 @@
   }
 
   input[type="text"] {
-    width: 100%;
+    flex: 1;
     padding: 15px 15px 15px 40px;
     border-radius: 7px;
     font-size: 1rem;
@@ -284,6 +317,22 @@
     border-radius: 0 0 8px 8px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-elevation-high);
+  }
+
+  .sparkle {
+    background: none;
+    border: none;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+
+  .sparkle:hover {
+    color: var(--primary-text);
   }
 
   /* Responsive adjustments */

@@ -1,7 +1,20 @@
 <script>
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { auth } from '$lib/auth.svelte.js';
   import Modal from './Modal.svelte';
 
   let { algorithms, selected, onselect, onclose } = $props();
+
+  function requiresLogin(algo) {
+    return algo.pov === true && !auth.nwt;
+  }
+
+  function handleLoginTag(e) {
+    e.stopPropagation();
+    onclose();
+    if ($page.url.pathname !== '/settings') goto('/settings');
+  }
 </script>
 
 <Modal title="Algorithm" {onclose}>
@@ -9,9 +22,14 @@
     <button
       class="algo-option"
       class:selected={selected?.id === algo.id}
-      onclick={() => onselect(algo)}
+      onclick={() => requiresLogin(algo) ? handleLoginTag(new Event('click')) : onselect(algo)}
     >
       <span class="algo-name">{algo.name}</span>
+      {#if requiresLogin(algo)}
+        <span class="requires-login" onclick={handleLoginTag} role="link" tabindex="0" onkeydown={(e) => e.key === 'Enter' && handleLoginTag(e)}>
+          requires login
+        </span>
+      {/if}
       {#if algo.description}
         <span class="algo-desc">{algo.description}</span>
       {/if}
@@ -21,6 +39,7 @@
 
 <style>
   .algo-option {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -47,5 +66,19 @@
     font-size: 0.75rem;
     color: var(--secondary-text);
     margin-top: 2px;
+  }
+
+  .requires-login {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 0.7rem;
+    color: var(--secondary-text);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .requires-login:hover {
+    color: var(--primary-text);
   }
 </style>

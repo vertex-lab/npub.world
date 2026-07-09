@@ -117,6 +117,7 @@
     border: 1px solid var(--border-color);
     border-radius: 999px;
     padding: 4px 10px;
+    margin: 0.25rem;
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s;
   }

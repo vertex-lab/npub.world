@@ -26,7 +26,7 @@ export async function load({ cookies }) {
   try { stored = JSON.parse(decodeURIComponent(cookies.get('npub_world_settings') ?? '{}')); } catch {}
 
   const algorithm = stored?.algorithms?.['/recommend/pubkeys'] ?? '';
-  const r = { limit: 50 };
+  const r = { limit: 100 };
   if (algorithm) r.algorithm = algorithm;
 
   const response = await ranker.recommendPubkeys(r);
@@ -42,7 +42,7 @@ export const actions = {
       const algorithm = data.get('algorithm') || '';
       const input = data.get('pubkey') || '';
 
-      const r = { limit: 50 };
+      const r = { limit: 100 };
       if (algorithm) {
         r.algorithm = algorithm;
       }

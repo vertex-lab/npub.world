@@ -50,9 +50,13 @@
   }
 
   .profile-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     text-align: left;
     width: 100%;
     margin-left: 0.8rem;
+    margin-top: 0.8rem;
     flex-grow: 1;
     overflow: hidden;
   }
@@ -65,7 +69,7 @@
     word-wrap: break-word;
     font-size: 1.5rem;
     font-weight: 600;
-    margin: 0.8rem 0 0 0;
+    margin: 0;
   }
 
   .profile-nip05 {
@@ -75,7 +79,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 0.75rem 0;
+    margin: 0;
   }
 
   .profile-action {

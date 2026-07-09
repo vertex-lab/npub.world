@@ -54,3 +54,8 @@ export function setAlgo(endpoint, algoId) {
   settings.algorithms[endpoint] = algoId;
   save();
 }
+
+export function resetAlgos() {
+  settings.algorithms = structuredClone(DEFAULTS.algorithms);
+  save();
+}

@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { verifyEvent } from 'nostr-tools';
+import { resetAlgos } from '$lib/settings.svelte.js';
 
 const STORAGE_KEY  = 'npub.world.auth';
 const COOKIE_KEY   = 'npub_world_nwt';
@@ -46,4 +47,5 @@ export function logout() {
   auth.nwt = null;
   localStorage.removeItem(STORAGE_KEY);
   document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+  resetAlgos();
 }

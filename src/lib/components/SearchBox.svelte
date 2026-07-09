@@ -67,7 +67,7 @@
   async function search(event) {
     event?.preventDefault();
     if (!query) return
-    
+
     isLoading = true;
 
     if (HEXKEY_REGEXP.test(query) || NPUB_REGEXP.test(query) || NIP05_REGEXP.test(query)) {
@@ -92,7 +92,7 @@
     response = deserialize(await response.text());
 
     if (response.data.error) {
-      results = { error: response.data.error }; 
+      results = { error: response.data.error };
     } else {
       results = response.data;
     }
@@ -144,8 +144,8 @@
     if (selectedTop < top) {
       // selected above the view
       resultsRef.scrollTop = selectedTop;
-    } 
-    
+    }
+
     if (selectedBottom > bottom) {
       // selected below the view
       resultsRef.scrollTop = selectedBottom - resultsRef.clientHeight;
@@ -196,7 +196,7 @@
 
   {#if isResultVisible && results && results.error}
     <div class="search-results">
-      <p style="text-align: center;">{results.error}</p>
+      <p style="text-align: center; color: var(--error)">{results.error}</p>
     </div>
   {/if}
 
@@ -204,9 +204,9 @@
     <div class="search-results" bind:this={resultsRef}>
       {#each results as profile, i}
         <PressableProfile
-          profile={profile} 
-          style={i === selectedResult 
-            ? "padding-left: 15px; background-color: var(--highlight-color);" 
+          profile={profile}
+          style={i === selectedResult
+            ? "padding-left: 15px; background-color: var(--highlight-color);"
             : "padding-left: 15px;"}
         />
       {/each}

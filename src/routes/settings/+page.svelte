@@ -91,7 +91,7 @@
 
     <!-- Theme -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header section-header--inline">
         <div>
           <h2 class="section-title">Theme</h2>
           <p class="section-subtitle">Customize the look to make it yours</p>
@@ -231,7 +231,7 @@
 
   /* Sections */
   .section {
-    padding: 1rem 0;
+    padding: 1rem 0.25rem;
   }
 
   .section-header {
@@ -289,6 +289,17 @@
   }
 
   /* Algo pill */
+  @media (max-width: 576px) {
+    .section-header:not(.section-header--inline) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .provider-input {
+      width: 100%;
+    }
+  }
+
   .pill {
     display: inline-flex;
     align-items: center;

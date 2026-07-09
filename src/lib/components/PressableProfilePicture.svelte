@@ -10,7 +10,7 @@
 
     let showPicture = $state(false);
 
-    function openPicture() { showPicture = true; }
+    function openPicture() { if (pictureURL) showPicture = true; }
     function closePicture() { showPicture = false; }
 
     onMount(() => {

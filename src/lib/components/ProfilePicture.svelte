@@ -1,9 +1,14 @@
 <script>
+  import { settings } from '$lib/settings.svelte.js';
+  import { fallbackUserDark, fallbackUserLight } from '$lib/fallbacks.js';
+
   let { source, class: className } = $props();
+
+  let src = $derived(source || (settings.theme === 'dark' ? fallbackUserDark : fallbackUserLight));
 </script>
 
 <div class={`${className} profile-avatar`}>
-  <img src={source} alt="Profile Avatar" />
+  <img {src} alt="Profile Avatar" />
 </div>
 
 <style>
@@ -13,7 +18,7 @@
     border-radius: 50%;
     width: var(--size);
     height: var(--size);
-    flex-shrink: 0; /* Prevents shrinking in flex containers */
+    flex-shrink: 0;
   }
 
   .profile-avatar img {

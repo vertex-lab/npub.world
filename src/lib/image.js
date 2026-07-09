@@ -7,7 +7,7 @@ import { createHash } from 'crypto';
 export const imagesPath = '/tmp/npub.world/pfp/'
 export const lowResolution = '_100px'
 export const highResolution = '_300px'
-const fallbackImage = 'data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABwCQCdASpQAFAAPo04l0elI6IhMKiooBGJaQDScC02BEwP2H/Xw6mQ/cGOime5aeLAeko9rSLnArnPBGwjpK7fy0qQybOdlfgbKXrmiCfRhKrfmsAA/u9klMKxc9NDXPvY1gnSxBCX8RPgMave0BDaJX1ooy2y+0+NcaXhjBC7ceNEZiUnGaW3OL90AiJECb4+8XvHJlAhICa44UHriACZy4Zv6wWNf7Ww9TYj6FxPo/g6u1zzabrFBSAnSFdYxAQglMDwYG6lUgbwHi3+0na86z9AAA==';
+
 
 const isPermanentFailure = (status) => {
   return status === 400 || status === 403 || status === 404 || status === 410;
@@ -39,8 +39,8 @@ class Imager {
   }
 
   async load(url, quality) {
-    if (!url || typeof url !== 'string') return fallbackImage;
-    if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
+    if (!url || typeof url !== 'string') return null;
+    if (quality !== lowResolution && quality !== highResolution) return null;
 
     try {
       const hash = createHash('sha256');
@@ -54,20 +54,20 @@ class Imager {
   }
 
   async #fetch(url, quality) {
-    if (!url || typeof url !== 'string') return fallbackImage;
-    if (quality !== lowResolution && quality !== highResolution) return fallbackImage;
-    if (this.badURLs.has(url)) return fallbackImage;
+    if (!url || typeof url !== 'string') return null;
+    if (quality !== lowResolution && quality !== highResolution) return null;
+    if (this.badURLs.has(url)) return null;
 
     try {
       const response = await fetch(url, { redirect: 'follow' });
       if (response.status !== 200) {
         if (isPermanentFailure(response.status)) this.badURLs.set(url, true);
-        return fallbackImage;
+        return null;
       }
 
       if (!containsImage(response)) {
         this.badURLs.set(url, true);
-        return fallbackImage;
+        return null;
       }
 
       const arrayBuffer = await response.arrayBuffer();
@@ -93,7 +93,7 @@ class Imager {
 
     } catch {
       this.badURLs.set(url, true);
-      return fallbackImage;
+      return null;
     }
   }
 

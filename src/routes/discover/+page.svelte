@@ -45,7 +45,7 @@
 
   <div class="top-section">
     <h1 class="title">Discover</h1>
-    <p class="subtitle">Discover the people that make Nostr so special.</p>
+    <p class="subtitle">Meet the people that make Nostr so special.</p>
   </div>
 
   {#if profiles?.length}

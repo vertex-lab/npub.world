@@ -6,14 +6,17 @@
 
   let { algorithms, selected, onselect, onclose } = $props();
 
-  function requiresLogin(algo) {
-    return algo.pov === true && !auth.nwt;
+  function requiresPov(algo) {
+    return algo.pov === true;
   }
 
-  function handleLoginTag(e) {
-    e.stopPropagation();
-    onclose();
-    if ($page.url.pathname !== '/settings') goto('/settings');
+  function handleSelect(algo) {
+    if (requiresPov(algo) && !auth.nwt) {
+      onclose();
+      if ($page.url.pathname !== '/settings') goto('/settings');
+    } else {
+      onselect(algo);
+    }
   }
 </script>
 
@@ -22,13 +25,11 @@
     <button
       class="algo-option"
       class:selected={selected?.id === algo.id}
-      onclick={() => requiresLogin(algo) ? handleLoginTag(new Event('click')) : onselect(algo)}
+      onclick={() => handleSelect(algo)}
     >
       <span class="algo-name">{algo.name}</span>
-      {#if requiresLogin(algo)}
-        <span class="requires-login" onclick={handleLoginTag} role="link" tabindex="0" onkeydown={(e) => e.key === 'Enter' && handleLoginTag(e)}>
-          requires login
-        </span>
+      {#if requiresPov(algo)}
+        <span class="requires-login">requires login</span>
       {/if}
       {#if algo.description}
         <span class="algo-desc">{algo.description}</span>

@@ -46,19 +46,16 @@
   <div class="top-section">
     <h1 class="title">Discover</h1>
     <p class="subtitle">Meet the people that make Nostr so special.</p>
+    <button class="pill" onclick={openModal} disabled={loading}>
+      {loading ? 'Loading…' : `${selectedAlgo?.name ?? selectedAlgo?.id ?? ''}`}
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
+      </svg>
+    </button>
   </div>
 
   {#if profiles?.length}
     <div class="grid-wrapper">
-      <div class="grid-header">
-        <button class="pill" onclick={openModal} disabled={loading}>
-          {loading ? 'Loading…' : `Discover with ${selectedAlgo?.name ?? selectedAlgo?.id ?? ''}`}
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-          </svg>
-        </button>
-      </div>
-
       <div class="grid">
         {#each profiles as profile}
           <ProfileCard {profile} />
@@ -86,7 +83,7 @@
   .top-section {
     text-align: center;
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 3rem;
   }
 
   .title {
@@ -99,6 +96,7 @@
   .subtitle {
     color: var(--secondary-text);
     margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .grid-wrapper {
@@ -107,13 +105,6 @@
     position: relative;
     left: 50%;
     transform: translateX(-50%);
-  }
-
-  .grid-header {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 0.6rem;
-    padding: 0 0.25rem;
   }
 
   .pill {

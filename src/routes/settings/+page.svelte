@@ -1,9 +1,10 @@
 <script>
   import { invalidateAll } from '$app/navigation';
-  import { settings, setProvider, setTheme } from '$lib/settings.svelte.js';
+  import { settings, setTheme } from '$lib/settings.svelte.js';
   import { auth, login, logout } from '$lib/auth.svelte.js';
   import ProfileHeader from '$lib/components/ProfileHeader.svelte';
   import AlgoPill from '$lib/components/AlgoPill.svelte';
+  import ProviderPill from '$lib/components/ProviderPill.svelte';
 
   let loginError = $state('');
   let loginLoading = $state(false);
@@ -129,17 +130,7 @@
           <p class="section-title">Provider</p>
           <p class="section-subtitle">Choose your open-ranking provider</p>
         </div>
-        <input
-          class="provider-input"
-          list="provider-options"
-          value={settings.provider}
-          oninput={(e) => setProvider(e.target.value.trim())}
-          spellcheck="false"
-          autocomplete="off"
-        />
-        <datalist id="provider-options">
-          <option value="https://ranking.vertexlab.io">Vertex</option>
-        </datalist>
+        <ProviderPill />
       </div>
     </div>
 
@@ -257,28 +248,6 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  /* Provider input */
-  .provider-input {
-    width: 200px;
-    flex-shrink: 1;
-    padding: 6px 10px;
-    font-size: var(--font-body);
-    border: 1px solid var(--border-color);
-    border-radius: 999px;
-    background: var(--card-background);
-    color: var(--secondary-text);
-    box-shadow: var(--shadow-elevation-low);
-    box-sizing: border-box;
-    transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
-  }
-
-  .provider-input:focus {
-    outline: none;
-    color: var(--primary-text);
-    border-color: var(--secondary-text);
-    box-shadow: var(--shadow-elevation-medium);
-  }
-
   /* Theme picker */
   .theme-picker {
     display: flex;
@@ -345,9 +314,6 @@
       align-items: flex-start;
     }
 
-    .provider-input {
-      width: 100%;
-    }
   }
 
   .support-links {

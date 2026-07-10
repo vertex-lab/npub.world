@@ -1,12 +1,5 @@
 <script>
-  import { browser } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
-  import { onEsc } from '$lib/events';
-
-  let { title, onclose, children } = $props();
-
-  onMount(() => { if (browser) document.addEventListener('keydown', onEsc(onclose)); });
-  onDestroy(() => { if (browser) document.removeEventListener('keydown', onEsc(onclose)); });
+  let { title, subtitle, onclose, children } = $props();
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -22,10 +15,13 @@
     class="modal"
     role="document"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.stopPropagation()}
+    onkeydown={(e) => { if (e.key === 'Escape') onclose(); else e.stopPropagation(); }}
   >
     <div class="modal-header">
-      <p class="modal-title">{title}</p>
+      <div class="modal-titles">
+        <p class="modal-title">{title}</p>
+        {#if subtitle}<p class="modal-subtitle">{subtitle}</p>{/if}
+      </div>
       <button class="close-button" onclick={onclose} aria-label="Close">✕</button>
     </div>
 
@@ -48,7 +44,7 @@
     background: var(--card-background);
     box-shadow: var(--shadow-elevation-modal);
     text-align: left;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 12px;
     width: 80%;
     max-width: 400px;
@@ -58,18 +54,32 @@
 
   .modal-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
 
+  .modal-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
   .modal-title {
-    margin: 10px;
+    margin: 0;
     font-size: var(--font-display);
     font-weight: var(--weight-medium);
     color: var(--primary-text);
   }
+
+  .modal-subtitle {
+    margin: 0;
+    font-size: var(--font-body);
+    color: var(--secondary-text);
+    line-height: 1.5;
+  }
+
 
   .close-button {
     background: none;

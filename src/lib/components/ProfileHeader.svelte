@@ -89,6 +89,10 @@
   }
 
   @media (max-width: 576px) {
+    .profile-header {
+      padding-bottom: 1rem;
+    }
+
     .profile-top {
       flex-direction: column;
       align-items: center;
@@ -96,6 +100,7 @@
 
     .profile-identity {
       margin: 0 auto;
+      padding-top: 1rem;
       text-align: center;
     }
 

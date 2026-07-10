@@ -24,8 +24,6 @@
 
   let { data } = $props();
 
-  const DEFAULT_PROVIDER = 'https://ranking.vertexlab.io';
-
   let searchAlgos   = $derived(data.capabilities?.['/search/pubkeys']    ?? []);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
 </script>
@@ -94,7 +92,7 @@
 
     <!-- Theme -->
     <div class="section">
-      <h2 class="section-title">Theme</h2>
+      <p class="section-title">Theme</p>
       <p class="section-subtitle">Customize the theme and make the app truly yours</p>
       <div class="theme-picker">
         <button
@@ -128,20 +126,19 @@
     <div class="section">
       <div class="section-header">
         <div>
-          <h2 class="section-title">Provider</h2>
+          <p class="section-title">Provider</p>
           <p class="section-subtitle">Choose your open-ranking provider</p>
         </div>
         <input
           class="provider-input"
           list="provider-options"
-          placeholder="Vertex (default)"
-          value={settings.provider || ''}
+          value={settings.provider}
           oninput={(e) => setProvider(e.target.value.trim())}
           spellcheck="false"
           autocomplete="off"
         />
         <datalist id="provider-options">
-          <option value={DEFAULT_PROVIDER}>Vertex</option>
+          <option value="https://ranking.vertexlab.io">Vertex</option>
         </datalist>
       </div>
     </div>
@@ -152,7 +149,7 @@
     <div class="section">
       <div class="section-header">
         <div>
-          <h2 class="section-title">Search</h2>
+          <p class="section-title">Search</p>
           <p class="section-subtitle">Choose the algorithm to optimize your search experience</p>
         </div>
         <AlgoPill algorithms={searchAlgos} endpoint="/search/pubkeys" accent={false} />
@@ -165,7 +162,7 @@
     <div class="section">
       <div class="section-header">
         <div>
-          <h2 class="section-title">Discover</h2>
+          <p class="section-title">Discover</p>
           <p class="section-subtitle">Choose the algorithm to power your discovery feed</p>
         </div>
         <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" accent={false} />
@@ -184,7 +181,7 @@
     width: 80%;
     text-align: center;
     color: var(--error, #e00055);
-    font-size: 0.9rem;
+    font-size: var(--font-body);
     z-index: 9999;
     pointer-events: none;
   }
@@ -264,18 +261,22 @@
   .provider-input {
     width: 200px;
     flex-shrink: 1;
-    padding: 4px 10px;
-    font-size: var(--font-caption);
+    padding: 6px 10px;
+    font-size: var(--font-body);
     border: 1px solid var(--border-color);
     border-radius: 999px;
     background: var(--card-background);
     color: var(--secondary-text);
+    box-shadow: var(--shadow-elevation-low);
     box-sizing: border-box;
+    transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
   }
 
   .provider-input:focus {
     outline: none;
+    color: var(--primary-text);
     border-color: var(--secondary-text);
+    box-shadow: var(--shadow-elevation-medium);
   }
 
   /* Theme picker */

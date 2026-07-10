@@ -1,7 +1,7 @@
 import { Client } from 'open-ranking';
 import { LRUCache } from 'lru-cache';
 
-const DEFAULT_PROVIDER_URL = "https://ranking.vertexlab.io";
+export const DEFAULT_PROVIDER_URL = "https://ranking.vertexlab.io";
 const DEFAULT_TIMEOUT  = 3000;
 const DEFAULT_TTL      = 1000 * 60 * 5; // 5 minutes
 

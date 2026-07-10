@@ -1,11 +1,12 @@
 import { browser } from '$app/environment';
+import { DEFAULT_PROVIDER_URL } from '$lib/open-ranking';
 
 const STORAGE_KEY = 'npub.world.settings';
 const COOKIE_KEY  = 'npub_world_settings';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 const DEFAULTS = {
-  provider:   '',     // '' = use the default provider
+  provider:   DEFAULT_PROVIDER_URL,
   theme:      'carbon',
   algorithms: {
     '/search/pubkeys':    '',

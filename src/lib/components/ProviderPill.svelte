@@ -1,5 +1,5 @@
 <script>
-  import { fetchCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS } from 'open-ranking';
+  import { fetchCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS, ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
   import { invalidateAll } from '$app/navigation';
   import Modal from './Modal.svelte';
   import { settings, setProvider } from '$lib/settings.svelte.js';
@@ -7,10 +7,12 @@
   import { safeURL } from '$lib/string.js';
 
   const ENDPOINTS = [
-    { key: ENDPOINT_STATS_PUBKEY,      label: 'Profile',   required: true },
-    { key: ENDPOINT_RANK_PUBKEYS,      label: 'Ranking',   required: true },
-    { key: ENDPOINT_SEARCH_PUBKEYS,    label: 'Search',    required: true },
-    { key: ENDPOINT_RECOMMEND_PUBKEYS, label: 'Discovery', required: false },
+    { key: ENDPOINT_STATS_PUBKEY,      label: 'Profile (ORE-02)',   required: true },
+    { key: ENDPOINT_RANK_PUBKEYS,      label: 'Ranking (ORE-03)',   required: true },
+    { key: ENDPOINT_RECOMMEND_PUBKEYS, label: 'Discovery (ORE-04)', required: false },
+    { key: ENDPOINT_SEARCH_PUBKEYS,    label: 'Search (ORE-05)',    required: true },
+    { key: ENDPOINT_FOLLOWERS,         label: 'Followers (ORE-06)', required: true },
+    { key: ENDPOINT_COMPROMISED_PUBKEYS, label: 'Compromised (ORE-08)', required: false },
   ];
 
   let showModal = $state(false);

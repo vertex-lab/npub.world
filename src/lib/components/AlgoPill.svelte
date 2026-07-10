@@ -38,7 +38,7 @@
 {#if algorithms.length > 0}
   <button class="pill" class:icon-only={!showLabel} onclick={() => showModal = true} disabled={loading}>
     {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? '')}{/if}
-    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
     </svg>
   </button>
@@ -68,26 +68,28 @@
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: var(--font-caption);
-    color: var(--secondary-text);
+    gap: 0.4rem;
+    font-size: var(--font-body);
+    color: var(--blue-accent-text);
     background: var(--card-background);
-    border: 1px solid var(--border-color);
+    border: 1px solid color-mix(in srgb, var(--blue-accent-text) 35%, transparent);
     border-radius: 999px;
     padding: 6px 10px;
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
-    transition: color 0.15s, border-color 0.15s;
+    box-shadow: var(--shadow-elevation-low);
+    transition: color 0.15s, border-color 0.15s, box-shadow 0.15s, background 0.15s;
   }
 
   .pill.icon-only {
-    padding: 6px 6px;
+    padding: 6px;
   }
 
   .pill:hover {
-    color: var(--primary-text);
-    border-color: var(--secondary-text);
+    background: var(--blue-accent);
+    border-color: var(--blue-accent-text);
+    box-shadow: var(--shadow-elevation-medium);
   }
 
   .pill:disabled {

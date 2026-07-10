@@ -1,7 +1,7 @@
 <script>
   let { size = 16, reputation = "low"} = $props();
 
-  const fillColor = () => 
+  const fillColor = () =>
     reputation === "high" ? "url(#gold-gradient)" :
     reputation === "mid" ? "#2B7FFF" :
     "none";
@@ -21,7 +21,7 @@
       viewBox="0 0 24 24"
       fill={fillColor()}
       aria-hidden="true"
-    > 
+    >
 
       <defs>
         <linearGradient id="gold-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -38,7 +38,7 @@
     <span class="tooltip">{tooltipText()}</span>
   </span>
 {/if}
-  
+
 <style>
   .checkmark {
     transform: translateY(4px);
@@ -56,7 +56,7 @@
     left: 120%;
     white-space: nowrap;
     color: var(--secondary-text);
-    font-size: 0.9rem;
+    font-size: var(--font-caption);
     font-weight: normal;
     transition: opacity 0.3s;
   }
@@ -71,4 +71,3 @@
     }
   }
 </style>
-  

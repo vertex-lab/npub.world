@@ -88,7 +88,7 @@
   <p class="title">{title}</p>
   <canvas bind:this={canvas}></canvas>
 </div>
-  
+
 <style>
   .chart-container {
     position: relative;
@@ -97,7 +97,7 @@
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: var(--font-display);
     font-weight: var(--weight-bold);
     margin: 0 0 0.5rem 0;
     text-align: center;

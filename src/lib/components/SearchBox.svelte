@@ -245,7 +245,7 @@
     min-width: 0;
     padding: 15px 8px 15px 40px;
     border-radius: 7px;
-    font-size: 1rem;
+    font-size: var(--font-body);
     box-sizing: border-box;
     color: var(--primary-text);
 	  background-color: var(--card-background);

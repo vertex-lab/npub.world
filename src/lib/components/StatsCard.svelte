@@ -33,16 +33,16 @@
       },
 
     scales: {
-      x: { 
+      x: {
         display: false,
       },
-      y: { 
+      y: {
         display: false,
         type: "logarithmic",
       },
     },
   };
-  
+
   onMount(() => {
     chart = new Chart(canvas, { type: "line", data: data, options: options});
   });
@@ -58,7 +58,7 @@
     }
   });
   </script>
-  
+
   <div class="card">
     <p class="title">{title}</p>
     <div class="chart-container">
@@ -78,10 +78,9 @@
     }
 
     .title {
-      font-size: 1.5rem;
+      font-size: var(--font-display);
       font-weight: var(--weight-bold);
       margin: 0 0 0.5rem 0;
       text-align: center;
     }
 </style>
-  

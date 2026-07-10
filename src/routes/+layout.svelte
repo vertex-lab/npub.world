@@ -72,7 +72,7 @@
 	}
 
 	.nav-links a {
-		font-size: 0.9rem;
+		font-size: var(--font-body);
 		color: var(--secondary-text);
 		text-decoration: none;
 		transition: color 0.15s;
@@ -109,7 +109,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: 0.8rem;
+		font-size: var(--font-caption);
 		color: var(--secondary-text);
 		margin: 0rem auto;
 		height: 1rem;

@@ -2,19 +2,18 @@ import { relay } from "./lib/nostr.js";
 import { fetchStats } from "./lib/stats.server";
 import { imager } from "./lib/image.js";
 import { ranker } from "./lib/open-ranking.js";
+import { getAuth } from "./lib/auth.server.js";
+import { getSettings } from "./lib/settings.server.js";
 import cron from "node-cron";
 
 // Handle requests
 export const handle = async ({ event, resolve }) => {
-  try {
-    const raw = event.cookies.get('npub_world_nwt');
-    if (raw) {
-      const nwt = JSON.parse(decodeURIComponent(raw));
-      event.locals.pubkey = nwt?.pubkey ?? null;
-    }
-  } catch {
-    event.locals.pubkey = null;
-  }
+  const { pubkey, nwt } = getAuth(event.cookies);
+  const { provider, algorithms } = getSettings(event.cookies);
+  event.locals.pubkey    = pubkey;
+  event.locals.nwt       = nwt;
+  event.locals.provider  = provider;
+  event.locals.algorithms = algorithms;
 
   const response = await resolve(event);
   return response;

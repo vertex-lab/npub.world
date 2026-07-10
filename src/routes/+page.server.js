@@ -31,6 +31,8 @@ function parse(params) {
 export const actions = {
   search: async ({ request, locals }) => {
     try {
+      const { provider } = locals;
+
       const params = await request.formData();
       const { q, limit, algorithm, error } = parse(params);
       if (error) return { error };
@@ -38,10 +40,11 @@ export const actions = {
       const r = { query: q, limit };
       if (algorithm) r.algorithm = algorithm;
 
-      const algoMeta = ranker.capabilities?.['/search/pubkeys']?.find(a => a.id === algorithm);
+      const caps = await ranker.capabilities(provider);
+      const algoMeta = caps?.['/search/pubkeys']?.find(a => a.id === algorithm);
       if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
-      const response = await ranker.searchPubkeys(r);
+      const response = await ranker.searchPubkeys(provider, r);
       const pubkeys = response.results.map(r => r.pubkey);
       if (!pubkeys.length) return [];
 

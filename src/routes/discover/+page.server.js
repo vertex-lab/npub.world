@@ -27,19 +27,18 @@ async function fetchProfiles(pubkeys) {
   }))).filter(Boolean);
 }
 
-export async function load({ cookies, locals }) {
-  let stored = {};
-  try { stored = JSON.parse(decodeURIComponent(cookies.get('npub_world_settings') ?? '{}')); } catch {}
-
-  const algorithm = stored?.algorithms?.['/recommend/pubkeys'] ?? '';
+export async function load({ locals }) {
+  const { provider, algorithms } = locals;
+  const algorithm = algorithms['/recommend/pubkeys'] ?? '';
   const r = { limit: 100 };
   if (algorithm) r.algorithm = algorithm;
 
-  const algoMeta = ranker.capabilities?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
+  const caps = await ranker.capabilities(provider);
+  const algoMeta = caps?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
   if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
   const [response, muted] = await Promise.all([
-    ranker.recommendPubkeys(r),
+    ranker.recommendPubkeys(provider, r),
     fetchMutedPubkeys(locals.pubkey),
   ]);
 
@@ -51,6 +50,8 @@ export async function load({ cookies, locals }) {
 export const actions = {
   recommend: async ({ request, locals }) => {
     try {
+      const { provider } = locals;
+
       const data = await request.formData();
       const algorithm = data.get('algorithm') || '';
       const input = data.get('pubkey') || '';
@@ -58,7 +59,8 @@ export const actions = {
       const r = { limit: 100 };
       if (algorithm) r.algorithm = algorithm;
 
-      const algoMeta = ranker.capabilities?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
+      const caps = await ranker.capabilities(provider);
+      const algoMeta = caps?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
       if (algoMeta?.pov) {
         if (input) {
           const pubkey = parsePubkey(input);
@@ -70,7 +72,7 @@ export const actions = {
       }
 
       const [response, muted] = await Promise.all([
-        ranker.recommendPubkeys(r),
+        ranker.recommendPubkeys(provider, r),
         fetchMutedPubkeys(locals.pubkey),
       ]);
 

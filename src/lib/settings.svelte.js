@@ -39,7 +39,6 @@ export const settings = $state(load());
 export function setTheme(theme) {
   settings.theme = theme;
   document.documentElement.setAttribute('data-theme', theme);
-  console.log('setTheme', theme);
   save();
 }
 

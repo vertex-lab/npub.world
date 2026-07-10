@@ -7,14 +7,15 @@ import { imager, lowResolution, highResolution } from "$lib/image.js";
 import { ranker } from '$lib/open-ranking.js';
 import { marked } from 'marked';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const { provider } = locals;
   const pubkey = await resolve(params.npub);
 
 
   try {
     const [stats, followers] = await Promise.all([
-      ranker.statsPubkey({ pubkey }),
-      ranker.followers({ pubkey, limit: 10 }),
+      ranker.statsPubkey(provider, { pubkey }),
+      ranker.followers(provider, { pubkey, limit: 10 }),
     ]);
 
     const followersPubkeys = followers.results.map(r => r.pubkey);
@@ -45,7 +46,7 @@ export async function load({ params }) {
 
     let compromise = null;
     if (stats.rank == 0) {
-      const result = await ranker.compromisedPubkeys({ pubkeys: [pubkey] });
+      const result = await ranker.compromisedPubkeys(provider, { pubkeys: [pubkey] });
       compromise = result[pubkey] ?? null;
     }
 
@@ -167,13 +168,14 @@ async function fetchProfiles(pubkeys) {
 }
 
 export const actions = {
-  followers: async ({ request }) => {
+  followers: async ({ request, locals }) => {
+    const { provider } = locals;
     try {
       const params = await request.formData();
       const { pubkey, limit, error } = parse(params);
       if (error) return { error }
 
-      const response = await ranker.followers({ pubkey, limit });
+      const response = await ranker.followers(provider, { pubkey, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
@@ -182,7 +184,8 @@ export const actions = {
     }
   },
 
-  follows: async ({ request }) => {
+  follows: async ({ request, locals }) => {
+    const { provider } = locals;
     try {
       const params = await request.formData();
       const { pubkey, limit, error } = parse(params);
@@ -201,7 +204,7 @@ export const actions = {
         pubkeys = pubkeys.slice(0, 1000);
       }
 
-      const response = await ranker.rankPubkeys({ pubkeys, limit });
+      const response = await ranker.rankPubkeys(provider, { pubkeys, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {

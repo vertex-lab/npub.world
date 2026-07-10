@@ -26,7 +26,7 @@ export const query = (filter) => {
  * Parses the content of a kind:0 profile event into a structured object.
  * Returns null if the event is missing/wrong kind or its content is invalid JSON.
  * @param {object} event - A kind:0 Nostr event
- * @returns {{ name: string, pictureURL: string, about: string, nip05: string, lud16: string, website: string } | null}
+ * @returns {{ npub: string, name: string, pictureURL: string, about: string, nip05: string, lud16: string, website: string } | null}
  */
 export function parseProfile(event) {
   if (!event) return null;

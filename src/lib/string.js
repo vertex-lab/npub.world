@@ -58,6 +58,22 @@ export const isValidURL = (url) => {
   }
 }
 
+// Matches loopback, RFC-1918 private ranges, and link-local (e.g. AWS metadata).
+const PRIVATE_HOST_RE = /^(localhost|127(\.(\d+)){3}|10(\.(\d+)){3}|192\.168(\.(\d+)){2}|172\.(1[6-9]|2\d|3[01])(\.(\d+)){2}|169\.254(\.(\d+)){2}|::1|fc[0-9a-f]{2}:.*)$/i;
+
+/**
+ * Validates a provider URL is safe to fetch server-side.
+ * Throws a human-readable Error if it fails any check.
+ * Returns the normalized origin (scheme + host + port, no trailing path).
+ */
+export function safeURL(raw) {
+  let url;
+  try { url = new URL(raw); } catch { throw new Error('Invalid URL'); }
+  if (url.protocol !== 'https:') throw new Error('Provider URL must use HTTPS');
+  if (PRIVATE_HOST_RE.test(url.hostname)) throw new Error('Provider URL must not point to a private or local address');
+  return url.origin;
+}
+
 export function truncateString(str, maxLength) {
   if (str.length <= maxLength) return str;
   const midPoint = Math.floor(maxLength / 2);

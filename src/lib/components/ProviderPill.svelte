@@ -1,7 +1,10 @@
 <script>
   import { fetchCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS } from 'open-ranking';
+  import { invalidateAll } from '$app/navigation';
   import Modal from './Modal.svelte';
   import { settings, setProvider } from '$lib/settings.svelte.js';
+  import { ranker } from '$lib/open-ranking.js';
+  import { safeURL } from '$lib/string.js';
 
   const ENDPOINTS = [
     { key: ENDPOINT_STATS_PUBKEY,      label: 'Profile',   required: true },
@@ -48,9 +51,9 @@
   }
 
   async function validate() {
-    inputValue = normalize(inputValue);
-    const url = inputValue;
+    const url = normalize(inputValue);
     if (!url) return;
+    try { safeURL(url); } catch (e) { error = e.message; return; }
     validating = true;
     caps = null;
     error = null;
@@ -70,8 +73,11 @@
   }
 
   function save() {
-    setProvider(inputValue.trim());
+    const url = normalize(inputValue);
+    setProvider(url);
+    ranker.add(url); // pre-warm server-side on next SSR load; fire-and-forget
     showModal = false;
+    invalidateAll(); // re-run load functions with the new provider cookie
   }
 </script>
 

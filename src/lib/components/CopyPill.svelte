@@ -90,7 +90,7 @@
     cursor: pointer;
     user-select: none;
     border: none;
-    font-size: 0.9rem;
+    font-size: var(--font-body);
     text-align: left;
   }
 

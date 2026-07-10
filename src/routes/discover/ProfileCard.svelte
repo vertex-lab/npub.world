@@ -61,7 +61,7 @@
   .name {
     display: block;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: var(--font-body);
     color: var(--primary-text);
     white-space: nowrap;
     overflow: hidden;
@@ -69,7 +69,7 @@
     margin-bottom: 0.15rem;
   }
   .nip05 {
-    font-size: 0.75rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
     white-space: nowrap;
     overflow: hidden;
@@ -78,7 +78,7 @@
   }
 
   .about {
-    font-size: 0.7rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
     margin: auto 0;
     display: -webkit-box;

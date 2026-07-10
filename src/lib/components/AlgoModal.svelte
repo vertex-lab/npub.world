@@ -59,12 +59,12 @@
   }
 
   .algo-name {
-    font-size: 1rem;
+    font-size: var(--font-body);
     color: var(--primary-text);
   }
 
   .algo-desc {
-    font-size: 0.75rem;
+    font-size: var(--font-body);
     color: var(--secondary-text);
     margin-top: 2px;
   }
@@ -73,7 +73,7 @@
     position: absolute;
     top: 10px;
     right: 12px;
-    font-size: 0.7rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
     cursor: pointer;
     transition: color 0.15s;

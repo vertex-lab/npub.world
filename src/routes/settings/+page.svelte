@@ -252,7 +252,7 @@
     border: 1px solid var(--border-color);
     background-color: var(--card-background);
     color: var(--primary-text);
-    font-size: 0.9rem;
+    font-size: var(--font-body);
     transition: background 0.2s ease;
   }
 
@@ -280,13 +280,13 @@
   }
 
   .section-title {
-    font-size: 1rem;
+    font-size: var(--font-body);
     color: var(--primary-text);
     margin: 0;
   }
 
   .section-subtitle {
-    font-size: 0.75rem;
+    font-size: var(--font-body);
     color: var(--secondary-text);
     margin-top: 0.4rem;
     margin-bottom: 0;
@@ -301,7 +301,7 @@
     width: 200px;
     flex-shrink: 1;
     padding: 4px 10px;
-    font-size: 0.75rem;
+    font-size: var(--font-caption);
     border: 1px solid var(--border-color);
     border-radius: 999px;
     background: var(--card-background);
@@ -365,7 +365,7 @@
   }
 
   .theme-label {
-    font-size: 0.75rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
   }
 
@@ -390,7 +390,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.75rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
     background: var(--card-background);
     border: 1px solid var(--border-color);
@@ -418,7 +418,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: var(--font-body);
     color: var(--secondary-text);
     text-decoration: none;
     transition: color 0.15s;

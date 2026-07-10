@@ -90,6 +90,12 @@
         16.4px 36px 41.5px -3px hsl(var(--shadow-color-overlay) / 0.28);
 
     --primary-font: Ubuntu, sans-serif;
+
+    --font-hero: 2.5rem;
+    --font-display: 1.5rem;
+
+    --font-body: 0.9rem;
+    --font-caption: 0.7rem;
 }
 
 [data-theme="carbon"] {

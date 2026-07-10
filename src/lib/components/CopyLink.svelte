@@ -61,7 +61,7 @@
     border: 1px solid var(--border-color);
     background-color: var(--card-background);
     color: var(--primary-text);
-    font-size: 0.9rem;
+    font-size: var(--font-body);
     text-align: left;
   }
 

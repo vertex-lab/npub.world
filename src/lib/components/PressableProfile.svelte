@@ -50,6 +50,7 @@ a {
 }
 
 .profile-name {
+  font-size: var(--font-body);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -57,7 +58,7 @@ a {
 }
 
 .profile-nip05 {
-  font-size: 0.75rem;
+  font-size: var(--font-caption);
   color: var(--light-text);
   white-space: nowrap;
   overflow: hidden;

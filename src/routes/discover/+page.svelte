@@ -87,13 +87,14 @@
   }
 
   .title {
-    font-size: 2.5rem;
+    font-size: var(--font-hero);
     font-weight: 600;
     letter-spacing: 1.5px;
     margin: 0;
   }
 
   .subtitle {
+    font-size: var(--font-body);
     color: var(--secondary-text);
     margin-top: 0.5rem;
     margin-bottom: 0.75rem;
@@ -111,7 +112,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.75rem;
+    font-size: var(--font-caption);
     color: var(--secondary-text);
     background: var(--card-background);
     border: 1px solid var(--border-color);

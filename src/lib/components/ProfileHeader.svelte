@@ -67,13 +67,13 @@
 
   .profile-name {
     word-wrap: break-word;
-    font-size: 1.5rem;
+    font-size: var(--font-display);
     font-weight: 600;
     margin: 0;
   }
 
   .profile-nip05 {
-    font-size: 0.9rem;
+    font-size: var(--font-body);
     color: var(--light-text);
     max-width: 100%;
     white-space: nowrap;

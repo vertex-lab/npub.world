@@ -98,7 +98,7 @@
 
     .stat-pair {
         color: var(--secondary-text);
-        font-size: 0.9rem;
+        font-size: var(--font-body);
         display: flex;
         gap: 0.25rem;
     }

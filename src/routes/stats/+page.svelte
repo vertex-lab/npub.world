@@ -137,7 +137,7 @@
         padding: 8px 14px;
         cursor: pointer;
         transition: background 0.2s ease;
-        font-size: 0.9rem;
+        font-size: var(--font-body);
 
         border: 1px solid var(--border-color);
         border-radius: 8px;
@@ -158,13 +158,14 @@
     }
 
     .title {
-        font-size: 2.5rem;
+        font-size: var(--font-hero);
         font-weight: 600;
         letter-spacing: 1.5px;
         margin: 0 auto;
     }
 
     .subtitle {
+        font-size: var(--font-body);
         color: var(--secondary-text);
         margin-top: 0.5rem;
         margin-bottom: 1.25rem;

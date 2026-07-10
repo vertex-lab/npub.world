@@ -163,7 +163,7 @@
   }
 
   .app a {
-      font-size: 0.95rem;
+      font-size: var(--font-body);
       color: var(--secondary-text);
       text-decoration: none;
       white-space: nowrap;

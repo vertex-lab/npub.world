@@ -39,7 +39,7 @@
     }
 
     .explainer {
-        font-size: 0.8rem;
+        font-size: var(--font-body);
         color: var(--secondary-text);
         padding: 0 2rem;
         text-align: left;
@@ -57,7 +57,7 @@
         align-items: center;
         gap: 0.25rem;
         color: var(--secondary-text);
-        font-size: 1rem;
+        font-size: var(--font-body);
         user-select: none;
     }
 

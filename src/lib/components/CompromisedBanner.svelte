@@ -38,21 +38,6 @@
 
 {#if config}
   <div class="banner banner--{config.variant}">
-    <span class="icon">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24px" height="24px"
-            viewBox="0 0 24 24">
-                <title xmlns="">triangle-alert</title>
-                <path fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m21.73 18l-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4m0 4h.01"/>
-            </svg>
-    </span>
-
     <div class="content">
       <span class="title">{config.title}</span>
       <span class="subtitle">{config.subtitle}</span>
@@ -84,12 +69,6 @@
     color: var(--danger-accent-text);
   }
 
-  .icon {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
   .content {
     display: flex;
     flex-direction: column;
@@ -97,12 +76,12 @@
   }
 
   .title {
-    font-size: 0.85rem;
+    font-size: var(--font-body);
     font-weight: var(--weight-bold);
   }
 
   .subtitle {
-    font-size: 0.78rem;
-    opacity: 0.8;
+    font-size: var(--font-caption);
+    margin-top: 0.4rem;
   }
 </style>

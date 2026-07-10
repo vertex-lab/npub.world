@@ -1,4 +1,4 @@
-import { parsePubkey, query, parseProfile, parsePubkeys } from '$lib/nostr.js';
+import { query, parseProfile, parsePubkeys } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
 import { ranker } from '$lib/open-ranking.js';
 
@@ -27,14 +27,19 @@ async function fetchProfiles(pubkeys) {
   }))).filter(Boolean);
 }
 
-export async function load({ locals }) {
-  const { provider, algorithms } = locals;
+async function getRecommendations(locals) {
+  const { provider, algorithms, capabilities } = locals;
   const algorithm = algorithms['/recommend/pubkeys'] ?? '';
+
+  const supportedAlgos = capabilities?.['/recommend/pubkeys'] ?? [];
+  if (supportedAlgos.length === 0) {
+    return { unsupported: true, provider };
+  }
+
   const r = { limit: 100 };
   if (algorithm) r.algorithm = algorithm;
 
-  const caps = await ranker.capabilities(provider);
-  const algoMeta = caps?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
+  const algoMeta = supportedAlgos.find(a => a.id === algorithm);
   if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
   const [response, muted] = await Promise.all([
@@ -43,43 +48,21 @@ export async function load({ locals }) {
   ]);
 
   const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
-  const profiles = await fetchProfiles(pubkeys);
-  return { profiles };
+  return fetchProfiles(pubkeys);
+}
+
+export async function load({ locals }) {
+  const result = await getRecommendations(locals);
+  if (result.unsupported) return result;
+  return { profiles: result };
 }
 
 export const actions = {
-  recommend: async ({ request, locals }) => {
+  recommend: async ({ locals }) => {
     try {
-      const { provider } = locals;
-
-      const data = await request.formData();
-      const algorithm = data.get('algorithm') || '';
-      const input = data.get('pubkey') || '';
-
-      const r = { limit: 100 };
-      if (algorithm) r.algorithm = algorithm;
-
-      const caps = await ranker.capabilities(provider);
-      const algoMeta = caps?.['/recommend/pubkeys']?.find(a => a.id === algorithm);
-      if (algoMeta?.pov) {
-        if (input) {
-          const pubkey = parsePubkey(input);
-          if (!pubkey) return { error: 'Please enter a valid npub or hex pubkey' };
-          r.pov = pubkey;
-        } else if (locals.pubkey) {
-          r.pov = locals.pubkey;
-        }
-      }
-
-      const [response, muted] = await Promise.all([
-        ranker.recommendPubkeys(provider, r),
-        fetchMutedPubkeys(locals.pubkey),
-      ]);
-
-      const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
-      const profiles = await fetchProfiles(pubkeys);
-      return { profiles };
-
+      const result = await getRecommendations(locals);
+      if (result.unsupported) return result;
+      return { profiles: result };
     } catch (err) {
       console.error('Explore error:', err);
       return { error: err.message || err.toString() };

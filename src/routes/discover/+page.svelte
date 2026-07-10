@@ -4,21 +4,21 @@
   import AlgoPill from '$lib/components/AlgoPill.svelte';
   import ProfileCard from './ProfileCard.svelte';
 
-  let { data, form } = $props();
+  let { data } = $props();
 
-  let profiles = $state(form?.profiles ?? data.profiles);
+  let profiles = $state(data.profiles);
+  let unsupported = $state(data.unsupported ?? false);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
   let loading = $state(false);
+  let unsupportedProvider = $derived((() => { try { return new URL(data.provider ?? '').hostname; } catch { return data.provider ?? ''; } })());
 
-  async function selectAlgo(algo) {
+  async function reload() {
     loading = true;
 
-    const params = new FormData();
-    params.set('algorithm', algo.id);
-
-    const response = await fetch('?/recommend', { method: 'POST', body: params });
+    const response = await fetch('?/recommend', { method: 'POST', body: new FormData() });
     const result = deserialize(await response.text());
     if (result.data?.profiles) profiles = result.data.profiles;
+    if (result.data?.unsupported != null) unsupported = result.data.unsupported;
 
     loading = false;
   }
@@ -37,10 +37,15 @@
   <div class="top-section">
     <h1 class="title">Discover</h1>
     <p class="subtitle">Meet the people that make Nostr so special.</p>
-    <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={selectAlgo} />
+    <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={reload} />
   </div>
 
-  {#if profiles?.length}
+  {#if unsupported}
+    <p class="unsupported-notice">
+      <strong>{unsupportedProvider}</strong> doesn't support Discovery.<br>
+      To use this feature, change your provider from the <a href="/settings">settings</a>.
+    </p>
+  {:else if profiles?.length}
     <div class="grid-wrapper">
       <div class="grid">
         {#each profiles as profile}
@@ -69,6 +74,17 @@
     letter-spacing: 1.5px;
     margin: 0;
   }
+
+  .unsupported-notice {
+    text-align: center;
+    color: var(--error);
+    font-size: var(--font-body);
+  }
+
+  .unsupported-notice a {
+    color: var(--error);
+  }
+
 
   .subtitle {
     font-size: var(--font-body);

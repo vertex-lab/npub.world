@@ -10,10 +10,11 @@ import cron from "node-cron";
 export const handle = async ({ event, resolve }) => {
   const { pubkey, nwt } = getAuth(event.cookies);
   const { provider, algorithms } = getSettings(event.cookies);
-  event.locals.pubkey    = pubkey;
-  event.locals.nwt       = nwt;
-  event.locals.provider  = provider;
-  event.locals.algorithms = algorithms;
+  event.locals.pubkey      = pubkey;
+  event.locals.nwt         = nwt;
+  event.locals.provider    = provider;
+  event.locals.algorithms  = algorithms;
+  event.locals.capabilities = await ranker.capabilities(provider);
 
   const response = await resolve(event);
   return response;

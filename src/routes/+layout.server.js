@@ -1,10 +1,8 @@
-import { ranker } from '$lib/open-ranking.js';
+
 import { query, parseProfile } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
 
 export async function load({ locals }) {
-  const capabilities = await ranker.capabilities(locals.provider);
-
   let user = null;
   try {
     const pubkey = locals.pubkey;
@@ -28,5 +26,5 @@ export async function load({ locals }) {
     // invalid or missing NWT, treat as logged out
   }
 
-  return { capabilities, user };
+  return { user };
 }

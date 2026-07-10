@@ -1,14 +1,12 @@
 <script>
   import { invalidateAll } from '$app/navigation';
-  import { settings, setProvider, setAlgo, setTheme } from '$lib/settings.svelte.js';
+  import { settings, setProvider, setTheme } from '$lib/settings.svelte.js';
   import { auth, login, logout } from '$lib/auth.svelte.js';
   import ProfileHeader from '$lib/components/ProfileHeader.svelte';
-  import AlgoModal from '$lib/components/AlgoModal.svelte';
+  import AlgoPill from '$lib/components/AlgoPill.svelte';
 
   let loginError = $state('');
   let loginLoading = $state(false);
-  let showSearchModal = $state(false);
-  let showDiscoverModal = $state(false);
 
   async function handleLogin() {
     loginError = '';
@@ -30,31 +28,10 @@
 
   let searchAlgos   = $derived(data.capabilities?.['/search/pubkeys']    ?? []);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
-
-  let selectedSearchAlgo   = $derived(searchAlgos.find(a => a.id === settings.algorithms['/search/pubkeys'])    ?? searchAlgos[0]   ?? null);
-  let selectedDiscoverAlgo = $derived(discoverAlgos.find(a => a.id === settings.algorithms['/recommend/pubkeys']) ?? discoverAlgos[0] ?? null);
 </script>
 
 {#if loginError}
   <div class="toast">{loginError}</div>
-{/if}
-
-{#if showSearchModal}
-  <AlgoModal
-    algorithms={searchAlgos}
-    selected={selectedSearchAlgo}
-    onselect={(algo) => { setAlgo('/search/pubkeys', algo.id); showSearchModal = false; }}
-    onclose={() => showSearchModal = false}
-  />
-{/if}
-
-{#if showDiscoverModal}
-  <AlgoModal
-    algorithms={discoverAlgos}
-    selected={selectedDiscoverAlgo}
-    onselect={(algo) => { setAlgo('/recommend/pubkeys', algo.id); showDiscoverModal = false; }}
-    onclose={() => showDiscoverModal = false}
-  />
 {/if}
 
 <svelte:head>
@@ -178,14 +155,7 @@
           <h2 class="section-title">Search</h2>
           <p class="section-subtitle">Choose the algorithm to optimize your search experience</p>
         </div>
-        {#if searchAlgos.length > 0}
-          <button class="pill" onclick={() => showSearchModal = true}>
-            {selectedSearchAlgo?.name ?? '—'}
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-            </svg>
-          </button>
-        {/if}
+        <AlgoPill algorithms={searchAlgos} endpoint="/search/pubkeys" />
       </div>
     </div>
 
@@ -198,14 +168,7 @@
           <h2 class="section-title">Discover</h2>
           <p class="section-subtitle">Choose the algorithm to power your discovery feed</p>
         </div>
-        {#if discoverAlgos.length > 0}
-          <button class="pill" onclick={() => showDiscoverModal = true}>
-            {selectedDiscoverAlgo?.name ?? '—'}
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-            </svg>
-          </button>
-        {/if}
+        <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" />
       </div>
     </div>
 
@@ -375,7 +338,6 @@
     font-weight: var(--weight-bold);
   }
 
-  /* Algo pill */
   @media (max-width: 576px) {
     .section-header:not(.section-header--inline) {
       flex-direction: column;
@@ -385,27 +347,6 @@
     .provider-input {
       width: 100%;
     }
-  }
-
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: var(--font-caption);
-    color: var(--secondary-text);
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: 999px;
-    padding: 4px 10px;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .pill:hover {
-    color: var(--primary-text);
-    border-color: var(--secondary-text);
   }
 
   .support-links {

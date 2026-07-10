@@ -1,26 +1,16 @@
 <script>
   import { deserialize } from '$app/forms';
   import Logo from '$lib/components/Logo.svelte';
-  import AlgoModal from '$lib/components/AlgoModal.svelte';
+  import AlgoPill from '$lib/components/AlgoPill.svelte';
   import ProfileCard from './ProfileCard.svelte';
-  import { settings, setAlgo } from '$lib/settings.svelte.js';
 
   let { data, form } = $props();
 
   let profiles = $state(form?.profiles ?? data.profiles);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
-  let selectedAlgo = $derived(
-    discoverAlgos.find(a => a.id === settings.algorithms['/recommend/pubkeys']) ?? discoverAlgos[0] ?? null
-  );
-  let showModal = $state(false);
   let loading = $state(false);
 
-  function openModal() { showModal = true; }
-  function closeModal() { showModal = false; }
-
   async function selectAlgo(algo) {
-    setAlgo('/recommend/pubkeys', algo.id);
-    closeModal();
     loading = true;
 
     const params = new FormData();
@@ -32,6 +22,7 @@
 
     loading = false;
   }
+
 
 
 </script>
@@ -46,12 +37,7 @@
   <div class="top-section">
     <h1 class="title">Discover</h1>
     <p class="subtitle">Meet the people that make Nostr so special.</p>
-    <button class="pill" onclick={openModal} disabled={loading}>
-      {loading ? 'Loading…' : `${selectedAlgo?.name ?? selectedAlgo?.id ?? ''}`}
-      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-      </svg>
-    </button>
+    <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={selectAlgo} />
   </div>
 
   {#if profiles?.length}
@@ -64,15 +50,6 @@
     </div>
   {/if}
 </div>
-
-{#if showModal}
-  <AlgoModal
-    algorithms={discoverAlgos}
-    selected={selectedAlgo}
-    onselect={selectAlgo}
-    onclose={closeModal}
-  />
-{/if}
 
 <style>
   .centered {
@@ -106,31 +83,6 @@
     position: relative;
     left: 50%;
     transform: translateX(-50%);
-  }
-
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: var(--font-caption);
-    color: var(--secondary-text);
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: 999px;
-    padding: 4px 10px;
-    margin: 0.25rem;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .pill:hover {
-    color: var(--primary-text);
-    border-color: var(--secondary-text);
-  }
-
-  .pill:disabled {
-    opacity: 0.6;
-    cursor: default;
   }
 
   .grid {

@@ -20,7 +20,7 @@
   }
 </script>
 
-<Modal title="Algorithm" {onclose}>
+<Modal title="Algorithms" {onclose}>
   {#each algorithms as algo}
     <button
       class="algo-option"
@@ -55,18 +55,19 @@
 
   .algo-option:hover,
   .algo-option.selected {
-    background: var(--border-color);
+    background-color: var(--highlight-color);
   }
 
   .algo-name {
     font-size: var(--font-body);
+    font-weight: var(--weight-bold);
     color: var(--primary-text);
   }
 
   .algo-desc {
     font-size: var(--font-body);
     color: var(--secondary-text);
-    margin-top: 2px;
+    margin-top: 0.4rem;
   }
 
   .requires-login {

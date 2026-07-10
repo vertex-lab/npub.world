@@ -94,7 +94,7 @@
       <div class="section-header">
         <div>
           <h2 class="section-title">Enjoying npub.world?</h2>
-          <p class="section-subtitle">If it helped you discover awesome people, consider showing some love</p>
+          <p class="section-subtitle">If it helped you connect with awesome people, consider showing some love</p>
         </div>
         <div class="support-links">
           <a href="https://github.com/vertex-lab/npub.world" target="_blank" rel="noopener noreferrer" class="support-link">

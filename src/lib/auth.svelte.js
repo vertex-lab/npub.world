@@ -25,15 +25,20 @@ export function isLoggedIn() {
  * Prompts the user to sign a Nostr Web Token (kind 27519) via NIP-07,
  * validates the event id and signature, then stores it.
  */
-export async function login() {
+export async function login(provider) {
   if (!browser) throw new Error('Login is only available in the browser.');
   if (!window.nostr) throw new Error('No Nostr extension found. Please install one (e.g. Alby, nos2x).');
+
+  const aud = new URL(provider).hostname;
 
   const nwt = await window.nostr.signEvent({
     kind: 27519,
     created_at: Math.floor(Date.now() / 1000),
-    tags: [],
-    content: '',
+    tags: [
+      ['aud',   aud],
+      ['proto', 'open-ranking'],
+    ],
+    content: 'Login with Nostr to ' + aud,
   });
 
   if (!verifyEvent(nwt)) throw new Error('Invalid event: signature verification failed.');

@@ -3,6 +3,7 @@
   import { invalidateAll } from '$app/navigation';
   import Modal from './Modal.svelte';
   import { settings, setProvider } from '$lib/settings.svelte.js';
+  import { logout } from '$lib/auth.svelte.js';
   import { ranker } from '$lib/open-ranking.js';
   import { safeURL } from '$lib/string.js';
 
@@ -77,6 +78,7 @@
   function save() {
     const url = normalize(inputValue);
     setProvider(url);
+    logout(); // NWT was scoped to the old provider's aud; force re-login
     ranker.add(url); // pre-warm server-side on next SSR load; fire-and-forget
     showModal = false;
     invalidateAll(); // re-run load functions with the new provider cookie

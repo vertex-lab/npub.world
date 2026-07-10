@@ -13,7 +13,7 @@
     loginError = '';
     loginLoading = true;
     try {
-      await login();
+      await login(settings.provider);
       await invalidateAll();
     } catch (e) {
       loginError = e.message;

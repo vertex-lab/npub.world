@@ -38,14 +38,12 @@
   .profile-stats {
     display: flex;
     gap: 1rem;
-    margin: 0 0 0.5rem 0;
   }
 
   @media (max-width: 576px) {
     .profile-stats {
       flex-wrap: nowrap;
       justify-content: center;
-      margin-bottom: 0.5rem;
     }
   }
 </style>

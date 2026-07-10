@@ -29,10 +29,6 @@
     max-width: 700px;
   }
 
-  .header {
-    margin: 0 0 1rem;
-  }
-
   .search-container {
     max-width: 600px;
     margin: 0 auto;

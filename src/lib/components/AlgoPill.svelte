@@ -1,5 +1,8 @@
 <script>
-  import AlgoModal from './AlgoModal.svelte';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { auth } from '$lib/auth.svelte.js';
+  import Modal from './Modal.svelte';
   import { settings, setAlgo } from '$lib/settings.svelte.js';
 
   /**
@@ -16,10 +19,19 @@
   );
   let showModal = $state(false);
 
+  function requiresPov(algo) {
+    return algo.pov === true;
+  }
+
   async function handleSelect(algo) {
-    setAlgo(endpoint, algo.id);
-    showModal = false;
-    await onselect?.(algo);
+    if (requiresPov(algo) && !auth.nwt) {
+      showModal = false;
+      if ($page.url.pathname !== '/settings') goto('/settings');
+    } else {
+      setAlgo(endpoint, algo.id);
+      showModal = false;
+      await onselect?.(algo);
+    }
   }
 </script>
 
@@ -33,12 +45,23 @@
 {/if}
 
 {#if showModal}
-  <AlgoModal
-    {algorithms}
-    selected={selectedAlgo}
-    onselect={handleSelect}
-    onclose={() => showModal = false}
-  />
+  <Modal title="Algorithms" onclose={() => showModal = false}>
+    {#each algorithms as algo}
+      <button
+        class="algo-option"
+        class:selected={selectedAlgo?.id === algo.id}
+        onclick={() => handleSelect(algo)}
+      >
+        <span class="algo-name">{algo.name}</span>
+        {#if requiresPov(algo)}
+          <span class="requires-login">requires login</span>
+        {/if}
+        {#if algo.description}
+          <span class="algo-desc">{algo.description}</span>
+        {/if}
+      </button>
+    {/each}
+  </Modal>
 {/if}
 
 <style>
@@ -51,15 +74,15 @@
     background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 999px;
-    padding: 6px 10px;
-  }
-
-  .pill.icon-only {
-    padding: 6px 6px;
+    padding: 4px 10px;
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
     transition: color 0.15s, border-color 0.15s;
+  }
+
+  .pill.icon-only {
+    padding: 4px 6px;
   }
 
   .pill:hover {
@@ -70,5 +93,50 @@
   .pill:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+
+  .algo-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .algo-option:hover,
+  .algo-option.selected {
+    background-color: var(--highlight-color);
+  }
+
+  .algo-name {
+    font-size: var(--font-body);
+    font-weight: var(--weight-bold);
+    color: var(--primary-text);
+  }
+
+  .algo-desc {
+    font-size: var(--font-body);
+    color: var(--secondary-text);
+    margin-top: 0.4rem;
+  }
+
+  .requires-login {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: var(--font-caption);
+    color: var(--secondary-text);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .requires-login:hover {
+    color: var(--primary-text);
   }
 </style>

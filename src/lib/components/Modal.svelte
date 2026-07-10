@@ -67,7 +67,7 @@
   .modal-title {
     margin: 10px;
     font-size: var(--font-display);
-    font-weight: 500;
+    font-weight: var(--weight-medium);
     color: var(--primary-text);
   }
 

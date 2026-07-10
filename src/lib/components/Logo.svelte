@@ -25,7 +25,7 @@
 
     .logo-text span {
         font-size: 1.8rem;
-        font-weight: bold;
+        font-weight: var(--weight-bold);
         color: var(--primary-text);
         line-height: 1.1;
     }

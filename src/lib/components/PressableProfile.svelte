@@ -51,7 +51,7 @@ a {
 
 .profile-name {
   font-size: var(--font-body);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

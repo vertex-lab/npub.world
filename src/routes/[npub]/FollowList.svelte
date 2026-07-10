@@ -104,7 +104,7 @@
     }
 
     .stat {
-        font-weight: bold;
+        font-weight: var(--weight-bold);
     }
 
     .modal-message {

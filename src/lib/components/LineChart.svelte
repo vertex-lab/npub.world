@@ -98,7 +98,7 @@
 
   .title {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: var(--weight-bold);
     margin: 0 0 0.5rem 0;
     text-align: center;
   }

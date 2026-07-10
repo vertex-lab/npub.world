@@ -98,7 +98,7 @@
 
   .title {
     font-size: 0.85rem;
-    font-weight: 700;
+    font-weight: var(--weight-bold);
   }
 
   .subtitle {

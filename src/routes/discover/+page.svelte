@@ -88,7 +88,7 @@
 
   .title {
     font-size: var(--font-hero);
-    font-weight: 600;
+    font-weight: var(--weight-bold);
     letter-spacing: 1.5px;
     margin: 0;
   }

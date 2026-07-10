@@ -60,7 +60,7 @@
 
   .name {
     display: block;
-    font-weight: 500;
+    font-weight: var(--weight-medium);
     font-size: var(--font-body);
     color: var(--primary-text);
     white-space: nowrap;

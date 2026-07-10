@@ -68,7 +68,7 @@
   .profile-name {
     word-wrap: break-word;
     font-size: var(--font-display);
-    font-weight: 600;
+    font-weight: var(--weight-bold);
     margin: 0;
   }
 

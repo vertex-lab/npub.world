@@ -281,6 +281,7 @@
 
   .section-title {
     font-size: var(--font-body);
+    font-weight: var(--weight-bold);
     color: var(--primary-text);
     margin: 0;
   }
@@ -371,7 +372,7 @@
 
   .theme-card.selected .theme-label {
     color: var(--primary-text);
-    font-weight: 600;
+    font-weight: var(--weight-bold);
   }
 
   /* Algo pill */

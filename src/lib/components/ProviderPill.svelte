@@ -11,7 +11,7 @@
     { key: ENDPOINT_RANK_PUBKEYS,      label: 'Ranking (ORE-03)',   required: true },
     { key: ENDPOINT_RECOMMEND_PUBKEYS, label: 'Discovery (ORE-04)', required: false },
     { key: ENDPOINT_SEARCH_PUBKEYS,    label: 'Search (ORE-05)',    required: true },
-    { key: ENDPOINT_FOLLOWERS,         label: 'Followers (ORE-06)', required: true },
+    { key: ENDPOINT_FOLLOWERS,         label: 'Followers (ORE-06)', required: false },
     { key: ENDPOINT_COMPROMISED_PUBKEYS, label: 'Compromised (ORE-08)', required: false },
   ];
 

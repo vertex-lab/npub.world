@@ -2,23 +2,26 @@ import { query, parseProfile, parsePubkeys, resolveNIP05 } from "$lib/nostr.js";
 import { normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$lib/string.js";
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
+import { ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
 
 import { imager, lowResolution, highResolution } from "$lib/image.js";
 import { ranker } from '$lib/open-ranking.js';
 import { marked } from 'marked';
 
 export async function load({ params, locals }) {
-  const { provider } = locals;
+  const { provider, capabilities } = locals;
   const pubkey = await resolve(params.npub);
 
+  const supportsFollowers   = capabilities?.[ENDPOINT_FOLLOWERS]?.length > 0;
+  const supportsCompromised = capabilities?.[ENDPOINT_COMPROMISED_PUBKEYS]?.length > 0;
 
   try {
-    const [stats, followers] = await Promise.all([
+    const [stats, followersResponse] = await Promise.all([
       ranker.statsPubkey(provider, { pubkey }),
-      ranker.followers(provider, { pubkey, limit: 10 }),
+      supportsFollowers ? ranker.followers(provider, { pubkey, limit: 10 }) : null,
     ]);
 
-    const followersPubkeys = followers.results.map(r => r.pubkey);
+    const followersPubkeys = followersResponse?.results.map(r => r.pubkey) ?? [];
 
     let profileEvents = await query({
       kinds: [0],
@@ -38,14 +41,14 @@ export async function load({ params, locals }) {
           npub: p.npub,
           name: p.name,
           picture: await imager.load(p.pictureURL, lowResolution),
-                    pictureURL: p.picture,
+          pictureURL: p.picture,
           nip05: p.nip05,
         };
       })
     )).filter(Boolean);
 
     let compromise = null;
-    if (stats.rank == 0) {
+    if (supportsCompromised && stats.rank == 0) {
       const result = await ranker.compromisedPubkeys(provider, { pubkeys: [pubkey] });
       compromise = result[pubkey] ?? null;
     }
@@ -116,39 +119,16 @@ async function resolve(input) {
   }
 }
 
-/**
- * Parse and validate `npub` and `limit` from URLSearchParams.
- * Returns an object with `pubkey` and `limit` or an `error` message.
- * @param {URLSearchParams} params
- * @returns {{ pubkey: string, limit: number }}
- */
-function parse(params) {
-  const npub = params.get('npub') ?? '';
-
-  let pubkey;
-  try {
-    const { type, data } = nip19.decode(npub);
-    if (type !== 'npub') return { error: 'Invalid npub' };
-    pubkey = data;
-  } catch(err) {
-    return { error: 'Invalid npub' };
-  }
-
-  let limit = parseInt(params.get('limit') ?? '100', 10);
-  if (isNaN(limit) || limit <= 0) {
-    return { error: 'Limit must be a positive number' };
-  }
-
-  limit = Math.min(limit, 100); // max is 100
-  return { pubkey, limit };
+function parseLimit(formData) {
+  const limit = Math.min(parseInt(formData.get('limit') ?? '100', 10), 100);
+  if (isNaN(limit) || limit <= 0) return { error: 'Limit must be a positive number' };
+  return { limit };
 }
-
 
 
 async function fetchProfiles(pubkeys) {
   if (!pubkeys.length) return [];
-  let events = await query(
-    {
+  let events = await query({
       kinds: [0],
       authors: pubkeys,
       limit: pubkeys.length,
@@ -162,18 +142,20 @@ async function fetchProfiles(pubkeys) {
       npub: p.npub,
       name: p.name,
       picture: await imager.load(p.pictureURL, lowResolution),
-            nip05: p.nip05,
+      nip05: p.nip05,
     };
   }))).filter(Boolean);
 }
 
 export const actions = {
-  followers: async ({ request, locals }) => {
+  followers: async ({ request, locals, params }) => {
     const { provider } = locals;
     try {
-      const params = await request.formData();
-      const { pubkey, limit, error } = parse(params);
-      if (error) return { error }
+      const { type, data: pubkey } = nip19.decode(params.npub);
+      if (type !== 'npub') return { error: 'Invalid npub' };
+
+      const { limit, error } = parseLimit(await request.formData());
+      if (error) return { error };
 
       const response = await ranker.followers(provider, { pubkey, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));
@@ -184,12 +166,14 @@ export const actions = {
     }
   },
 
-  follows: async ({ request, locals }) => {
+  follows: async ({ request, locals, params }) => {
     const { provider } = locals;
     try {
-      const params = await request.formData();
-      const { pubkey, limit, error } = parse(params);
-      if (error) return { error }
+      const { type, data: pubkey } = nip19.decode(params.npub);
+      if (type !== 'npub') return { error: 'Invalid npub' };
+
+      const { limit, error } = parseLimit(await request.formData());
+      if (error) return { error };
 
       let followList = await query({
         kinds: [3],
@@ -199,10 +183,7 @@ export const actions = {
 
       let pubkeys = parsePubkeys(followList[0]);
       if (pubkeys.length === 0) return [];
-      if (pubkeys.length > 1000) {
-        // limit to 1000 pubkeys to avoid "too many pubkeys" error
-        pubkeys = pubkeys.slice(0, 1000);
-      }
+      if (pubkeys.length > 1000) pubkeys = pubkeys.slice(0, 1000);
 
       const response = await ranker.rankPubkeys(provider, { pubkeys, limit });
       return await fetchProfiles(response.results.map(r => r.pubkey));

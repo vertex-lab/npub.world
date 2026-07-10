@@ -88,6 +88,7 @@
         <InfoTable profile={data} />
       </div>
 
+      {#if data.followerProfiles?.length}
       <div class="followers-container">
         <p style="color: var(--secondary-text);">Top Followers:</p>
         <div class="followers-grid">
@@ -96,6 +97,7 @@
           {/each}
         </div>
       </div>
+      {/if}
 
       <div class="app-grid">
         {#each apps as app}

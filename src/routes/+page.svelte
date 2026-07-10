@@ -30,7 +30,7 @@
   }
 
   .header {
-    margin: 0 1rem 1rem 1rem;
+    margin: 0 0 1rem;
   }
 
   .search-container {

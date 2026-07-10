@@ -41,9 +41,9 @@
 
 <footer>
 	<div class="shoutouts">
-		<p>Built by <a href="/npub176p7sup477k5738qhxx0hk2n0cty2k5je5uvalzvkvwmw4tltmeqw7vgup">Pip</a></p>
+		<a href="/npub176p7sup477k5738qhxx0hk2n0cty2k5je5uvalzvkvwmw4tltmeqw7vgup" class="shoutout">Built by Pip</a>
 		<p class="separator">•</p>
-		<p>Designed by <a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq">Vlad</a></p>
+		<a href="/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq" class="shoutout">Designed by Vlad</a>
 	</div>
 </footer>
 
@@ -117,5 +117,10 @@
 
 	.separator {
 		margin: 0 0.5rem;
+	}
+
+	.shoutout {
+		color: var(--secondary-text);
+		text-decoration: none;
 	}
 </style>

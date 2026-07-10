@@ -74,7 +74,7 @@
     background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 999px;
-    padding: 4px 10px;
+    padding: 6px 10px;
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
@@ -82,7 +82,7 @@
   }
 
   .pill.icon-only {
-    padding: 4px 6px;
+    padding: 6px 6px;
   }
 
   .pill:hover {

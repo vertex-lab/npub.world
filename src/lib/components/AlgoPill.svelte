@@ -43,6 +43,13 @@
       <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
     </svg>
   </button>
+{:else}
+  <button class="pill" class:icon-only={!showLabel} disabled>
+    {#if showLabel}Unsupported{/if}
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
+    </svg>
+  </button>
 {/if}
 
 {#if showModal}
@@ -106,6 +113,7 @@
   .pill:disabled {
     opacity: 0.6;
     cursor: default;
+    pointer-events: none;
   }
 
   .algo-option {

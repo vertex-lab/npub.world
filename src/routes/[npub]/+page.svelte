@@ -73,7 +73,7 @@
   </div>
 
   <div class="search-container">
-    <SearchBox bind:this={searchBoxRef} algorithms={data.capabilities?.['/search/pubkeys'] ?? []}/>
+    <SearchBox bind:this={searchBoxRef} algorithms={data.capabilities?.['/search/pubkeys'] ?? []} />
   </div>
 </header>
 

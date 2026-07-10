@@ -26,5 +26,5 @@ export async function load({ locals }) {
     // invalid or missing NWT, treat as logged out
   }
 
-  return { user };
+  return { capabilities: locals.capabilities, user };
 }

@@ -6,9 +6,10 @@
    * @prop {Array}    algorithms  - List of algorithm objects for this endpoint.
    * @prop {string}   endpoint    - API endpoint key, e.g. '/search/pubkeys'.
    * @prop {boolean}  [loading]   - When true, shows "Loading…" and disables the button.
+   * @prop {boolean}  [showLabel] - When true (default), shows the algo name alongside the icon.
    * @prop {Function} [onselect]  - Optional callback invoked after the algo is saved.
    */
-  let { algorithms, endpoint, loading = false, onselect } = $props();
+  let { algorithms, endpoint, loading = false, showLabel = true, onselect } = $props();
 
   let selectedAlgo = $derived(
     algorithms.find(a => a.id === settings.algorithms[endpoint]) ?? algorithms[0] ?? null
@@ -23,8 +24,8 @@
 </script>
 
 {#if algorithms.length > 0}
-  <button class="pill" onclick={() => showModal = true} disabled={loading}>
-    {loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? '')}
+  <button class="pill" class:icon-only={!showLabel} onclick={() => showModal = true} disabled={loading}>
+    {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? '')}{/if}
     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
     </svg>
@@ -50,7 +51,11 @@
     background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 999px;
-    padding: 4px 10px;
+    padding: 6px 10px;
+  }
+
+  .pill.icon-only {
+    padding: 6px 6px;
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;

@@ -155,7 +155,7 @@
           <h2 class="section-title">Search</h2>
           <p class="section-subtitle">Choose the algorithm to optimize your search experience</p>
         </div>
-        <AlgoPill algorithms={searchAlgos} endpoint="/search/pubkeys" />
+        <AlgoPill algorithms={searchAlgos} endpoint="/search/pubkeys" accent={false} />
       </div>
     </div>
 
@@ -168,7 +168,7 @@
           <h2 class="section-title">Discover</h2>
           <p class="section-subtitle">Choose the algorithm to power your discovery feed</p>
         </div>
-        <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" />
+        <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" accent={false} />
       </div>
     </div>
 

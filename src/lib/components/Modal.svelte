@@ -17,7 +17,7 @@
     class="modal"
     role="document"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.stopPropagation()}
+    onkeydown={(e) => { if (e.key !== 'Escape') e.stopPropagation(); }}
   >
     <div class="modal-header">
       <div class="modal-titles">

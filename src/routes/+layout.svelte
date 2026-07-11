@@ -5,7 +5,7 @@
 	let { children, data } = $props();
 
 	let scrollY = $state(0);
-	const navOpacity = $derived(Math.max(0, 1 - scrollY / 80));
+	const navOpacity = $derived(Math.max(0, 1 - scrollY / 40));
 
 	onMount(() => {
 		const onScroll = () => scrollY = window.scrollY;

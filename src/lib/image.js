@@ -8,6 +8,9 @@ export const imagesPath = '/tmp/npub.world/pfp/'
 export const lowResolution = '_100px'
 export const highResolution = '_300px'
 
+const FETCH_TIMEOUT_MS        = 3_000;
+const TRANSIENT_RETRY_AFTER   = 1000 * 60 * 10;  // 10 minutes (timeouts, network errors)
+const PERMANENT_RETRY_AFTER   = 1000 * 60 * 60 * 4;  // 4 hours (404, 403, etc.)
 
 const isPermanentFailure = (status) => {
   return status === 400 || status === 403 || status === 404 || status === 410;
@@ -30,7 +33,7 @@ function containsImage(response) {
 class Imager {
   constructor() {
     // Tracks URLs that recently failed, to avoid repeated fetching
-    this.badURLs = new LRUCache({ max: 10_000, ttl: 1000 * 60 * 10 });
+    this.badURLs = new LRUCache({ max: 10_000, ttl: TRANSIENT_RETRY_AFTER });
   }
 
   async init() {
@@ -58,10 +61,18 @@ class Imager {
     if (quality !== lowResolution && quality !== highResolution) return null;
     if (this.badURLs.has(url)) return null;
 
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
+
     try {
-      const response = await fetch(url, { redirect: 'follow' });
+      const response = await fetch(url, { redirect: 'follow', signal: ac.signal });
+      if (isPermanentFailure(response.status)) {
+        this.badURLs.set(url, true, { ttl: PERMANENT_RETRY_AFTER });
+        return null;
+      }
+
       if (response.status !== 200) {
-        if (isPermanentFailure(response.status)) this.badURLs.set(url, true);
+        this.badURLs.set(url, true);
         return null;
       }
 
@@ -94,9 +105,10 @@ class Imager {
     } catch {
       this.badURLs.set(url, true);
       return null;
+    } finally {
+      clearTimeout(timer);
     }
   }
-
 }
 
 export const imager = new Imager();

@@ -5,7 +5,7 @@ export const DEFAULT_PROVIDER_URL = "https://ranking.vertexlab.io";
 
 
 const DEFAULT_TIMEOUT   = 3000;
-const PROVIDERS_MAX     = 20;
+const PROVIDERS_MAX     = 100;
 const PROVIDERS_TTL     = 1000 * 60 * 30; // 30 minutes, reset on use
 const CACHE_MAX_ENTRIES = 10_000;
 const CACHE_DEFAULT_TTL = 1000 * 60 * 5;  // 5 minutes

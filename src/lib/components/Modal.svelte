@@ -2,6 +2,8 @@
   let { title, subtitle, onclose, children } = $props();
 </script>
 
+<svelte:window onkeydown={(e) => { if (e.key === 'Escape') onclose(); }} />
+
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   class="modal-overlay"
@@ -15,7 +17,7 @@
     class="modal"
     role="document"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => { if (e.key === 'Escape') onclose(); else e.stopPropagation(); }}
+    onkeydown={(e) => e.stopPropagation()}
   >
     <div class="modal-header">
       <div class="modal-titles">

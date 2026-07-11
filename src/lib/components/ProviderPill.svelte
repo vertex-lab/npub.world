@@ -104,7 +104,7 @@
           bind:value={inputValue}
           oninput={() => { caps = null; error = null; }}
           onkeydown={handleKeydown}
-          placeholder="https://ranking.example.com"
+          placeholder="ranking.example.com"
           spellcheck="false"
           autocomplete="off"
           bind:this={inputRef}

@@ -37,14 +37,14 @@
 </script>
 
 {#if algorithms.length > 0}
-  <button class="pill" class:icon-only={!showLabel} class:accent onclick={() => showModal = true} disabled={loading}>
+  <button type="button" class="pill" class:icon-only={!showLabel} class:accent onclick={() => showModal = true} disabled={loading}>
     {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? '')}{/if}
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
     </svg>
   </button>
 {:else}
-  <button class="pill" class:icon-only={!showLabel} disabled>
+  <button type="button" class="pill" class:icon-only={!showLabel} disabled>
     {#if showLabel}Unsupported{/if}
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>

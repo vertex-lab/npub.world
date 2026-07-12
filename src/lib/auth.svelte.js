@@ -4,7 +4,7 @@ import { resetAlgos } from '$lib/settings.svelte.js';
 
 const STORAGE_KEY  = 'npub.world.auth';
 const COOKIE_KEY   = 'npub_world_nwt';
-const COOKIE_MAX_AGE = 60 * 60 * 24; // 1 day
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 1 week
 
 function load() {
   if (!browser) return { nwt: null };
@@ -35,7 +35,8 @@ export async function login(provider) {
     kind: 27519,
     created_at: Math.floor(Date.now() / 1000),
     tags: [
-      ['aud',   aud],
+      ['aud', aud],
+      ['exp', String(Math.floor(Date.now() / 1000) + COOKIE_MAX_AGE)],
       ['proto', 'open-ranking'],
     ],
     content: 'Login with Nostr to ' + aud,

@@ -15,6 +15,12 @@
    */
   let { algorithms, endpoint, loading = false, showLabel = true, accent = true, onselect } = $props();
 
+  const SUBTITLES = {
+    '/search/pubkeys':    'Choose the algorithm to optimize your search experience',
+    '/recommend/pubkeys': 'Choose the algorithm to power your discovery feed',
+  };
+  const subtitle = SUBTITLES[endpoint] ?? '';
+
   let selectedAlgo = $derived(
     algorithms.find(a => a.id === settings.algorithms[endpoint]) ?? algorithms[0] ?? null
   );
@@ -53,7 +59,7 @@
 {/if}
 
 {#if showModal}
-  <Modal title="Algorithms" onclose={() => showModal = false}>
+  <Modal title="Algorithms" {subtitle} onclose={() => showModal = false}>
     {#each algorithms as algo}
       <button
         class="algo-option"

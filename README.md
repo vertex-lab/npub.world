@@ -1,49 +1,48 @@
 # npub.world
 
-A Nostr profile search engine and viewer by [Vertex](https://vertexlab.io).
+A Nostr profile search engine, viewer, and discovery app.
 
 ## What is npub.world?
 
-**npub.world** is a web application for searching and viewing Nostr profiles. It allows to search for Nostr users by their name, public key, NIP-05 identifier, or other profile information, and view detailed information about each profile, including reputation and top followers.
+**npub.world** is a web application for searching, viewing, and discovering Nostr profiles. It lets you search for Nostr users by name, public key, or NIP-05 identifier, view detailed profile information including reputation and top followers, and discover new people through algorithm-powered recommendations.
 
 ## Features
 
 - **Search Nostr Profiles**  
-  Enter a name, Nostr public key, NIP-05, or other identifier to find profiles.
-- **Profile Viewer**  
-  View detailed information about any Nostr profile, including bio, website, lightning address, and more.
-- **Reputation & Followers**  
-  See reputation status and top followers for each profile.
+  Enter a name, public key, NIP-05, or other identifier to find profiles.
+- **Profile & Reputation Viewer**  
+  View detailed information about any Nostr profile, including bio, website, lightning address, reputation status, and top followers.
+- **Discovery**  
+  Discover new people on Nostr through algorithm-powered recommendations.
+- **Open Ranking Agnostic**  
+  Switch to any compatible [Open Ranking](https://github.com/Open-Ranking/protocol) provider, and select any algorithm the provider supports.
 - **Real-time Statistics**  
-  Analyse spam-free statistics about the Nostr network, including the total number of users and active users, and the number of posts.
-- **Responsive UI:**  
-  Clean, mobile-friendly interface with dark/light mode toggle.
+  Analyse spam-free statistics about the Nostr network, including total and active users and number of posts.
 
 ## Tech Stack
 
-- **Frontend:** SvelteKit
-- **Nostr:** Uses `nostr-tools` for encoding/decoding and event signing
-- **Vertex:** For reputation requests, search and statistics
+- **Frontend:** SvelteKit (SSR, fast page loads)
+- **Nostr:** `nostr-tools` for encoding/decoding and event signing
+- **Ranking:** [`open-ranking` JS SDK](https://github.com/vertexlab/open-ranking) for reputation, search, discovery, and statistics
 
 ## Development
-Make sure to have `node` and `pnpm` installed
+
+Make sure to have `node` and `pnpm` installed.
 
 1. **Install dependencies:**
    ```bash
    pnpm install
    ```
 
-2. **Configure Enviroment Variables**
-    - `SECRET_KEY`: Secret key for signing Nostr events (required for search and reputation queries)
+2. **Configure Environment Variables**
     - `REDIS_ADDRESS`: Address where Redis is running (required for statistics)
 
-2. **Run the dev server:**
+3. **Run the dev server:**
    ```bash
    export $(grep -v '^#' .env | xargs) && pnpm dev -- --host 0.0.0.0
    ```
 
-
 ## Credits
 
-- Powered by [Vertex](https://vertexlab.io)
+- Default provider is [Vertex](https://vertexlab.io)
 - Designed by [Vlad](https://npub.world/npub1t3gd5yefglarhar4n6uh34uymvft4tgu8edk5465zzhtv4rrnd9sg7upxq)

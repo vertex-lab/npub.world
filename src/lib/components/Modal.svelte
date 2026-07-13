@@ -59,7 +59,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .modal-titles {

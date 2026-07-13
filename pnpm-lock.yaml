@@ -24,8 +24,8 @@ importers:
         specifier: ^2.10.4
         version: 2.10.4
       open-ranking:
-        specifier: link:../../open-ranking/js-sdk
-        version: link:../../open-ranking/js-sdk
+        specifier: ^0.1.1
+        version: 0.1.1
       redis:
         specifier: ^5.8.2
         version: 5.8.2
@@ -921,6 +921,9 @@ packages:
   nostr-wasm@0.1.0:
     resolution: {integrity: sha512-78BTryCLcLYv96ONU8Ws3Q1JzjlAt+43pWQhIl86xZmWeegYCNLPml7yQ+gG3vR6V5h4XGj+TxO+SS5dsThQIA==}
 
+  open-ranking@0.1.1:
+    resolution: {integrity: sha512-4YNPCZk8IBD5VUPYMOjkDQw9SKa9yWRVUAG/LNjXqYXAGLqq3f1oHX+oz/DBjierLAGnv1FCorSv0BVkvghGfQ==}
+
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
@@ -1705,6 +1708,8 @@ snapshots:
 
   nostr-wasm@0.1.0:
     optional: true
+
+  open-ranking@0.1.1: {}
 
   path-parse@1.0.7: {}
 

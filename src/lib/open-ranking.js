@@ -41,10 +41,12 @@ export class Ranker {
     console.log("ranker added provider '%s'", url);
   }
 
-  #resolveClient(providerURL = DEFAULT_PROVIDER_URL) {
-    const client = this.#clients.get(providerURL);
-    if (!client) throw new Error(`Unknown provider: ${providerURL}`);
-    return client;
+  async #resolveClient(providerURL = DEFAULT_PROVIDER_URL) {
+    if (!this.#clients.has(providerURL)) {
+      const client = await Client.create(providerURL, { timeout: DEFAULT_TIMEOUT });
+      this.#clients.set(providerURL, client);
+    }
+    return this.#clients.get(providerURL);
   }
 
   async #cachedCall(providerURL = DEFAULT_PROVIDER_URL, method, r, signal, options) {
@@ -52,7 +54,7 @@ export class Ranker {
     const cached = this.#cache.get(key);
     if (cached) return cached;
 
-    const client = this.#resolveClient(providerURL);
+    const client = await this.#resolveClient(providerURL);
     const response = await client[method](r, { signal, options });
 
     let ttl = CACHE_DEFAULT_TTL;

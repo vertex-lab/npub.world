@@ -32,7 +32,7 @@
 
   const isActive = () => {
     if (!isResultVisible || !results) return false
-    return results.error || results.length > 0
+    return results.error || results.networkError || results.length > 0
   }
 
   onMount(() => {
@@ -90,7 +90,9 @@
 
     response = deserialize(await response.text());
 
-    if (response.data.error) {
+    if (response.data.networkError) {
+      results = { networkError: true };
+    } else if (response.data.error) {
       results = { error: response.data.error };
     } else {
       results = response.data;
@@ -181,6 +183,12 @@
 
     <AlgoPill {algorithms} endpoint="/search/pubkeys" showLabel={false} />
   </form>
+
+  {#if isResultVisible && results && results.networkError}
+    <div class="search-results">
+      <p style="text-align: center; color: var(--error)">The provider is not responding. Check your connection or <a href="/settings" style="color: inherit;">change provider</a>.</p>
+    </div>
+  {/if}
 
   {#if isResultVisible && results && results.error}
     <div class="search-results">

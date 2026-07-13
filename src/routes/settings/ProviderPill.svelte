@@ -1,11 +1,11 @@
 <script>
-  import { fetchCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS, ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
+  import { fetchCapabilities, validateCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS, ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
   import { dev } from '$app/environment';
+  import { deserialize } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
-  import Modal from './Modal.svelte';
+  import Modal from '$lib/components/Modal.svelte';
   import { settings, setProvider } from '$lib/settings.svelte.js';
   import { logout } from '$lib/auth.svelte.js';
-  import { ranker } from '$lib/open-ranking.js';
   import { safeURL } from '$lib/string.js';
 
   const ENDPOINTS = [
@@ -72,8 +72,10 @@
     error = null;
     try {
       caps = await fetchCapabilities(url, { timeout: 5000 });
+      validateCapabilities(caps);
     } catch (e) {
       error = e.message;
+      caps = null;
     }
     validating = false;
   }
@@ -85,13 +87,20 @@
     }
   }
 
-  function save() {
+  async function save() {
     const url = normalize(inputValue);
+    const params = new FormData();
+    params.set('url', url);
+    params.set('caps', JSON.stringify(caps));
+
+    const res  = await fetch('?/setProvider', { method: 'POST', body: params });
+    const { data } = deserialize(await res.text());
+    if (data?.error) { error = `Failed to add provider: ${data.error}`; return; }
+
     setProvider(url);
     logout(); // NWT was scoped to the old provider's aud; force re-login
-    ranker.add(url); // pre-warm server-side on next SSR load; fire-and-forget
     showModal = false;
-    invalidateAll(); // re-run load functions with the new provider cookie
+    invalidateAll();
   }
 </script>
 

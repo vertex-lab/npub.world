@@ -4,7 +4,7 @@
   import { auth, login, logout } from '$lib/auth.svelte.js';
   import ProfileHeader from '$lib/components/ProfileHeader.svelte';
   import AlgoPill from '$lib/components/AlgoPill.svelte';
-  import ProviderPill from '$lib/components/ProviderPill.svelte';
+  import ProviderPill from './ProviderPill.svelte';
 
   let loginError = $state('');
   let loginLoading = $state(false);

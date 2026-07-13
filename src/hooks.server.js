@@ -1,7 +1,7 @@
 import { relay } from "./lib/nostr.js";
 import { fetchStats } from "./lib/stats.server";
 import { imager } from "./lib/image.js";
-import { ranker } from "./lib/open-ranking.js";
+import { ranker, isNetworkError } from "./lib/open-ranking.js";
 import { getAuth } from "./lib/auth.server.js";
 import { getSettings } from "./lib/settings.server.js";
 import cron from "node-cron";
@@ -15,7 +15,12 @@ export const handle = async ({ event, resolve }) => {
   event.locals.provider    = provider;
   event.locals.algorithms  = algorithms;
   event.locals.clientIP    = event.getClientAddress();
-  event.locals.capabilities = await ranker.capabilities(provider);
+  try {
+    event.locals.capabilities = await ranker.capabilities(provider);
+  } catch (err) {
+    if (!isNetworkError(err)) console.error('Failed to fetch provider capabilities:', err);
+    event.locals.capabilities = null;
+  }
 
   const response = await resolve(event);
   return response;

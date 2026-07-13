@@ -22,36 +22,29 @@ function cacheKey(providerURL, method, r) {
 /**
  * Wraps the open-ranking SDK, caching both clients (by provider URL) and
  * responses (by provider + method + request).
- *
- * Custom providers are stored as Promise<Client> in an LRU with a 30-minute
- * TTL (reset on use) and a hard cap of 20 entries, preventing memory exhaustion
- * from attacker-controlled provider URLs.
  */
 export class Ranker {
-  // URL -> Promise<Client>. Storing Promises avoids duplicate initialization
-  // when concurrent requests arrive for the same new provider.
+  // URL -> Client.
   #clients = new LRUCache({ max: PROVIDERS_MAX, ttl: PROVIDERS_TTL, updateAgeOnGet: true });
 
   // Response cache shared across all providers (key includes providerURL).
   #cache = new LRUCache({ max: CACHE_MAX_ENTRIES, ttl: CACHE_DEFAULT_TTL });
 
   async init() {
-    this.add(DEFAULT_PROVIDER_URL);
+    const client = await Client.create(DEFAULT_PROVIDER_URL, { timeout: DEFAULT_TIMEOUT });
+    this.#clients.set(DEFAULT_PROVIDER_URL, client);
+    console.log("ranker added provider '%s'", DEFAULT_PROVIDER_URL);
   }
 
-  async add(url) {
-    if (!this.#clients.has(url)) {
-      this.#clients.set(url, Client.create(url, { timeout: DEFAULT_TIMEOUT }));
-    }
-    await this.#clients.get(url);
-    console.log("Open-ranking client initialized at %s", url);
+  add(url, caps) {
+    this.#clients.set(url, Client.fromCapabilities(url, caps, { timeout: DEFAULT_TIMEOUT }));
+    console.log("ranker added provider '%s'", url);
   }
 
-  async #resolveClient(providerURL = DEFAULT_PROVIDER_URL) {
-    if (!this.#clients.has(providerURL)) {
-      this.#clients.set(providerURL, Client.create(providerURL, { timeout: DEFAULT_TIMEOUT }));
-    }
-    return this.#clients.get(providerURL);
+  #resolveClient(providerURL = DEFAULT_PROVIDER_URL) {
+    const client = this.#clients.get(providerURL);
+    if (!client) throw new Error(`Unknown provider: ${providerURL}`);
+    return client;
   }
 
   async #cachedCall(providerURL = DEFAULT_PROVIDER_URL, method, r, signal, options) {
@@ -59,7 +52,7 @@ export class Ranker {
     const cached = this.#cache.get(key);
     if (cached) return cached;
 
-    const client = await this.#resolveClient(providerURL);
+    const client = this.#resolveClient(providerURL);
     const response = await client[method](r, { signal, options });
 
     let ttl = CACHE_DEFAULT_TTL;
@@ -70,9 +63,8 @@ export class Ranker {
     return response;
   }
 
-  async capabilities(provider = DEFAULT_PROVIDER_URL) {
-    const client = await this.#resolveClient(provider);
-    return client.capabilities;
+  capabilities(providerURL = DEFAULT_PROVIDER_URL) {
+    return this.#clients.get(providerURL)?.capabilities ?? null;
   }
 
   async statsPubkey(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
@@ -105,3 +97,15 @@ export class Ranker {
 }
 
 export const ranker = new Ranker();
+
+const NETWORK_CODES = new Set(['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND']);
+
+/**
+ * Returns a user-friendly error message for provider call failures.
+ * Network-level errors (unreachable provider) get a clear nudge to check
+ * the provider setting; everything else falls back to the raw message.
+ */
+export function isNetworkError(err) {
+  const code = err?.cause?.code ?? err?.code;
+  return NETWORK_CODES.has(code) || err?.message === 'fetch failed';
+}

@@ -4,7 +4,7 @@ import { withForwarded } from 'open-ranking/options';
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { query, parseProfile } from '$lib/nostr.js';
 import { imager, lowResolution } from '$lib/image.js';
-import { ranker } from '$lib/open-ranking.js';
+import { ranker, isNetworkError } from '$lib/open-ranking.js';
 
 /**
  * Parse and validate `q` and `limit` from URLSearchParams.
@@ -69,6 +69,7 @@ export const actions = {
       }))).filter(Boolean);
 
     } catch (err) {
+      if (isNetworkError(err)) return { networkError: true };
       console.error('Internal search error:', err);
       return { error: err.message || err.toString() };
     }

@@ -1,5 +1,6 @@
 <script>
   import { fetchCapabilities, ENDPOINT_STATS_PUBKEY, ENDPOINT_RANK_PUBKEYS, ENDPOINT_SEARCH_PUBKEYS, ENDPOINT_RECOMMEND_PUBKEYS, ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
+  import { dev } from '$app/environment';
   import { invalidateAll } from '$app/navigation';
   import Modal from './Modal.svelte';
   import { settings, setProvider } from '$lib/settings.svelte.js';
@@ -56,7 +57,16 @@
   async function validate() {
     const url = normalize(inputValue);
     if (!url) return;
-    try { safeURL(url); } catch (e) { error = e.message; return; }
+
+    if (!dev) {
+      try {
+        safeURL(url);
+      } catch (e) {
+        error = e.message;
+        return;
+      }
+    }
+
     validating = true;
     caps = null;
     error = null;

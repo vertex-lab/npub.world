@@ -35,7 +35,7 @@ const initializeServices = async () => {
     statsCron = cron.schedule(
       RIGHT_AFTER_MIDNIGHT,
       fetchStats,
-      { 
+      {
         timezone: "UTC",
         recoverMissedExecutions: true
       },

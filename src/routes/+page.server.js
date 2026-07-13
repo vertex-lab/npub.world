@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+import { withForwarded } from 'open-ranking/options';
 
 import { HEXKEY_REGEXP, NPUB_REGEXP, NIP05_REGEXP } from '$lib/string.js';
 import { query, parseProfile } from '$lib/nostr.js';
@@ -44,7 +45,7 @@ export const actions = {
       const algoMeta = caps?.['/search/pubkeys']?.find(a => a.id === algorithm);
       if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
-      const response = await ranker.searchPubkeys(provider, r);
+      const response = await ranker.searchPubkeys(provider, r, { options: [withForwarded(locals.clientIP)] });
       const pubkeys = response.results.map(r => r.pubkey);
       if (!pubkeys.length) return [];
 

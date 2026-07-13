@@ -14,6 +14,7 @@ export const handle = async ({ event, resolve }) => {
   event.locals.nwt         = nwt;
   event.locals.provider    = provider;
   event.locals.algorithms  = algorithms;
+  event.locals.clientIP    = event.getClientAddress();
   event.locals.capabilities = await ranker.capabilities(provider);
 
   const response = await resolve(event);

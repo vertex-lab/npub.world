@@ -3,13 +3,14 @@ import { normalizeMentions, normalizeURL, HEXKEY_REGEXP, NIP05_REGEXP } from "$l
 import * as nip19 from 'nostr-tools/nip19';
 import { error, redirect } from '@sveltejs/kit';
 import { ENDPOINT_FOLLOWERS, ENDPOINT_COMPROMISED_PUBKEYS } from 'open-ranking';
+import { withForwarded } from 'open-ranking/options';
 
 import { imager, lowResolution, highResolution } from "$lib/image.js";
 import { ranker } from '$lib/open-ranking.js';
 import { marked } from 'marked';
 
 export async function load({ params, locals }) {
-  const { provider, capabilities } = locals;
+  const { provider, capabilities, clientIP } = locals;
   const pubkey = await resolve(params.npub);
 
   const supportsFollowers   = capabilities?.[ENDPOINT_FOLLOWERS]?.length > 0;
@@ -17,8 +18,8 @@ export async function load({ params, locals }) {
 
   try {
     const [stats, followersResponse] = await Promise.all([
-      ranker.statsPubkey(provider, { pubkey }),
-      supportsFollowers ? ranker.followers(provider, { pubkey, limit: 10 }) : null,
+      ranker.statsPubkey(provider, { pubkey }, { options: [withForwarded(clientIP)] }),
+      supportsFollowers ? ranker.followers(provider, { pubkey, limit: 10 }, { options: [withForwarded(clientIP)] }) : null,
     ]);
 
     const followersPubkeys = followersResponse?.results.map(r => r.pubkey) ?? [];
@@ -49,7 +50,7 @@ export async function load({ params, locals }) {
 
     let compromise = null;
     if (supportsCompromised && stats.rank == 0) {
-      const result = await ranker.compromisedPubkeys(provider, { pubkeys: [pubkey] });
+      const result = await ranker.compromisedPubkeys(provider, { pubkeys: [pubkey] }, { options: [withForwarded(clientIP)] });
       compromise = result[pubkey] ?? null;
     }
 
@@ -149,7 +150,7 @@ async function fetchProfiles(pubkeys) {
 
 export const actions = {
   followers: async ({ request, locals, params }) => {
-    const { provider } = locals;
+    const { provider, clientIP } = locals;
     try {
       const { type, data: pubkey } = nip19.decode(params.npub);
       if (type !== 'npub') return { error: 'Invalid npub' };
@@ -157,7 +158,7 @@ export const actions = {
       const { limit, error } = parseLimit(await request.formData());
       if (error) return { error };
 
-      const response = await ranker.followers(provider, { pubkey, limit });
+      const response = await ranker.followers(provider, { pubkey, limit }, { options: [withForwarded(clientIP)] });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {
@@ -167,7 +168,7 @@ export const actions = {
   },
 
   follows: async ({ request, locals, params }) => {
-    const { provider } = locals;
+    const { provider, clientIP } = locals;
     try {
       const { type, data: pubkey } = nip19.decode(params.npub);
       if (type !== 'npub') return { error: 'Invalid npub' };
@@ -185,7 +186,7 @@ export const actions = {
       if (pubkeys.length === 0) return [];
       if (pubkeys.length > 1000) pubkeys = pubkeys.slice(0, 1000);
 
-      const response = await ranker.rankPubkeys(provider, { pubkeys, limit });
+      const response = await ranker.rankPubkeys(provider, { pubkeys, limit }, { options: [withForwarded(clientIP)] });
       return await fetchProfiles(response.results.map(r => r.pubkey));
 
     } catch(err) {

@@ -1,6 +1,7 @@
 import { query, parseProfile, parsePubkeys } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
 import { ranker } from '$lib/open-ranking.js';
+import { withForwarded } from 'open-ranking/options';
 
 async function fetchMutedPubkeys(pubkey) {
   if (!pubkey) return new Set();
@@ -43,7 +44,7 @@ async function getRecommendations(locals) {
   if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
   const [response, muted] = await Promise.all([
-    ranker.recommendPubkeys(provider, r),
+    ranker.recommendPubkeys(provider, r, { options: [withForwarded(locals.clientIP)] }),
     fetchMutedPubkeys(locals.pubkey),
   ]);
 

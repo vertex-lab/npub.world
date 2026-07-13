@@ -54,13 +54,13 @@ export class Ranker {
     return this.#clients.get(providerURL);
   }
 
-  async #cachedCall(providerURL = DEFAULT_PROVIDER_URL, method, r, signal) {
+  async #cachedCall(providerURL = DEFAULT_PROVIDER_URL, method, r, signal, options) {
     const key = cacheKey(providerURL, method, r);
     const cached = this.#cache.get(key);
     if (cached) return cached;
 
     const client = await this.#resolveClient(providerURL);
-    const response = await client[method](r, { signal });
+    const response = await client[method](r, { signal, options });
 
     let ttl = CACHE_DEFAULT_TTL;
     if (method === 'compromisedPubkeys') ttl = 0;
@@ -75,32 +75,32 @@ export class Ranker {
     return client.capabilities;
   }
 
-  async statsPubkey(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'statsPubkey', r, signal);
+  async statsPubkey(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'statsPubkey', r, signal, options);
   }
 
-  async rankPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'rankPubkeys', r, signal);
+  async rankPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'rankPubkeys', r, signal, options);
   }
 
-  async recommendPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'recommendPubkeys', r, signal);
+  async recommendPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'recommendPubkeys', r, signal, options);
   }
 
-  async searchPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'searchPubkeys', r, signal);
+  async searchPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'searchPubkeys', r, signal, options);
   }
 
-  async followers(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'followers', r, signal);
+  async followers(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'followers', r, signal, options);
   }
 
-  async muters(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'muters', r, signal);
+  async muters(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'muters', r, signal, options);
   }
 
-  async compromisedPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal } = {}) {
-    return this.#cachedCall(provider, 'compromisedPubkeys', r, signal);
+  async compromisedPubkeys(provider = DEFAULT_PROVIDER_URL, r, { signal, options } = {}) {
+    return this.#cachedCall(provider, 'compromisedPubkeys', r, signal, options);
   }
 }
 

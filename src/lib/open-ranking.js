@@ -46,7 +46,6 @@ export class Ranker {
         console.warn(`Failed to refresh capabilities for ${url}:`, err.message);
       }
     }
-    console.log("Capabilities refreshed for all providers");
   }
 
   add(url, caps) {

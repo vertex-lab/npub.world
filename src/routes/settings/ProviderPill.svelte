@@ -83,7 +83,8 @@
   function handleKeydown(e) {
     if (e.key === 'Enter' && isValidUrl) {
       e.preventDefault();
-      validate();
+      if (canSave) save();
+      else validate();
     }
   }
 

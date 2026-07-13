@@ -3,8 +3,8 @@ import { LRUCache } from 'lru-cache';
 
 export const DEFAULT_PROVIDER_URL = "https://ranking.vertexlab.io";
 
-
-const DEFAULT_TIMEOUT   = 3000;
+const DEFAULT_TIMEOUT      = 3000;
+const CAPABILITIES_REFRESH = 1000 * 60 * 60; // 1 hour
 const PROVIDERS_MAX     = 100;
 const PROVIDERS_TTL     = 1000 * 60 * 30; // 30 minutes, reset on use
 const CACHE_MAX_ENTRIES = 10_000;
@@ -33,7 +33,20 @@ export class Ranker {
   async init() {
     const client = await Client.create(DEFAULT_PROVIDER_URL, { timeout: DEFAULT_TIMEOUT });
     this.#clients.set(DEFAULT_PROVIDER_URL, client);
-    console.log("ranker added provider '%s'", DEFAULT_PROVIDER_URL);
+    console.log("Open-ranking client initialized at %s", DEFAULT_PROVIDER_URL);
+
+    setInterval(() => this.#refreshAll(), CAPABILITIES_REFRESH);
+  }
+
+  async #refreshAll() {
+    for (const [url, client] of this.#clients.entries()) {
+      try {
+        await client.refreshCapabilities();
+      } catch (err) {
+        console.warn(`Failed to refresh capabilities for ${url}:`, err.message);
+      }
+    }
+    console.log("Capabilities refreshed for all providers");
   }
 
   add(url, caps) {

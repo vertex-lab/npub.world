@@ -1,6 +1,6 @@
 import { query, parseProfile, parsePubkeys } from '$lib/nostr.js';
 import { imager, highResolution } from '$lib/image.js';
-import { ranker } from '$lib/open-ranking.js';
+import { ranker, isNetworkError } from '$lib/open-ranking.js';
 import { withForwarded } from 'open-ranking/options';
 
 async function fetchMutedPubkeys(pubkey) {
@@ -34,7 +34,7 @@ async function getRecommendations(locals) {
 
   const supportedAlgos = capabilities?.['/recommend/pubkeys'] ?? [];
   if (supportedAlgos.length === 0) {
-    return { unsupported: true, provider };
+    return { unsupported: true };
   }
 
   const r = { limit: 100 };
@@ -43,30 +43,24 @@ async function getRecommendations(locals) {
   const algoMeta = supportedAlgos.find(a => a.id === algorithm);
   if (algoMeta?.pov && locals.pubkey) r.pov = locals.pubkey;
 
-  const [response, muted] = await Promise.all([
-    ranker.recommendPubkeys(provider, r, { options: [withForwarded(locals.clientIP)] }),
-    fetchMutedPubkeys(locals.pubkey),
-  ]);
+  try {
+    const [response, muted] = await Promise.all([
+      ranker.recommendPubkeys(provider, r, { options: [withForwarded(locals.clientIP)] }),
+      fetchMutedPubkeys(locals.pubkey),
+    ]);
+    const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
+    return { profiles: await fetchProfiles(pubkeys) };
 
-  const pubkeys = response.results.map(r => r.pubkey).filter(pk => !muted.has(pk));
-  return fetchProfiles(pubkeys);
+  } catch (err) {
+    if (isNetworkError(err)) return { networkError: true };
+    throw err;
+  }
 }
 
 export async function load({ locals }) {
-  const result = await getRecommendations(locals);
-  if (result.unsupported) return result;
-  return { profiles: result };
+  return getRecommendations(locals);
 }
 
 export const actions = {
-  recommend: async ({ locals }) => {
-    try {
-      const result = await getRecommendations(locals);
-      if (result.unsupported) return result;
-      return { profiles: result };
-    } catch (err) {
-      console.error('Explore error:', err);
-      return { error: err.message || err.toString() };
-    }
-  }
+  recommend: async ({ locals }) => getRecommendations(locals),
 };

@@ -8,9 +8,9 @@
 
   let profiles = $state(data.profiles);
   let unsupported = $state(data.unsupported ?? false);
+  let networkError = $state(data.networkError ?? false);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
   let loading = $state(false);
-  let unsupportedProvider = $derived((() => { try { return new URL(data.provider ?? '').hostname; } catch { return data.provider ?? ''; } })());
 
   async function reload() {
     loading = true;
@@ -19,6 +19,7 @@
     const result = deserialize(await response.text());
     if (result.data?.profiles) profiles = result.data.profiles;
     if (result.data?.unsupported != null) unsupported = result.data.unsupported;
+    if (result.data?.networkError) networkError = result.data.networkError;
 
     loading = false;
   }
@@ -40,10 +41,15 @@
     <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={reload} />
   </div>
 
-  {#if unsupported}
-    <p class="unsupported-notice">
-      <strong>{unsupportedProvider}</strong> doesn't support Discovery.<br>
-      To use this feature, change your provider from the <a href="/settings">settings</a>.
+  {#if networkError}
+    <p class="error">
+      Your provider is not responding.<br>
+      Check your connection or <a href="/settings">change provider</a>
+    </p>
+  {:else if unsupported}
+    <p class="error">
+      Your provider doesn't support Discovery.<br>
+      To use this feature, you have to <a href="/settings">change provider</a>
     </p>
   {:else if profiles?.length}
     <div class="grid-wrapper">
@@ -75,13 +81,13 @@
     margin: 0;
   }
 
-  .unsupported-notice {
+  .error {
     text-align: center;
     color: var(--error);
     font-size: var(--font-body);
   }
 
-  .unsupported-notice a {
+  .error a {
     color: var(--error);
   }
 

@@ -11,7 +11,7 @@
   import AlgoPill from "./AlgoPill.svelte";
   import { settings } from "$lib/settings.svelte.js";
 
-  let { algorithms = [] } = $props();
+  let { algorithms = [], showLabel = true } = $props();
   let selectedAlgorithm = $derived(
     algorithms.find(a => a.id === settings.algorithms['/search/pubkeys']) ?? algorithms[0] ?? null
   );
@@ -181,7 +181,7 @@
       onclick={showResult}
     />
 
-    <AlgoPill {algorithms} endpoint="/search/pubkeys" showLabel={false} />
+    <AlgoPill {algorithms} endpoint="/search/pubkeys" showLabel={showLabel} />
   </form>
 
   {#if isResultVisible && results && results.networkError}
@@ -224,7 +224,7 @@
     box-sizing: border-box;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-	  box-shadow: var(--shadow-elevation-low);
+	box-shadow: var(--shadow-elevation-low);
     background-color: var(--card-background);
     padding-right: 8px;
   }

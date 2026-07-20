@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { deserialize } from '$app/forms';
   import Logo from '$lib/components/Logo.svelte';
   import AlgoPill from '$lib/components/AlgoPill.svelte';
@@ -6,26 +7,23 @@
 
   let { data } = $props();
 
-  let profiles = $state(data.profiles);
-  let unsupported = $state(data.unsupported ?? false);
-  let networkError = $state(data.networkError ?? false);
+  let profiles = $state(null);
+  let unsupported = $state(false);
+  let networkError = $state(false);
   let discoverAlgos = $derived(data.capabilities?.['/recommend/pubkeys'] ?? []);
-  let loading = $state(false);
+  let loading = $state(true);
 
-  async function reload() {
+  onMount(() => recommend());
+
+  async function recommend() {
     loading = true;
-
     const response = await fetch('?/recommend', { method: 'POST', body: new FormData() });
     const result = deserialize(await response.text());
     if (result.data?.profiles) profiles = result.data.profiles;
     if (result.data?.unsupported != null) unsupported = result.data.unsupported;
     if (result.data?.networkError) networkError = result.data.networkError;
-
     loading = false;
   }
-
-
-
 </script>
 
 <svelte:head>
@@ -38,7 +36,7 @@
   <div class="top-section">
     <h1 class="title">Discover</h1>
     <p class="subtitle">Meet the people that make Nostr so special.</p>
-    <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={reload} />
+    <AlgoPill algorithms={discoverAlgos} endpoint="/recommend/pubkeys" {loading} onselect={recommend} />
   </div>
 
   {#if networkError}
@@ -90,7 +88,6 @@
   .error a {
     color: var(--error);
   }
-
 
   .subtitle {
     font-size: var(--font-body);

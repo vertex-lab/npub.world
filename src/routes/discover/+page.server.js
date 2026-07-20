@@ -57,10 +57,6 @@ async function getRecommendations(locals) {
   }
 }
 
-export async function load({ locals }) {
-  return getRecommendations(locals);
-}
-
 export const actions = {
   recommend: async ({ locals }) => getRecommendations(locals),
 };

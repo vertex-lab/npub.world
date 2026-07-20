@@ -42,21 +42,21 @@
   }
 </script>
 
-{#if algorithms.length > 0}
-  <button type="button" class="pill" class:icon-only={!showLabel} class:accent onclick={() => showModal = true} disabled={loading}>
-    {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? '')}{/if}
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-    </svg>
-  </button>
-{:else}
-  <button type="button" class="pill" class:icon-only={!showLabel} disabled>
-    {#if showLabel}Unsupported{/if}
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/>
-    </svg>
-  </button>
-{/if}
+<button type="button" class="pill" class:icon-only={!showLabel} class:accent={algorithms.length > 0} onclick={() => showModal = true} disabled={loading || !algorithms.length}>
+  {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? (algorithms.length ? '' : 'Unsupported'))}{/if}
+  {#if !loading}
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/>
+    <path d="m14 7 3 3"/>
+    <path d="M5 6v4"/>
+    <path d="M19 14v4"/>
+    <path d="M10 2v2"/>
+    <path d="M7 8H3"/>
+    <path d="M21 16h-4"/>
+    <path d="M11 3H9"/>
+  </svg>
+  {/if}
+</button>
 
 {#if showModal}
   <Modal title="Algorithms" {subtitle} onclose={() => showModal = false}>

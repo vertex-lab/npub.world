@@ -19,7 +19,7 @@
     '/search/pubkeys':    'Choose the algorithm to optimize your search experience',
     '/recommend/pubkeys': 'Choose the algorithm to power your discovery feed',
   };
-  const subtitle = SUBTITLES[endpoint] ?? '';
+  let subtitle = $derived(SUBTITLES[endpoint] ?? '');
 
   let selectedAlgo = $derived(
     algorithms.find(a => a.id === settings.algorithms[endpoint]) ?? algorithms[0] ?? null

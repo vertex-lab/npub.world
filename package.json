@@ -1,40 +1,45 @@
 {
-	"name": "ssr-webapp",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
-	},
-	"devDependencies": {
-		"@fontsource/fira-mono": "^5.0.0",
-		"@neoconfetti/svelte": "^2.0.0",
-		"@sveltejs/adapter-auto": "^4.0.0",
-		"@sveltejs/adapter-node": "^5.2.12",
-		"@sveltejs/kit": "^2.16.0",
-		"@sveltejs/vite-plugin-svelte": "^5.0.0",
-		"@tailwindcss/vite": "^4.0.0",
-		"svelte": "^5.0.0",
-		"tailwindcss": "^4.0.6",
-		"vite": "^6.0.0"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
-	},
-	"dependencies": {
-		"chart.js": "^4.5.0",
-		"lru-cache": "^11.5.1",
-		"marked": "^15.0.7",
-		"node-cron": "^4.2.1",
-		"nostr-tools": "^2.10.4",
-		"open-ranking": "^0.1.1",
-		"redis": "^5.8.2",
-		"sharp": "^0.33.5",
-		"undici": "^7.3.0"
-	}
+  "name": "ssr-webapp",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''"
+  },
+  "devDependencies": {
+    "@fontsource/fira-mono": "^5.0.0",
+    "@neoconfetti/svelte": "^2.0.0",
+    "@sveltejs/adapter-auto": "^4.0.0",
+    "@sveltejs/adapter-node": "^5.2.12",
+    "@sveltejs/kit": "^2.57.1",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "svelte": "^5.55.7",
+    "tailwindcss": "^4.0.6",
+    "vite": "^6.4.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "rollup": ">=4.59.0",
+      "picomatch": ">=4.0.4",
+      "cookie": "^0.7.0"
+    }
+  },
+  "dependencies": {
+    "chart.js": "^4.5.0",
+    "lru-cache": "^11.5.1",
+    "marked": "^15.0.7",
+    "node-cron": "^4.2.1",
+    "nostr-tools": "^2.10.4",
+    "open-ranking": "^0.1.1",
+    "redis": "^5.8.2",
+    "sharp": "^0.33.5",
+    "undici": "^7.28.0"
+  }
 }

@@ -1,7 +1,7 @@
 <script>
   import { browser } from "$app/environment";
   import { onMount, tick } from "svelte";
-  import { Chart, layouts, registerables } from "chart.js";
+  import { Chart, registerables } from "chart.js";
   import * as utils from "$lib/charts.js";
 
   let { datasets, title } = $props();

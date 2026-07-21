@@ -1,4 +1,4 @@
-import { Relay, finalizeEvent } from 'nostr-tools';
+import { Relay } from 'nostr-tools';
 import * as nip19 from 'nostr-tools/nip19';
 import { HEXKEY_REGEXP, NPUB_REGEXP } from '$lib/string.js';
 

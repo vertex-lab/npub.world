@@ -2,7 +2,6 @@
   import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
 
-  import { decode } from "nostr-tools/nip19";
   import InfoTable from "./InfoTable.svelte";
   import DetailedProfile from "./DetailedProfile.svelte"
   import SearchBox from "$lib/components/SearchBox.svelte";

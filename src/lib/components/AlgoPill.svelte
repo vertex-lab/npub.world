@@ -42,8 +42,15 @@
   }
 </script>
 
-<button type="button" class="pill" class:icon-only={!showLabel} class:accent={algorithms.length > 0} onclick={() => showModal = true} disabled={loading || !algorithms.length}>
-  {#if showLabel}{loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? (algorithms.length ? '' : 'Unsupported'))}{/if}
+<button type="button" class="pill"
+    class:icon-only={!showLabel}
+    class:accent={accent && algorithms.length > 0}
+    onclick={() => showModal = true}
+    disabled={loading || !algorithms.length}
+>
+  {#if showLabel}
+      {loading ? 'Loading…' : (selectedAlgo?.name ?? selectedAlgo?.id ?? (algorithms.length ? '' : 'Unsupported'))}
+  {/if}
   {#if !loading}
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/>
